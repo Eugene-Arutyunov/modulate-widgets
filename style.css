@@ -67,7 +67,7 @@ body {
 .scatterplot-wrapper {
   margin: 40px 0;
   background-color: rgba(var(--ids__bg-surface-RGB), 1);
-  padding: 22px 30px;
+  padding: 22px 30px 40px 30px;
 
   h2 {
     font-size: 1.5em;
@@ -81,17 +81,37 @@ body {
 .scatterplot-container {
   margin-top: 20px;
   display: flex;
-  --gap: 20px;
+  --gap: 50px;
   gap: var(--gap);
 
   & .scatterplot-aria {
     width: calc(85% - var(--gap) / 2);
     aspect-ratio: 16/9;
     position: relative;
+    border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.5);
+    border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
   }
 
   & .scatterplot-sidebar {
     width: calc(15% - var(--gap) / 2);
+  }
+
+  & .scatterplot-cost-label,
+  & .scatterplot-score-label {
+    position: absolute;
+    font-size: 0.85em;
+    color: rgba(var(--ids__text-RGB), 0.8);
+    pointer-events: none;
+  }
+
+  & .scatterplot-cost-label {
+    bottom: -26px;
+    transform: translateX(-50%);
+  }
+
+  & .scatterplot-score-label {
+    left: -35px;
+    transform: translateY(-50%);
   }
 }
 
@@ -205,4 +225,72 @@ body {
       color: rgba(var(--vendor-deepseek-RGB), 1);
     }
   }
+}
+
+.scatterplot-axis-label-x {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(var(--ids__text-caption-RGB), 1);
+}
+
+.scatterplot-axis-label-y {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: center;
+  margin: 0;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(var(--ids__text-caption-RGB), 1);
+  white-space: nowrap;
+}
+
+.scatterplot-tick-x,
+.scatterplot-tick-y {
+  position: absolute;
+  background-color: rgba(var(--ids__text-RGB), 0.5);
+  pointer-events: none;
+}
+
+.scatterplot-tick-x {
+  width: 1px;
+  height: 12px;
+  bottom: -12px;
+  transform: translateX(-50%);
+}
+
+.scatterplot-tick-y {
+  width: 12px;
+  height: 1px;
+  left: -12px;
+  transform: translateY(-50%);
+}
+
+.scatterplot-cost-label-tick,
+.scatterplot-score-label-tick {
+  position: absolute;
+  background-color: rgba(var(--ids__text-RGB), 1);
+  pointer-events: none;
+}
+
+.scatterplot-cost-label-tick {
+  width: 2px;
+  height: 12px;
+  bottom: -12px;
+  transform: translateX(-50%);
+}
+
+.scatterplot-score-label-tick {
+  width: 12px;
+  height: 2px;
+  left: -12px;
+  transform: translateY(-50%);
 }

@@ -222,9 +222,10 @@ function updateSidebar(model) {
     values[3].textContent = model.score.toFixed(1);
   }
   if (labels[4] && values[4]) {
-    // Парсим стоимость, округляем до 2 знаков и форматируем обратно
+    // Парсим стоимость, округляем до 2 знаков (для Modulate до 4 знаков) и форматируем обратно
     const costValue = parseCost(model.cost);
-    values[4].textContent = "$" + costValue.toFixed(2);
+    const decimals = model.vendor === "Modulate" ? 4 : 2;
+    values[4].textContent = "$" + costValue.toFixed(decimals);
   }
   if (labels[5] && values[5]) {
     values[5].textContent = model.speed.toFixed(1) + "s";
@@ -282,18 +283,76 @@ function findNearestPoint(mouseX, mouseY, container) {
 }
 
 // Функция для подсветки точки
-function highlightPoint(pointElement) {
+function highlightPoint(pointElement, modelData) {
+  const container = document.querySelector(".scatterplot-aria");
+  if (!container) return;
+
+  const costLabel = container.querySelector(".scatterplot-cost-label");
+  const scoreLabel = container.querySelector(".scatterplot-score-label");
+  const costLabelTick = container.querySelector(".scatterplot-cost-label-tick");
+  const scoreLabelTick = container.querySelector(".scatterplot-score-label-tick");
+
   // Убираем подсветку с предыдущей точки
   if (activePoint && activePoint.element) {
     activePoint.element.classList.remove("scatterplot-point-active");
   }
 
-  // Подсвечиваем новую точку
-  if (pointElement) {
+  // Подсвечиваем новую точку и обновляем лейблы
+  if (pointElement && modelData) {
     pointElement.classList.add("scatterplot-point-active");
-    activePoint = { element: pointElement };
+    activePoint = { element: pointElement, model: modelData };
+
+    // Вычисляем позиции для лейблов
+    const costs = modelsData.map((d) => parseCost(d.cost));
+    const scores = modelsData.map((d) => d.score);
+    const minCost = Math.min(...costs);
+    const maxCost = Math.max(...costs);
+    const minScore = Math.min(...scores);
+    const maxScore = Math.max(...scores);
+
+    function costToX(cost) {
+      const normalized = cost / maxCost;
+      return normalized * 100; // 0% до 100%
+    }
+
+    function scoreToY(score) {
+      const normalized = score / maxScore;
+      return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
+    }
+
+    const cost = parseCost(modelData.cost);
+    const x = costToX(cost);
+    const y = scoreToY(modelData.score);
+
+    // Обновляем лейбл цены и его засечку
+    if (costLabel) {
+      costLabel.style.left = `${x}%`;
+      const decimals = modelData.vendor === "Modulate" ? 4 : 2;
+      costLabel.textContent = "$" + cost.toFixed(decimals);
+      costLabel.style.display = "block";
+    }
+    if (costLabelTick) {
+      costLabelTick.style.left = `${x}%`;
+      costLabelTick.style.display = "block";
+    }
+
+    // Обновляем лейбл оценки и его засечку
+    if (scoreLabel) {
+      scoreLabel.style.top = `${y}%`;
+      scoreLabel.textContent = modelData.score.toFixed(1);
+      scoreLabel.style.display = "block";
+    }
+    if (scoreLabelTick) {
+      scoreLabelTick.style.top = `${y}%`;
+      scoreLabelTick.style.display = "block";
+    }
   } else {
     activePoint = null;
+    // Скрываем лейблы и засечки
+    if (costLabel) costLabel.style.display = "none";
+    if (scoreLabel) scoreLabel.style.display = "none";
+    if (costLabelTick) costLabelTick.style.display = "none";
+    if (scoreLabelTick) scoreLabelTick.style.display = "none";
   }
 }
 
@@ -302,15 +361,35 @@ function createScatterPlot() {
   const container = document.querySelector(".scatterplot-aria");
   if (!container) return;
 
+  // Сохраняем подписи осей перед очисткой
+  const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+  const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
+
   // Очищаем контейнер и данные
   container.innerHTML = "";
   pointsData = [];
   activePoint = null;
 
-  // Удаляем старые обработчики событий
-  const newContainer = container.cloneNode(false);
-  container.parentNode.replaceChild(newContainer, container);
-  const freshContainer = document.querySelector(".scatterplot-aria");
+  // Восстанавливаем подписи осей
+  if (axisLabelX) {
+    container.appendChild(axisLabelX);
+  } else {
+    const labelX = document.createElement("div");
+    labelX.className = "scatterplot-axis-label-x";
+    labelX.textContent = "Cost";
+    container.appendChild(labelX);
+  }
+
+  if (axisLabelY) {
+    container.appendChild(axisLabelY);
+  } else {
+    const labelY = document.createElement("div");
+    labelY.className = "scatterplot-axis-label-y";
+    labelY.textContent = "Score";
+    container.appendChild(labelY);
+  }
+
+  const freshContainer = container;
 
   // Вычисляем диапазоны данных
   const costs = modelsData.map((d) => parseCost(d.cost));
@@ -321,26 +400,18 @@ function createScatterPlot() {
   const minScore = Math.min(...scores);
   const maxScore = Math.max(...scores);
 
-  // Отступы для осей (в процентах)
-  const paddingLeft = 8; // 8% слева
-  const paddingRight = 5; // 5% справа
-  const paddingTop = 5; // 5% сверху
-  const paddingBottom = 10; // 10% снизу
-
-  // Вычисляем рабочую область
-  const plotWidth = 100 - paddingLeft - paddingRight;
-  const plotHeight = 100 - paddingTop - paddingBottom;
-
   // Функция для преобразования стоимости в X координату (в процентах)
+  // Ось всегда начинается с 0
   function costToX(cost) {
-    const normalized = (cost - minCost) / (maxCost - minCost);
-    return paddingLeft + normalized * plotWidth;
+    const normalized = cost / maxCost;
+    return normalized * 100; // 0% до 100%
   }
 
   // Функция для преобразования score в Y координату (в процентах, инвертированная)
+  // Ось всегда начинается с 0
   function scoreToY(score) {
-    const normalized = (score - minScore) / (maxScore - minScore);
-    return paddingTop + (1 - normalized) * plotHeight; // Инвертируем Y
+    const normalized = score / maxScore;
+    return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
   }
 
   // Рисуем точки как абсолютно позиционированные div'ы
@@ -371,19 +442,72 @@ function createScatterPlot() {
     freshContainer.appendChild(point);
   });
 
+  // Создаем засечки на оси Y (для каждого целого балла) - снаружи слева
+  // Пропускаем 0
+  const maxScoreInt = Math.ceil(maxScore);
+  for (let score = 1; score <= maxScoreInt; score++) {
+    const y = scoreToY(score);
+    const tick = document.createElement("div");
+    tick.className = "scatterplot-tick-y";
+    tick.style.top = `${y}%`;
+    freshContainer.appendChild(tick);
+  }
+
+  // Создаем засечки на оси X (каждые 10 центов) - снаружи снизу
+  // Пропускаем 0
+  const maxCostRounded = Math.ceil(maxCost * 10) / 10;
+  for (let cost = 0.1; cost <= maxCostRounded; cost += 0.1) {
+    const x = costToX(cost);
+    const tick = document.createElement("div");
+    tick.className = "scatterplot-tick-x";
+    tick.style.left = `${x}%`;
+    freshContainer.appendChild(tick);
+  }
+
+  // Создаем динамические лейблы для активной точки
+  const costLabel = document.createElement("div");
+  costLabel.className = "scatterplot-cost-label";
+  costLabel.style.display = "none";
+  freshContainer.appendChild(costLabel);
+
+  const scoreLabel = document.createElement("div");
+  scoreLabel.className = "scatterplot-score-label";
+  scoreLabel.style.display = "none";
+  freshContainer.appendChild(scoreLabel);
+
+  // Создаем засечки и линии для лейблов активной точки
+  const costLabelTick = document.createElement("div");
+  costLabelTick.className = "scatterplot-cost-label-tick";
+  costLabelTick.style.display = "none";
+  freshContainer.appendChild(costLabelTick);
+
+  const scoreLabelTick = document.createElement("div");
+  scoreLabelTick.className = "scatterplot-score-label-tick";
+  scoreLabelTick.style.display = "none";
+  freshContainer.appendChild(scoreLabelTick);
+
   // Обработчик движения мыши внутри контейнера
   freshContainer.addEventListener("mousemove", (e) => {
     const nearestPointData = findNearestPoint(e.clientX, e.clientY, freshContainer);
     if (nearestPointData) {
-      highlightPoint(nearestPointData.element);
+      highlightPoint(nearestPointData.element, nearestPointData.model);
       updateSidebar(nearestPointData.model);
     }
   });
 
   // Обработчик выхода курсора из контейнера
   freshContainer.addEventListener("mouseleave", () => {
-    highlightPoint(null);
     showDefaultModel();
+    // Показываем лейблы для модели по умолчанию
+    const defaultModel = getDefaultModel();
+    const defaultPointData = pointsData.find(
+      (pointData) => pointData.model === defaultModel
+    );
+    if (defaultPointData) {
+      highlightPoint(defaultPointData.element, defaultModel);
+    } else {
+      highlightPoint(null, null);
+    }
   });
 
   // Показываем модель по умолчанию при инициализации
@@ -392,7 +516,7 @@ function createScatterPlot() {
     (pointData) => pointData.model === defaultModel
   );
   if (defaultPointData) {
-    highlightPoint(defaultPointData.element);
+    highlightPoint(defaultPointData.element, defaultModel);
   }
   showDefaultModel();
 }
