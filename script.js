@@ -443,8 +443,8 @@ function createScatterPlot() {
   });
 
   // Создаем засечки на оси Y (для каждого целого балла) - снаружи слева
-  // Пропускаем 0
-  const maxScoreInt = Math.ceil(maxScore);
+  // Пропускаем 0, ограничиваем максимальным значением данных
+  const maxScoreInt = Math.floor(maxScore);
   for (let score = 1; score <= maxScoreInt; score++) {
     const y = scoreToY(score);
     const tick = document.createElement("div");
@@ -497,27 +497,11 @@ function createScatterPlot() {
 
   // Обработчик выхода курсора из контейнера
   freshContainer.addEventListener("mouseleave", () => {
+    highlightPoint(null, null);
     showDefaultModel();
-    // Показываем лейблы для модели по умолчанию
-    const defaultModel = getDefaultModel();
-    const defaultPointData = pointsData.find(
-      (pointData) => pointData.model === defaultModel
-    );
-    if (defaultPointData) {
-      highlightPoint(defaultPointData.element, defaultModel);
-    } else {
-      highlightPoint(null, null);
-    }
   });
 
-  // Показываем модель по умолчанию при инициализации
-  const defaultModel = getDefaultModel();
-  const defaultPointData = pointsData.find(
-    (pointData) => pointData.model === defaultModel
-  );
-  if (defaultPointData) {
-    highlightPoint(defaultPointData.element, defaultModel);
-  }
+  // Показываем модель по умолчанию при инициализации (без лейблов)
   showDefaultModel();
 }
 
