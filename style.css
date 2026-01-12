@@ -1,0 +1,208 @@
+* {
+  box-sizing: border-box;
+}
+
+:root,
+.light-mode {
+  /* TEXT */
+  --ids__text-RGB: 20, 20, 50;
+  --ids__text-link-RGB: 50, 50, 70;
+  --ids__text-hover-RGB: 40, 95, 235;
+  --ids__text-caption-RGB: 150, 150, 170;
+  --ids__text-inverted-RGB: 242, 242, 246;
+  --ids__text-accent-RGB: 20, 20, 50;
+
+  /* BACKGROUND */
+  --ids__background-RGB: 255, 255, 255;
+  --ids__bg-surface-RGB: 242, 242, 246;
+  --ids__bg-accent-RGB: 20, 20, 50;
+  --ids__bg-hover-RGB: var(--ids__text-hover-RGB);
+  --ids__bg-mark-RGB: 255, 200, 29;
+
+  /* UI */
+  --ids__UI-control-RGB: var(--ids__bg-surface-RGB);
+  --ids__UI-border-RGB: 220, 220, 230;
+  --ids__UI-error-RGB: 255, 53, 84;
+  --ids__UI-success-RGB: 21, 207, 135;
+
+  /* Vendor colors */
+  --vendor-modulate-RGB: 99, 102, 241; /* Indigo/Violet */
+  --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
+  --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
+  --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
+  --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
+}
+
+body {
+  font-family: "Inter", sans-serif;
+
+  color: rgba(var(--ids__text-RGB), 1);
+  background-color: rgba(var(--ids__background-RGB), 1);
+}
+
+.container {
+  width: 1140px;
+  margin: 120px auto;
+
+  & .text-width {
+    width: 70%;
+  }
+
+  h1 {
+    font-size: 3.3em;
+    line-height: 1.1;
+  }
+
+  p {
+    font-size: 1.2em;
+    line-height: 1.35;
+    margin-bottom: 0.5em;
+
+    &.L {
+      font-size: 1.5em;
+    }
+  }
+}
+
+.scatterplot-wrapper {
+  margin: 40px 0;
+  background-color: rgba(var(--ids__bg-surface-RGB), 1);
+  padding: 22px 30px;
+
+  h2 {
+    font-size: 1.5em;
+    margin: 0 0 40px 0;
+    font-weight: 400;
+    /* text-transform: uppercase; */
+    /* letter-spacing: 0.1em; */
+  }
+}
+
+.scatterplot-container {
+  margin-top: 20px;
+  display: flex;
+  --gap: 20px;
+  gap: var(--gap);
+
+  & .scatterplot-aria {
+    width: calc(85% - var(--gap) / 2);
+    aspect-ratio: 16/9;
+    position: relative;
+  }
+
+  & .scatterplot-sidebar {
+    width: calc(15% - var(--gap) / 2);
+  }
+}
+
+.scatterplot-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--ids__bg-surface-RGB), 1);
+  transform: translate(-50%, -50%) scale(1);
+
+  transition: transform 0.2s ease;
+
+  /* Default color fallback */
+  background-color: rgba(var(--ids__text-RGB), 1);
+
+  /* Modulate */
+  &[data-vendor="Modulate"] {
+    background-color: rgba(var(--vendor-modulate-RGB), 1);
+  }
+
+  /* OpenAI */
+  &[data-vendor="OpenAI"] {
+    background-color: rgba(var(--ids__bg-surface-RGB), 1);
+    border: 2px solid rgba(var(--vendor-openai-RGB), 1);
+  }
+
+  /* Grok */
+  &[data-vendor="Grok"] {
+    background-color: rgba(var(--vendor-grok-RGB), 1);
+  }
+
+  /* Gemini */
+  &[data-vendor="Gemini"] {
+    background-color: rgba(var(--ids__bg-surface-RGB), 1);
+    border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
+  }
+
+  /* DeepSeek */
+  &[data-vendor="DeepSeek"] {
+    background-color: rgba(var(--vendor-deepseek-RGB), 1);
+  }
+
+  /* Active state */
+  &.scatterplot-point-active {
+    transform: translate(-50%, -50%) scale(1.2);
+    transition: transform 0s ease;
+    z-index: 10;
+
+    &[data-vendor="Modulate"] {
+      background-color: rgba(var(--vendor-modulate-RGB), 1);
+    }
+
+    &[data-vendor="OpenAI"] {
+      background-color: rgba(var(--ids__bg-surface-RGB), 1);
+      border: 2px solid rgba(var(--vendor-openai-RGB), 1);
+    }
+
+    &[data-vendor="Grok"] {
+      background-color: rgba(var(--vendor-grok-RGB), 1);
+    }
+
+    &[data-vendor="Gemini"] {
+      background-color: rgba(var(--ids__bg-surface-RGB), 1);
+      border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
+    }
+
+    &[data-vendor="DeepSeek"] {
+      background-color: rgba(var(--vendor-deepseek-RGB), 1);
+    }
+  }
+}
+
+.scatterplot-sidebar-item {
+  margin-bottom: 12px;
+  height: 50px;
+
+  & .scatterplot-sidebar-label {
+    margin: 0;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  & .scatterplot-sidebar-value {
+    margin: 0;
+    font-weight: 500;
+
+    /* Modulate */
+    &[data-vendor="Modulate"] {
+      color: rgba(var(--vendor-modulate-RGB), 1);
+    }
+
+    /* OpenAI */
+    &[data-vendor="OpenAI"] {
+      color: rgba(var(--vendor-openai-RGB), 1);
+    }
+
+    /* Grok */
+    &[data-vendor="Grok"] {
+      color: rgba(var(--vendor-grok-RGB), 1);
+    }
+
+    /* Gemini */
+    &[data-vendor="Gemini"] {
+      color: rgba(var(--vendor-gemini-RGB), 1);
+    }
+
+    /* DeepSeek */
+    &[data-vendor="DeepSeek"] {
+      color: rgba(var(--vendor-deepseek-RGB), 1);
+    }
+  }
+}
