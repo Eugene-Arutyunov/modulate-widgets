@@ -8,45 +8,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
       <div class="scatterplot-wrapper">
-        <h2>Conversation Understanding Benckmark</h2>
+        <div class="scatterplot-title">
+          Conversation Understanding Benchmark
+        </div>
         <div class="scatterplot-container">
           <div class="scatterplot-aria">
             <div class="scatterplot-axis-label-x">Cost per hour</div>
             <div class="scatterplot-axis-label-y">Accuracy score</div>
           </div>
-          <div class="scatterplot-sidebar">
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Vendor:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Model:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Model Type:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Score:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Cost:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-            <div class="scatterplot-sidebar-item">
-              <p class="scatterplot-sidebar-label">Speed:</p>
-              <p class="scatterplot-sidebar-value"></p>
-            </div>
-          </div>
+        </div>
+        <div class="indicator">
+          <span class="indicator-label">Vendor:</span>
+          <span class="indicator-value"></span>
+          <span class="indicator-label">Model Type:</span>
+          <span class="indicator-value"></span>
+          <span class="indicator-label">Speed:</span>
+          <span class="indicator-value"></span>
         </div>
       </div>
     </div>

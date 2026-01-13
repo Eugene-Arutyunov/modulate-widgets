@@ -66,34 +66,53 @@ body {
 
 .scatterplot-wrapper {
   margin: 40px 0;
-  background-color: rgba(var(--ids__bg-surface-RGB), 1);
-  padding: 22px 30px 40px 30px;
+  background-color: rgba(var(--ids__bg-surface-RGB), 0.5);
+  border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
+  border-radius: 8px;
+  padding: 30px 70px 30px 70px;
 
-  h2 {
-    font-size: 1.5em;
+  & .scatterplot-title {
+    font-size: 1.3em;
     margin: 0 0 40px 0;
-    font-weight: 400;
-    /* text-transform: uppercase; */
-    /* letter-spacing: 0.1em; */
+    font-weight: 300;
+    text-align: center;
+    opacity: 0.5;
+  }
+
+  & .indicator {
+    margin-top: 60px;
+    text-align: center;
+    visibility: hidden;
+
+    & .indicator-label,
+    & .indicator-value {
+      font-size: 0.8em;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(var(--ids__text-caption-RGB), 1);
+    }
+
+    & .indicator-value {
+      &:after {
+        content: ",";
+      }
+
+      &:last-child:after {
+        content: "";
+      }
+    }
   }
 }
 
 .scatterplot-container {
   margin-top: 20px;
-  display: flex;
-  --gap: 50px;
-  gap: var(--gap);
 
   & .scatterplot-aria {
-    width: calc(85% - var(--gap) / 2);
-    aspect-ratio: 16/9;
+    width: 100%;
+    aspect-ratio: 16/7;
     position: relative;
     border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.5);
     border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
-  }
-
-  & .scatterplot-sidebar {
-    width: calc(15% - var(--gap) / 2);
   }
 
   & .scatterplot-cost-label,
@@ -185,51 +204,9 @@ body {
   }
 }
 
-.scatterplot-sidebar-item {
-  margin-bottom: 12px;
-  height: 50px;
-
-  & .scatterplot-sidebar-label {
-    margin: 0;
-    font-size: 0.8em;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  & .scatterplot-sidebar-value {
-    margin: 0;
-    font-weight: 500;
-
-    /* Modulate */
-    &[data-vendor="Modulate"] {
-      color: rgba(var(--vendor-modulate-RGB), 1);
-    }
-
-    /* OpenAI */
-    &[data-vendor="OpenAI"] {
-      color: rgba(var(--vendor-openai-RGB), 1);
-    }
-
-    /* Grok */
-    &[data-vendor="Grok"] {
-      color: rgba(var(--vendor-grok-RGB), 1);
-    }
-
-    /* Gemini */
-    &[data-vendor="Gemini"] {
-      color: rgba(var(--vendor-gemini-RGB), 1);
-    }
-
-    /* DeepSeek */
-    &[data-vendor="DeepSeek"] {
-      color: rgba(var(--vendor-deepseek-RGB), 1);
-    }
-  }
-}
-
 .scatterplot-axis-label-x {
   position: absolute;
-  bottom: -25px;
+  bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
@@ -241,7 +218,7 @@ body {
 
 .scatterplot-axis-label-y {
   position: absolute;
-  left: -40px;
+  left: -100px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center;

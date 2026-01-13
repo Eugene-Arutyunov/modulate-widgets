@@ -199,48 +199,39 @@ function parseCost(costString) {
   return parseFloat(costString.replace("$", ""));
 }
 
-// Функция для заполнения сайдбара данными модели
-function updateSidebar(model) {
-  const sidebar = document.querySelector(".scatterplot-sidebar");
-  if (!sidebar) return;
+// Функция для заполнения индикатора данными модели
+function updateIndicator(model) {
+  const indicator = document.querySelector(".indicator");
+  if (!indicator) return;
 
-  const labels = sidebar.querySelectorAll(".scatterplot-sidebar-label");
-  const values = sidebar.querySelectorAll(".scatterplot-sidebar-value");
+  const values = indicator.querySelectorAll(".indicator-value");
+  if (!values || values.length < 3) return;
 
-  // Заполняем значения
-  if (labels[0] && values[0]) {
+  // Vendor (первый элемент)
+  if (values[0]) {
     values[0].textContent = model.vendor;
-    values[0].dataset.vendor = model.vendor;
   }
-  if (labels[1] && values[1]) {
-    values[1].textContent = model.model;
+
+  // Model Type (второй элемент)
+  if (values[1]) {
+    values[1].textContent = model.modelType || "-";
   }
-  if (labels[2] && values[2]) {
-    values[2].textContent = model.modelType || "-";
+
+  // Speed (третий элемент)
+  if (values[2]) {
+    values[2].textContent = model.speed.toFixed(1) + "s";
   }
-  if (labels[3] && values[3]) {
-    values[3].textContent = model.score.toFixed(1);
-  }
-  if (labels[4] && values[4]) {
-    // Парсим стоимость, округляем до 2 знаков (для Modulate до 4 знаков) и форматируем обратно
-    const costValue = parseCost(model.cost);
-    const decimals = model.vendor === "Modulate" ? 4 : 2;
-    values[4].textContent = "$" + costValue.toFixed(decimals);
-  }
-  if (labels[5] && values[5]) {
-    values[5].textContent = model.speed.toFixed(1) + "s";
-  }
+
+  // Показываем индикатор
+  indicator.style.visibility = "visible";
 }
 
-// Функция для получения модели по умолчанию
-function getDefaultModel() {
-  return modelsData.find((model) => model.default === true) || modelsData[0];
-}
-
-// Функция для показа модели по умолчанию в сайдбаре
-function showDefaultModel() {
-  const defaultModel = getDefaultModel();
-  updateSidebar(defaultModel);
+// Функция для скрытия индикатора
+function hideIndicator() {
+  const indicator = document.querySelector(".indicator");
+  if (indicator) {
+    indicator.style.visibility = "hidden";
+  }
 }
 
 // Глобальные переменные для хранения точек и их данных
@@ -491,18 +482,15 @@ function createScatterPlot() {
     const nearestPointData = findNearestPoint(e.clientX, e.clientY, freshContainer);
     if (nearestPointData) {
       highlightPoint(nearestPointData.element, nearestPointData.model);
-      updateSidebar(nearestPointData.model);
+      updateIndicator(nearestPointData.model);
     }
   });
 
   // Обработчик выхода курсора из контейнера
   freshContainer.addEventListener("mouseleave", () => {
     highlightPoint(null, null);
-    showDefaultModel();
+    hideIndicator();
   });
-
-  // Показываем модель по умолчанию при инициализации (без лейблов)
-  showDefaultModel();
 }
 
 // Инициализация при загрузке страницы
