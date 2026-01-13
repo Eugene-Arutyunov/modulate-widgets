@@ -176,22 +176,22 @@ const modelsData = [
     cost: "$0.631840",
     speed: 8.641
   },
-  // {
-  //   vendor: "OpenAI",
-  //   model: "gpt-5.2-pro",
-  //   modelType: "",
-  //   score: 3.73,
-  //   cost: "$1.483230",
-  //   speed: 62.011
-  // },
-  // {
-  //   vendor: "OpenAI",
-  //   model: "gpt-5.2",
-  //   modelType: "",
-  //   score: 3.93,
-  //   cost: "$1.502840",
-  //   speed: 10.964
-  // }
+  {
+    vendor: "OpenAI",
+    model: "gpt-5.2-pro",
+    modelType: "",
+    score: 3.73,
+    cost: "$1.483230",
+    speed: 62.011
+  },
+  {
+    vendor: "OpenAI",
+    model: "gpt-5.2",
+    modelType: "",
+    score: 3.93,
+    cost: "$1.502840",
+    speed: 10.964
+  }
 ];
 
 // Функция для парсинга стоимости из строки "$0.000930" -> 0.000930
