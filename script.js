@@ -330,30 +330,30 @@ function highlightPoint(pointElement, modelData) {
     const costs = modelsData.map((d) => parseCost(d.cost));
     const scores = modelsData.map((d) => d.score);
     const minCost = Math.min(...costs);
-    // Фиксированные максимальные значения для осей (те же, что в createScatterPlot)
-    const maxCost = 2.0;
+    // Используем значения из конфига (те же, что в createScatterPlot)
+    const maxCost = axisConfig.rightZone.max;
     const minScore = Math.min(...scores);
-    const maxScore = 5.5;
+    const maxScore = axisConfig.yAxis.max;
 
-    // Константы для broken axis (те же, что в createScatterPlot)
-    const BREAK_POINT = 0.1;
-    const LEFT_SECTION_END = 80;
-    const RIGHT_SECTION_START = 85;
+    // Константы для broken axis из конфига
+    const BREAK_POINT = axisConfig.leftZone.max;
+    const LEFT_SECTION_END = axisConfig.break.leftSectionEnd;
+    const RIGHT_SECTION_START = axisConfig.break.rightSectionStart;
 
     function costToX(cost) {
       if (cost <= BREAK_POINT) {
-        // Левая часть: масштабируем $0-$0.1 на 0-80%
-        const normalized = cost / BREAK_POINT;
+        // Левая часть: масштабируем leftZone.min-leftZone.max на 0-LEFT_SECTION_END%
+        const normalized = (cost - axisConfig.leftZone.min) / (axisConfig.leftZone.max - axisConfig.leftZone.min);
         return normalized * LEFT_SECTION_END;
       } else {
-        // Правая часть: масштабируем $0.1-$maxCost на 85-100%
-        const normalized = (cost - BREAK_POINT) / (maxCost - BREAK_POINT);
+        // Правая часть: масштабируем rightZone.min-rightZone.max на RIGHT_SECTION_START-100%
+        const normalized = (cost - axisConfig.rightZone.min) / (axisConfig.rightZone.max - axisConfig.rightZone.min);
         return RIGHT_SECTION_START + normalized * (100 - RIGHT_SECTION_START);
       }
     }
 
     function scoreToY(score) {
-      const normalized = score / maxScore;
+      const normalized = (score - axisConfig.yAxis.min) / (axisConfig.yAxis.max - axisConfig.yAxis.min);
       return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
     }
 
@@ -364,7 +364,7 @@ function highlightPoint(pointElement, modelData) {
     // Обновляем лейбл цены и его засечку
     if (costLabel) {
       costLabel.style.left = `${x}%`;
-      const decimals = modelData.vendor === "Modulate" ? 4 : 2;
+      const decimals = modelData.vendor === "Modulate" ? 4 : 3;
       costLabel.textContent = "$" + cost.toFixed(decimals);
       costLabel.style.display = "block";
     }

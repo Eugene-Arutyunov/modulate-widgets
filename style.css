@@ -198,7 +198,18 @@ body {
   /* Default color fallback */
   background-color: rgba(var(--ids__text-RGB), 1);
 
-  /* Modulate - 4 разных градиента */
+  /* Modulate - 4 разных градиента (увеличены на 2px) */
+  &[data-vendor="Modulate"][data-model="velma-2-fast"],
+  &[data-vendor="Modulate"][data-model="velma-2"],
+  &[data-vendor="Modulate"][data-model="velma-1"],
+  &[data-vendor="Modulate"][data-model="velma-2-heavy"],
+  &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
+      [data-model="velma-2"]
+    ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
+    width: 16px;
+    height: 16px;
+  }
+
   &[data-vendor="Modulate"][data-model="velma-2-fast"] {
     background: linear-gradient(
       to bottom,
@@ -244,8 +255,10 @@ body {
     border: 2px solid rgba(var(--vendor-openai-RGB), 1);
   }
 
-  /* Grok */
+  /* Grok (увеличен на 2px) */
   &[data-vendor="Grok"] {
+    width: 16px;
+    height: 16px;
     background-color: rgba(var(--vendor-grok-RGB), 1);
   }
 
@@ -255,8 +268,10 @@ body {
     border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
   }
 
-  /* DeepSeek */
+  /* DeepSeek (увеличен на 2px) */
   &[data-vendor="DeepSeek"] {
+    width: 16px;
+    height: 16px;
     background-color: rgba(var(--vendor-deepseek-RGB), 1);
   }
 
