@@ -15,6 +15,7 @@
   /* BACKGROUND */
   --ids__background-RGB: 255, 255, 255;
   --ids__bg-surface-RGB: 242, 242, 246;
+  --ids__bg-surface-light-RGB: 249, 249, 251; /* В два раза светлее surface для использования без прозрачности */
   --ids__bg-accent-RGB: 20, 20, 50;
   --ids__bg-hover-RGB: var(--ids__text-hover-RGB);
   --ids__bg-mark-RGB: 255, 200, 29;
@@ -27,6 +28,10 @@
 
   /* Vendor colors */
   --vendor-modulate-RGB: 99, 102, 241; /* Indigo/Violet */
+  --vendor-modulate-gradient-1-RGB: 255, 152, 0; /* Orange (для градиента сверху вниз) */
+  --vendor-modulate-gradient-2-RGB: 255, 53, 84; /* Red/Error (для градиента слева вправо) */
+  --vendor-modulate-gradient-3-RGB: 0, 130, 244; /* Blue (для градиента к синему) */
+  --vendor-modulate-gradient-4-RGB: 255, 0, 255; /* Magenta (для более яркого) */
   --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
@@ -66,17 +71,19 @@ body {
 
 .scatterplot-wrapper {
   margin: 40px 0;
-  background-color: rgba(var(--ids__bg-surface-RGB), 0.5);
+  background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 8px;
   padding: 30px 70px 30px 70px;
 
   & .scatterplot-title {
-    font-size: 1.3em;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     margin: 0 0 40px 0;
-    font-weight: 300;
+    opacity: 0.8;
+
     text-align: center;
-    opacity: 0.5;
   }
 
   & .indicator {
@@ -111,8 +118,28 @@ body {
     width: 100%;
     aspect-ratio: 16/7;
     position: relative;
-    border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.5);
     border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
+
+    /* Граница оси X создается через псевдоэлементы для поддержки разрыва */
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: var(--left-section-end, 80%);
+      height: 1px;
+      background-color: rgba(var(--ids__text-RGB), 0.5);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: var(--right-section-width, 15%);
+      height: 1px;
+      background-color: rgba(var(--ids__text-RGB), 0.5);
+    }
   }
 
   & .scatterplot-cost-label,
@@ -134,6 +161,29 @@ body {
   }
 }
 
+.scatterplot-point-label {
+  position: absolute;
+  font-size: 0.8em;
+  color: rgba(var(--ids__text-RGB), 0.8);
+  pointer-events: none;
+  transform: translate(6px, calc(-50% - 1px));
+  white-space: nowrap;
+  z-index: 1;
+  padding: 2px 4px;
+  background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
+  border-radius: 2px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.scatterplot-point-label[data-vendor="Modulate"] {
+  color: rgba(var(--vendor-modulate-RGB), 1);
+}
+
+.scatterplot-point-label-active {
+  opacity: 1;
+}
+
 .scatterplot-point {
   position: absolute;
   width: 14px;
@@ -141,14 +191,50 @@ body {
   border-radius: 50%;
   border: 1px solid rgba(var(--ids__bg-surface-RGB), 1);
   transform: translate(-50%, -50%) scale(1);
+  z-index: 2;
 
   transition: transform 0.2s ease;
 
   /* Default color fallback */
   background-color: rgba(var(--ids__text-RGB), 1);
 
-  /* Modulate */
-  &[data-vendor="Modulate"] {
+  /* Modulate - 4 разных градиента */
+  &[data-vendor="Modulate"][data-model="velma-2-fast"] {
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--vendor-modulate-RGB), 1),
+      rgba(var(--vendor-modulate-gradient-1-RGB), 1)
+    );
+  }
+
+  &[data-vendor="Modulate"][data-model="velma-2"] {
+    background: linear-gradient(
+      to right,
+      rgba(var(--vendor-modulate-RGB), 1),
+      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
+    );
+  }
+
+  &[data-vendor="Modulate"][data-model="velma-1"] {
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--vendor-modulate-RGB), 1),
+      rgba(var(--vendor-modulate-gradient-3-RGB), 1)
+    );
+  }
+
+  &[data-vendor="Modulate"][data-model="velma-2-heavy"] {
+    background: linear-gradient(
+      to right,
+      rgba(var(--vendor-modulate-RGB), 1),
+      rgba(var(--vendor-modulate-gradient-4-RGB), 1)
+    );
+  }
+
+  /* Fallback для других моделей Modulate */
+  &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
+      [data-model="velma-2"]
+    ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
     background-color: rgba(var(--vendor-modulate-RGB), 1);
   }
 
@@ -180,7 +266,41 @@ body {
     transition: transform 0s ease;
     z-index: 10;
 
-    &[data-vendor="Modulate"] {
+    &[data-vendor="Modulate"][data-model="velma-2-fast"] {
+      background: linear-gradient(
+        to bottom,
+        rgba(var(--vendor-modulate-RGB), 1),
+        rgba(var(--vendor-modulate-gradient-1-RGB), 1)
+      );
+    }
+
+    &[data-vendor="Modulate"][data-model="velma-2"] {
+      background: linear-gradient(
+        to right,
+        rgba(var(--vendor-modulate-RGB), 1),
+        rgba(var(--vendor-modulate-gradient-2-RGB), 1)
+      );
+    }
+
+    &[data-vendor="Modulate"][data-model="velma-1"] {
+      background: linear-gradient(
+        to bottom,
+        rgba(var(--vendor-modulate-RGB), 1),
+        rgba(var(--vendor-modulate-gradient-3-RGB), 1)
+      );
+    }
+
+    &[data-vendor="Modulate"][data-model="velma-2-heavy"] {
+      background: linear-gradient(
+        to right,
+        rgba(var(--vendor-modulate-RGB), 1),
+        rgba(var(--vendor-modulate-gradient-4-RGB), 1)
+      );
+    }
+
+    &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
+        [data-model="velma-2"]
+      ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
       background-color: rgba(var(--vendor-modulate-RGB), 1);
     }
 
@@ -207,13 +327,21 @@ body {
 .scatterplot-axis-label-x {
   position: absolute;
   bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
   margin: 0;
   font-size: 0.8em;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: rgba(var(--ids__text-caption-RGB), 1);
+}
+
+.scatterplot-axis-label-x-left {
+  left: 40%;
+  transform: translateX(-50%);
+}
+
+.scatterplot-axis-label-x-right {
+  right: 7.5%;
+  transform: translateX(50%);
 }
 
 .scatterplot-axis-label-y {
@@ -251,6 +379,52 @@ body {
   transform: translateY(-50%);
 }
 
+.scatterplot-grid-line-x,
+.scatterplot-grid-line-y {
+  position: absolute;
+  background-color: rgba(var(--ids__text-RGB), 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scatterplot-grid-line-x {
+  width: 1px;
+  height: 100%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.scatterplot-grid-line-x-left {
+  width: 1px;
+  height: 100%;
+  top: 0;
+  transform: translateX(-50%);
+  clip-path: inset(0 calc(20% + 5%) 0 0);
+}
+
+.scatterplot-grid-line-x-right {
+  width: 1px;
+  height: 100%;
+  top: 0;
+  transform: translateX(-50%);
+  clip-path: inset(0 0 0 calc(20% + 5%));
+}
+
+.scatterplot-grid-line-y {
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.scatterplot-grid-line-y-left {
+  width: var(--left-section-end, 80%);
+  left: 0;
+}
+
+.scatterplot-grid-line-y-right {
+  width: var(--right-section-width, 15%);
+  right: 0;
+}
+
 .scatterplot-cost-label-tick,
 .scatterplot-score-label-tick {
   position: absolute;
@@ -270,4 +444,64 @@ body {
   height: 2px;
   left: -12px;
   transform: translateY(-50%);
+}
+
+.scatterplot-static-label {
+  position: absolute;
+  font-size: 0.8em;
+  color: rgba(var(--ids__text-RGB), 0.8);
+  pointer-events: none;
+}
+
+.scatterplot-static-label-zero {
+  left: -30px;
+  bottom: -30px;
+}
+
+.scatterplot-static-label-cost {
+  bottom: -30px;
+  transform: translateX(-50%);
+}
+
+.scatterplot-static-label-score {
+  left: -30px;
+  transform: translateY(-50%);
+}
+
+.scatterplot-axis-break {
+  position: absolute;
+  bottom: 7px;
+  height: 10px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.scatterplot-axis-break-left {
+  justify-content: flex-start;
+}
+
+.scatterplot-axis-break-right {
+  justify-content: flex-end;
+}
+
+.scatterplot-axis-break-left::after,
+.scatterplot-axis-break-right::after {
+  content: "";
+  position: absolute;
+  width: 27px;
+  height: 1px;
+  bottom: -8px;
+  background-color: rgba(var(--ids__text-RGB), 0.5);
+  transform: rotate(-65deg);
+}
+
+.scatterplot-axis-break-left::after {
+  left: -14px;
+  transform-origin: center;
+}
+
+.scatterplot-axis-break-right::after {
+  left: -14px;
+  transform-origin: center;
 }

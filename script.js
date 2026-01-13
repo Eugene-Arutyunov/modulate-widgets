@@ -1,3 +1,28 @@
+// Конфигурация диапазонов осей
+const axisConfig = {
+  // Левая зона оси X
+  leftZone: {
+    min: 0,
+    max: 0.103, // Конец первой зоны
+    labelValue: 0.1, // Значение для подписи "$0.1" (остается на 80%)
+  },
+  // Правая зона оси X
+  rightZone: {
+    min: 0.14, // Начало второй зоны (после разрыва)
+    max: 2.01, // Конец второй зоны
+  },
+  // Ось Y
+  yAxis: {
+    min: 0,
+    max: 5.7, // Максимальное значение оси Y
+  },
+  // Визуальные параметры разрыва
+  break: {
+    leftSectionEnd: 70, // Конец левой части в процентах
+    rightSectionStart: 75, // Начало правой части в процентах
+  },
+};
+
 const modelsData = [
   {
     vendor: "Modulate",
@@ -286,24 +311,45 @@ function highlightPoint(pointElement, modelData) {
   // Убираем подсветку с предыдущей точки
   if (activePoint && activePoint.element) {
     activePoint.element.classList.remove("scatterplot-point-active");
+    if (activePoint.label) {
+      activePoint.label.classList.remove("scatterplot-point-label-active");
+    }
   }
 
   // Подсвечиваем новую точку и обновляем лейблы
   if (pointElement && modelData) {
     pointElement.classList.add("scatterplot-point-active");
-    activePoint = { element: pointElement, model: modelData };
+    // Находим соответствующий лейбл для этой точки
+    const pointData = pointsData.find(p => p.element === pointElement);
+    if (pointData && pointData.label) {
+      pointData.label.classList.add("scatterplot-point-label-active");
+    }
+    activePoint = { element: pointElement, label: pointData?.label, model: modelData };
 
     // Вычисляем позиции для лейблов
     const costs = modelsData.map((d) => parseCost(d.cost));
     const scores = modelsData.map((d) => d.score);
     const minCost = Math.min(...costs);
-    const maxCost = Math.max(...costs);
+    // Фиксированные максимальные значения для осей (те же, что в createScatterPlot)
+    const maxCost = 2.0;
     const minScore = Math.min(...scores);
-    const maxScore = Math.max(...scores);
+    const maxScore = 5.5;
+
+    // Константы для broken axis (те же, что в createScatterPlot)
+    const BREAK_POINT = 0.1;
+    const LEFT_SECTION_END = 80;
+    const RIGHT_SECTION_START = 85;
 
     function costToX(cost) {
-      const normalized = cost / maxCost;
-      return normalized * 100; // 0% до 100%
+      if (cost <= BREAK_POINT) {
+        // Левая часть: масштабируем $0-$0.1 на 0-80%
+        const normalized = cost / BREAK_POINT;
+        return normalized * LEFT_SECTION_END;
+      } else {
+        // Правая часть: масштабируем $0.1-$maxCost на 85-100%
+        const normalized = (cost - BREAK_POINT) / (maxCost - BREAK_POINT);
+        return RIGHT_SECTION_START + normalized * (100 - RIGHT_SECTION_START);
+      }
     }
 
     function scoreToY(score) {
@@ -338,6 +384,13 @@ function highlightPoint(pointElement, modelData) {
       scoreLabelTick.style.display = "block";
     }
   } else {
+    // Убираем активное состояние с точки и лейбла
+    if (activePoint && activePoint.element) {
+      activePoint.element.classList.remove("scatterplot-point-active");
+      if (activePoint.label) {
+        activePoint.label.classList.remove("scatterplot-point-label-active");
+      }
+    }
     activePoint = null;
     // Скрываем лейблы и засечки
     if (costLabel) costLabel.style.display = "none";
@@ -353,7 +406,8 @@ function createScatterPlot() {
   if (!container) return;
 
   // Сохраняем подписи осей перед очисткой
-  const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+  const axisLabelXLeft = container.querySelector(".scatterplot-axis-label-x-left");
+  const axisLabelXRight = container.querySelector(".scatterplot-axis-label-x-right");
   const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
 
   // Очищаем контейнер и данные
@@ -362,13 +416,21 @@ function createScatterPlot() {
   activePoint = null;
 
   // Восстанавливаем подписи осей
-  if (axisLabelX) {
-    container.appendChild(axisLabelX);
+  if (axisLabelXLeft) {
+    container.appendChild(axisLabelXLeft);
   } else {
-    const labelX = document.createElement("div");
-    labelX.className = "scatterplot-axis-label-x";
-    labelX.textContent = "Cost";
-    container.appendChild(labelX);
+    const labelXLeft = document.createElement("div");
+    labelXLeft.className = "scatterplot-axis-label-x scatterplot-axis-label-x-left";
+    labelXLeft.textContent = "Cost per hour, $0–0.01";
+    container.appendChild(labelXLeft);
+  }
+
+  if (axisLabelXRight) {
+    container.appendChild(axisLabelXRight);
+  } else {
+    const labelXRight = document.createElement("div");
+    labelXRight.className = "scatterplot-axis-label-x scatterplot-axis-label-x-right";
+    container.appendChild(labelXRight);
   }
 
   if (axisLabelY) {
@@ -376,7 +438,7 @@ function createScatterPlot() {
   } else {
     const labelY = document.createElement("div");
     labelY.className = "scatterplot-axis-label-y";
-    labelY.textContent = "Score";
+    labelY.textContent = "Accuracy score";
     container.appendChild(labelY);
   }
 
@@ -387,21 +449,38 @@ function createScatterPlot() {
   const scores = modelsData.map((d) => d.score);
 
   const minCost = Math.min(...costs);
-  const maxCost = Math.max(...costs);
+  
+  // Используем значения из конфига
+  const BREAK_POINT = axisConfig.leftZone.max; // Точка разрыва
+  const LEFT_SECTION_END = axisConfig.break.leftSectionEnd;
+  const RIGHT_SECTION_START = axisConfig.break.rightSectionStart;
+  const GAP_SIZE = RIGHT_SECTION_START - LEFT_SECTION_END;
+  const maxCost = axisConfig.rightZone.max; // Максимальное значение оси X
+  const maxScore = axisConfig.yAxis.max; // Максимальное значение оси Y
   const minScore = Math.min(...scores);
-  const maxScore = Math.max(...scores);
+
+  // Устанавливаем CSS переменные для горизонтальных линий сетки
+  freshContainer.style.setProperty('--left-section-end', `${LEFT_SECTION_END}%`);
+  freshContainer.style.setProperty('--right-section-start', `${RIGHT_SECTION_START}%`);
+  freshContainer.style.setProperty('--right-section-width', `${100 - RIGHT_SECTION_START}%`);
 
   // Функция для преобразования стоимости в X координату (в процентах)
-  // Ось всегда начинается с 0
+  // С учетом broken axis
   function costToX(cost) {
-    const normalized = cost / maxCost;
-    return normalized * 100; // 0% до 100%
+    if (cost <= BREAK_POINT) {
+      // Левая часть: масштабируем leftZone.min-leftZone.max на 0-LEFT_SECTION_END%
+      const normalized = (cost - axisConfig.leftZone.min) / (axisConfig.leftZone.max - axisConfig.leftZone.min);
+      return normalized * LEFT_SECTION_END;
+    } else {
+      // Правая часть: масштабируем rightZone.min-rightZone.max на RIGHT_SECTION_START-100%
+      const normalized = (cost - axisConfig.rightZone.min) / (axisConfig.rightZone.max - axisConfig.rightZone.min);
+      return RIGHT_SECTION_START + normalized * (100 - RIGHT_SECTION_START);
+    }
   }
 
   // Функция для преобразования score в Y координату (в процентах, инвертированная)
-  // Ось всегда начинается с 0
   function scoreToY(score) {
-    const normalized = score / maxScore;
+    const normalized = (score - axisConfig.yAxis.min) / (axisConfig.yAxis.max - axisConfig.yAxis.min);
     return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
   }
 
@@ -422,9 +501,19 @@ function createScatterPlot() {
     point.dataset.cost = model.cost;
     point.dataset.speed = model.speed;
 
-    // Сохраняем данные точки
+    // Создаем подпись названия модели справа от точки
+    const modelLabel = document.createElement("div");
+    modelLabel.className = "scatterplot-point-label";
+    modelLabel.textContent = model.model;
+    modelLabel.dataset.vendor = model.vendor;
+    modelLabel.style.left = `${x}%`;
+    modelLabel.style.top = `${y}%`;
+    freshContainer.appendChild(modelLabel);
+
+    // Сохраняем данные точки (включая лейбл)
     pointsData.push({
       element: point,
+      label: modelLabel,
       model: model,
       xPercent: x,
       yPercent: y,
@@ -434,25 +523,71 @@ function createScatterPlot() {
   });
 
   // Создаем засечки на оси Y (для каждого целого балла) - снаружи слева
-  // Пропускаем 0, ограничиваем максимальным значением данных
-  const maxScoreInt = Math.floor(maxScore);
+  // Пропускаем 0, до максимального значения 5.5
+  const maxScoreInt = Math.floor(axisConfig.yAxis.max);
   for (let score = 1; score <= maxScoreInt; score++) {
     const y = scoreToY(score);
+    // Засечка снаружи
     const tick = document.createElement("div");
     tick.className = "scatterplot-tick-y";
     tick.style.top = `${y}%`;
     freshContainer.appendChild(tick);
+    
+    // Горизонтальная линия сетки с разрывом в зоне разрыва оси X
+    // Левая часть линии
+    const gridLineLeft = document.createElement("div");
+    gridLineLeft.className = "scatterplot-grid-line-y scatterplot-grid-line-y-left";
+    gridLineLeft.style.top = `${y}%`;
+    freshContainer.appendChild(gridLineLeft);
+    
+    // Правая часть линии
+    const gridLineRight = document.createElement("div");
+    gridLineRight.className = "scatterplot-grid-line-y scatterplot-grid-line-y-right";
+    gridLineRight.style.top = `${y}%`;
+    freshContainer.appendChild(gridLineRight);
   }
 
-  // Создаем засечки на оси X (каждые 10 центов) - снаружи снизу
-  // Пропускаем 0
-  const maxCostRounded = Math.ceil(maxCost * 10) / 10;
-  for (let cost = 0.1; cost <= maxCostRounded; cost += 0.1) {
+  // Создаем засечки на оси X - с учетом broken axis
+  // Для левой части: каждые 0.01 (цент) до точки разрыва
+  // Для правой части: каждые 0.1 (10 центов) после точки разрыва до конца правой зоны
+  const maxCostForTicks = axisConfig.rightZone.max;
+  
+  // Засечки для левой части (каждые 0.01 до точки разрыва)
+  for (let cost = 0.01; cost <= BREAK_POINT; cost += 0.01) {
     const x = costToX(cost);
-    const tick = document.createElement("div");
-    tick.className = "scatterplot-tick-x";
-    tick.style.left = `${x}%`;
-    freshContainer.appendChild(tick);
+    // Проверяем, что засечка не попадает в зону разрыва
+    if (x < LEFT_SECTION_END) {
+      // Засечка снаружи
+      const tick = document.createElement("div");
+      tick.className = "scatterplot-tick-x";
+      tick.style.left = `${x}%`;
+      freshContainer.appendChild(tick);
+      
+      // Вертикальная линия сетки для левой части (до зоны разрыва)
+      const gridLineLeft = document.createElement("div");
+      gridLineLeft.className = "scatterplot-grid-line-x scatterplot-grid-line-x-left";
+      gridLineLeft.style.left = `${x}%`;
+      freshContainer.appendChild(gridLineLeft);
+    }
+  }
+  
+  // Засечки для правой части (каждые 0.1 после точки разрыва до $2.0)
+  for (let cost = BREAK_POINT + 0.1; cost <= maxCostForTicks; cost += 0.1) {
+    const x = costToX(cost);
+    // Проверяем, что засечка не попадает в зону разрыва
+    if (x >= RIGHT_SECTION_START) {
+      // Засечка снаружи
+      const tick = document.createElement("div");
+      tick.className = "scatterplot-tick-x";
+      tick.style.left = `${x}%`;
+      freshContainer.appendChild(tick);
+      
+      // Вертикальная линия сетки для правой части (после зоны разрыва)
+      const gridLineRight = document.createElement("div");
+      gridLineRight.className = "scatterplot-grid-line-x scatterplot-grid-line-x-right";
+      gridLineRight.style.left = `${x}%`;
+      freshContainer.appendChild(gridLineRight);
+    }
   }
 
   // Создаем динамические лейблы для активной точки
@@ -476,6 +611,50 @@ function createScatterPlot() {
   scoreLabelTick.className = "scatterplot-score-label-tick";
   scoreLabelTick.style.display = "none";
   freshContainer.appendChild(scoreLabelTick);
+
+  // Создаем визуальный элемент разрыва оси в конце первой зоны (слева)
+  const axisBreakLeft = document.createElement("div");
+  axisBreakLeft.className = "scatterplot-axis-break scatterplot-axis-break-left";
+  axisBreakLeft.style.left = `${LEFT_SECTION_END}%`;
+  axisBreakLeft.style.width = `${GAP_SIZE}%`;
+  freshContainer.appendChild(axisBreakLeft);
+
+  // Создаем визуальный элемент разрыва оси в начале второй зоны (справа)
+  const axisBreakRight = document.createElement("div");
+  axisBreakRight.className = "scatterplot-axis-break scatterplot-axis-break-right";
+  axisBreakRight.style.left = `${RIGHT_SECTION_START}%`;
+  axisBreakRight.style.width = `${GAP_SIZE}%`;
+  freshContainer.appendChild(axisBreakRight);
+
+  // Создаем статичные подписи возле штрихов
+  // Ноль (0) - левее и ниже начала координат
+  const zeroLabel = document.createElement("div");
+  zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
+  zeroLabel.textContent = "0";
+  freshContainer.appendChild(zeroLabel);
+
+  // Подпись в конце первой зоны (используем labelValue из конфига)
+  const breakPointLabel = document.createElement("div");
+  breakPointLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+  breakPointLabel.textContent = "$" + axisConfig.leftZone.labelValue;
+  breakPointLabel.style.left = `${LEFT_SECTION_END}%`;
+  freshContainer.appendChild(breakPointLabel);
+
+  // Подпись в конце второй зоны
+  const maxCostLabel = document.createElement("div");
+  maxCostLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+  maxCostLabel.textContent = "$" + axisConfig.rightZone.max;
+  maxCostLabel.style.left = "100%";
+  freshContainer.appendChild(maxCostLabel);
+
+  // Подпись напротив верхней засечки оси Y (используем максимальное значение из конфига, округленное до целого)
+  const topScoreValue = Math.floor(axisConfig.yAxis.max);
+  const topScoreLabel = document.createElement("div");
+  topScoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
+  topScoreLabel.textContent = topScoreValue.toString();
+  const topScoreY = scoreToY(topScoreValue);
+  topScoreLabel.style.top = `${topScoreY}%`;
+  freshContainer.appendChild(topScoreLabel);
 
   // Обработчик движения мыши внутри контейнера
   freshContainer.addEventListener("mousemove", (e) => {
