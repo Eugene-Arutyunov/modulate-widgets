@@ -74,20 +74,19 @@ body {
   background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 8px;
-  padding: 30px 70px 30px 70px;
+  padding: 30px 90px 30px 90px;
 
   & .scatterplot-title {
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 0 0 40px 0;
+    font-size: 1.3em;
+
+    margin: 0 0 20px 0;
     opacity: 0.8;
 
     text-align: center;
   }
 
   & .indicator {
-    margin-top: 60px;
+    margin-top: 90px;
     text-align: center;
     visibility: hidden;
 
@@ -96,7 +95,7 @@ body {
       font-size: 0.8em;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: rgba(var(--ids__text-caption-RGB), 1);
+      color: rgba(var(--ids__text-caption-RGB), 0.5);
     }
 
     & .indicator-value {
@@ -145,18 +144,23 @@ body {
   & .scatterplot-cost-label,
   & .scatterplot-score-label {
     position: absolute;
-    font-size: 0.85em;
+    font-size: 0.9em;
+    font-weight: 600;
     color: rgba(var(--ids__text-RGB), 0.8);
     pointer-events: none;
+    /* border: 1px solid rgba(var(--ids__text-RGB), 1); */
+    background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
+    z-index: 10;
+    padding: 0px 2px;
   }
 
   & .scatterplot-cost-label {
-    bottom: -26px;
+    bottom: -30px;
     transform: translateX(-50%);
   }
 
   & .scatterplot-score-label {
-    left: -35px;
+    left: -40px;
     transform: translateY(-50%);
   }
 }
@@ -341,7 +345,9 @@ body {
 
 .scatterplot-axis-label-x {
   position: absolute;
-  bottom: -40px;
+  bottom: -65px;
+  left: 50%;
+  transform: translateX(-50%);
   margin: 0;
   font-size: 0.8em;
   text-transform: uppercase;
@@ -349,19 +355,9 @@ body {
   color: rgba(var(--ids__text-caption-RGB), 1);
 }
 
-.scatterplot-axis-label-x-left {
-  left: 40%;
-  transform: translateX(-50%);
-}
-
-.scatterplot-axis-label-x-right {
-  right: 7.5%;
-  transform: translateX(50%);
-}
-
 .scatterplot-axis-label-y {
   position: absolute;
-  left: -100px;
+  left: -125px;
   top: 50%;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: center;
@@ -463,13 +459,13 @@ body {
 
 .scatterplot-static-label {
   position: absolute;
-  font-size: 0.8em;
+  font-size: 0.9em;
   color: rgba(var(--ids__text-RGB), 0.8);
   pointer-events: none;
 }
 
 .scatterplot-static-label-zero {
-  left: -30px;
+  left: -25px;
   bottom: -30px;
 }
 
@@ -479,7 +475,7 @@ body {
 }
 
 .scatterplot-static-label-score {
-  left: -30px;
+  left: -25px;
   transform: translateY(-50%);
 }
 

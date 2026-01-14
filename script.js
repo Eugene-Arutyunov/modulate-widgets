@@ -3,13 +3,13 @@ const axisConfig = {
   // Левая зона оси X
   leftZone: {
     min: 0,
-    max: 0.103, // Конец первой зоны
+    max: 0.07, // Конец первой зоны
     labelValue: 0.1, // Значение для подписи "$0.1" (остается на 80%)
   },
   // Правая зона оси X
   rightZone: {
-    min: 0.14, // Начало второй зоны (после разрыва)
-    max: 2.01, // Конец второй зоны
+    min: 0.08, // Начало второй зоны (после разрыва)
+    max: 1.7, // Конец второй зоны
   },
   // Ось Y
   yAxis: {
@@ -18,8 +18,8 @@ const axisConfig = {
   },
   // Визуальные параметры разрыва
   break: {
-    leftSectionEnd: 70, // Конец левой части в процентах
-    rightSectionStart: 75, // Начало правой части в процентах
+    leftSectionEnd: 63, // Конец левой части в процентах
+    rightSectionStart: 70, // Начало правой части в процентах
   },
 };
 
@@ -49,14 +49,14 @@ const modelsData = [
     cost: "$0.024440",
     speed: 2.176
   },
-  {
-    vendor: "Modulate",
-    model: "velma-2-heavy",
-    modelType: "Heavy",
-    score: 5.14,
-    cost: "$0.025780",
-    speed: 42.048
-  },
+  // {
+  //   vendor: "Modulate",
+  //   model: "velma-2-heavy",
+  //   modelType: "Heavy",
+  //   score: 5.14,
+  //   cost: "$0.025780",
+  //   speed: 42.048
+  // },
   {
     vendor: "OpenAI",
     model: "gpt-4o-mini",
@@ -232,19 +232,19 @@ function updateIndicator(model) {
   const values = indicator.querySelectorAll(".indicator-value");
   if (!values || values.length < 3) return;
 
-  // Vendor (первый элемент)
+  // Model name (первый элемент)
   if (values[0]) {
-    values[0].textContent = model.vendor;
+    values[0].textContent = model.model;
   }
 
-  // Model Type (второй элемент)
+  // Accuracy score (второй элемент)
   if (values[1]) {
-    values[1].textContent = model.modelType || "-";
+    values[1].textContent = model.score.toFixed(1) + " accuracy";
   }
 
-  // Speed (третий элемент)
+  // Price (третий элемент)
   if (values[2]) {
-    values[2].textContent = model.speed.toFixed(1) + "s";
+    values[2].textContent = model.cost;
   }
 
   // Показываем индикатор
@@ -406,8 +406,7 @@ function createScatterPlot() {
   if (!container) return;
 
   // Сохраняем подписи осей перед очисткой
-  const axisLabelXLeft = container.querySelector(".scatterplot-axis-label-x-left");
-  const axisLabelXRight = container.querySelector(".scatterplot-axis-label-x-right");
+  const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
   const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
 
   // Очищаем контейнер и данные
@@ -416,21 +415,13 @@ function createScatterPlot() {
   activePoint = null;
 
   // Восстанавливаем подписи осей
-  if (axisLabelXLeft) {
-    container.appendChild(axisLabelXLeft);
+  if (axisLabelX) {
+    container.appendChild(axisLabelX);
   } else {
-    const labelXLeft = document.createElement("div");
-    labelXLeft.className = "scatterplot-axis-label-x scatterplot-axis-label-x-left";
-    labelXLeft.textContent = "Cost per hour, $0–0.01";
-    container.appendChild(labelXLeft);
-  }
-
-  if (axisLabelXRight) {
-    container.appendChild(axisLabelXRight);
-  } else {
-    const labelXRight = document.createElement("div");
-    labelXRight.className = "scatterplot-axis-label-x scatterplot-axis-label-x-right";
-    container.appendChild(labelXRight);
+    const labelX = document.createElement("div");
+    labelX.className = "scatterplot-axis-label-x";
+    labelX.textContent = "Cost per hour, $0–0.01";
+    container.appendChild(labelX);
   }
 
   if (axisLabelY) {
@@ -523,7 +514,7 @@ function createScatterPlot() {
   });
 
   // Создаем засечки на оси Y (для каждого целого балла) - снаружи слева
-  // Пропускаем 0, до максимального значения 5.5
+  // Пропускаем 0, до максимального значения
   const maxScoreInt = Math.floor(axisConfig.yAxis.max);
   for (let score = 1; score <= maxScoreInt; score++) {
     const y = scoreToY(score);
@@ -545,6 +536,13 @@ function createScatterPlot() {
     gridLineRight.className = "scatterplot-grid-line-y scatterplot-grid-line-y-right";
     gridLineRight.style.top = `${y}%`;
     freshContainer.appendChild(gridLineRight);
+    
+    // Подпись для каждого значения на оси Y
+    const scoreLabel = document.createElement("div");
+    scoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
+    scoreLabel.style.top = `${y}%`;
+    scoreLabel.textContent = score.toString();
+    freshContainer.appendChild(scoreLabel);
   }
 
   // Создаем засечки на оси X - с учетом broken axis
@@ -568,8 +566,31 @@ function createScatterPlot() {
       gridLineLeft.className = "scatterplot-grid-line-x scatterplot-grid-line-x-left";
       gridLineLeft.style.left = `${x}%`;
       freshContainer.appendChild(gridLineLeft);
+      
+      // Подпись для каждой засечки (без $, крайнее правое значение будет добавлено отдельно)
+      const costLabel = document.createElement("div");
+      costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+      costLabel.style.left = `${x}%`;
+      costLabel.textContent = cost.toFixed(2);
+      freshContainer.appendChild(costLabel);
     }
   }
+  
+  // Подпись для крайнего правого значения первой зоны (максимальное значение из конфига)
+  const leftZoneMaxX = costToX(axisConfig.leftZone.max);
+  const leftZoneMaxLabel = document.createElement("div");
+  leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+  leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
+  leftZoneMaxLabel.textContent = "$" + axisConfig.leftZone.max.toFixed(2);
+  freshContainer.appendChild(leftZoneMaxLabel);
+  
+  // Подпись для нижней границы правой части
+  const rightZoneStartX = costToX(axisConfig.rightZone.min);
+  const rightZoneStartLabel = document.createElement("div");
+  rightZoneStartLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+  rightZoneStartLabel.style.left = `${rightZoneStartX}%`;
+  rightZoneStartLabel.textContent = "$" + axisConfig.rightZone.min.toFixed(2);
+  freshContainer.appendChild(rightZoneStartLabel);
   
   // Засечки для правой части (каждые 0.1 после точки разрыва до $2.0)
   for (let cost = BREAK_POINT + 0.1; cost <= maxCostForTicks; cost += 0.1) {
@@ -589,6 +610,26 @@ function createScatterPlot() {
       freshContainer.appendChild(gridLineRight);
     }
   }
+  
+  // Подписи для каждого целого доллара в правой части (1 и 2)
+  for (let dollar = 1; dollar <= Math.floor(maxCostForTicks); dollar++) {
+    const x = costToX(dollar);
+    if (x >= RIGHT_SECTION_START) {
+      const dollarLabel = document.createElement("div");
+      dollarLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+      dollarLabel.style.left = `${x}%`;
+      dollarLabel.textContent = "$" + dollar;
+      freshContainer.appendChild(dollarLabel);
+    }
+  }
+  
+  // Подпись для крайнего правого значения на оси X (максимальное значение из конфига)
+  const maxCostX = costToX(axisConfig.rightZone.max);
+  const maxCostLabel = document.createElement("div");
+  maxCostLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
+  maxCostLabel.style.left = `${maxCostX}%`;
+  maxCostLabel.textContent = "$" + axisConfig.rightZone.max.toFixed(2);
+  freshContainer.appendChild(maxCostLabel);
 
   // Создаем динамические лейблы для активной точки
   const costLabel = document.createElement("div");
@@ -627,34 +668,11 @@ function createScatterPlot() {
   freshContainer.appendChild(axisBreakRight);
 
   // Создаем статичные подписи возле штрихов
-  // Ноль (0) - левее и ниже начала координат
+  // Ноль (0) на оси X - левее и ниже начала координат
   const zeroLabel = document.createElement("div");
   zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
   zeroLabel.textContent = "0";
   freshContainer.appendChild(zeroLabel);
-
-  // Подпись в конце первой зоны (используем labelValue из конфига)
-  const breakPointLabel = document.createElement("div");
-  breakPointLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
-  breakPointLabel.textContent = "$" + axisConfig.leftZone.labelValue;
-  breakPointLabel.style.left = `${LEFT_SECTION_END}%`;
-  freshContainer.appendChild(breakPointLabel);
-
-  // Подпись в конце второй зоны
-  const maxCostLabel = document.createElement("div");
-  maxCostLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
-  maxCostLabel.textContent = "$" + axisConfig.rightZone.max;
-  maxCostLabel.style.left = "100%";
-  freshContainer.appendChild(maxCostLabel);
-
-  // Подпись напротив верхней засечки оси Y (используем максимальное значение из конфига, округленное до целого)
-  const topScoreValue = Math.floor(axisConfig.yAxis.max);
-  const topScoreLabel = document.createElement("div");
-  topScoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
-  topScoreLabel.textContent = topScoreValue.toString();
-  const topScoreY = scoreToY(topScoreValue);
-  topScoreLabel.style.top = `${topScoreY}%`;
-  freshContainer.appendChild(topScoreLabel);
 
   // Обработчик движения мыши внутри контейнера
   freshContainer.addEventListener("mousemove", (e) => {
