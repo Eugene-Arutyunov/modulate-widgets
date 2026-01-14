@@ -416,14 +416,20 @@ function createScatterPlot() {
   const container = document.querySelector(".scatterplot-aria");
   if (!container) return;
 
-  // Сохраняем подписи осей перед очисткой
+  // Сохраняем подписи осей и background highlight перед очисткой
   const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
   const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
+  const backgroundHighlight = container.querySelector(".scatterplot-background-highlight");
 
   // Очищаем контейнер и данные
   container.innerHTML = "";
   pointsData = [];
   activePoint = null;
+
+  // Восстанавливаем background highlight
+  if (backgroundHighlight) {
+    container.appendChild(backgroundHighlight);
+  }
 
   // Восстанавливаем подписи осей
   if (axisLabelX) {
