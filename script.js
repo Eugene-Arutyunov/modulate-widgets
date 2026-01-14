@@ -21,6 +21,8 @@ const axisConfig = {
     leftSectionEnd: 63, // Конец левой части в процентах
     rightSectionStart: 70, // Начало правой части в процентах
   },
+  // Флаг для переключения между режимом точности и визуальной корректировки
+  useVisualOffset: true, // Переключатель между режимом точности и визуальной корректировки
 };
 
 const modelsData = [
@@ -87,8 +89,8 @@ const modelsData = [
     modelType: "",
     score: 2.43,
     cost: "$0.050290",
-    speed: 1.455
-  },
+    speed: 1.455,
+    visualOffset: 0.1  },
   {
     vendor: "DeepSeek",
     model: "deepseek-v3.1",
@@ -119,7 +121,8 @@ const modelsData = [
     modelType: "",
     score: 3.52,
     cost: "$0.090620",
-    speed: 1.997
+    speed: 1.997,
+    visualOffset: -0.35
   },
   {
     vendor: "DeepSeek",
@@ -127,7 +130,8 @@ const modelsData = [
     modelType: "",
     score: 4.08,
     cost: "$0.091990",
-    speed: 45.543
+    speed: 45.543,
+    visualOffset: -0.2
   },
   {
     vendor: "OpenAI",
@@ -135,7 +139,8 @@ const modelsData = [
     modelType: "",
     score: 3.03,
     cost: "$0.104280",
-    speed: 17.157
+    speed: 17.157,
+    visualOffset: -0.1
   },
   {
     vendor: "Gemini",
@@ -143,7 +148,8 @@ const modelsData = [
     modelType: "",
     score: 3.89,
     cost: "$0.118550",
-    speed: 29.531
+    speed: 29.531,
+    visualOffset: -0.25
   },
   {
     vendor: "OpenAI",
@@ -159,7 +165,8 @@ const modelsData = [
     modelType: "",
     score: 4.26,
     cost: "$0.283000",
-    speed: 21.246
+    speed: 21.246,
+    visualOffset: -0.1
   },
   {
     vendor: "Gemini",
@@ -167,7 +174,8 @@ const modelsData = [
     modelType: "",
     score: 4.28,
     cost: "$0.397580",
-    speed: 39.984
+    speed: 39.984,
+    visualOffset: 0.08
   },
   {
     vendor: "Grok",
@@ -175,7 +183,8 @@ const modelsData = [
     modelType: "",
     score: 3.76,
     cost: "$0.398780",
-    speed: 6.064
+    speed: 6.064,
+    visualOffset: -0.35
   },
   {
     vendor: "Grok",
@@ -183,7 +192,8 @@ const modelsData = [
     modelType: "",
     score: 4.36,
     cost: "$0.444790",
-    speed: 37.16
+    speed: 37.16,
+    visualOffset: 0.25
   },
   {
     vendor: "OpenAI",
@@ -191,7 +201,8 @@ const modelsData = [
     modelType: "",
     score: 3,
     cost: "$0.559410",
-    speed: 4.351
+    speed: 4.351,
+    visualOffset: -0.1
   },
   {
     vendor: "OpenAI",
@@ -453,7 +464,6 @@ function createScatterPlot() {
   // Устанавливаем CSS переменные для горизонтальных линий сетки
   freshContainer.style.setProperty('--left-section-end', `${LEFT_SECTION_END}%`);
   freshContainer.style.setProperty('--right-section-start', `${RIGHT_SECTION_START}%`);
-  freshContainer.style.setProperty('--right-section-width', `${100 - RIGHT_SECTION_START}%`);
 
   // Функция для преобразования стоимости в X координату (в процентах)
   // С учетом broken axis
@@ -479,7 +489,11 @@ function createScatterPlot() {
   modelsData.forEach((model) => {
     const cost = parseCost(model.cost);
     const x = costToX(cost);
-    const y = scoreToY(model.score);
+    // Вычисляем displayScore с учетом visualOffset, если включен режим корректировки
+    const displayScore = axisConfig.useVisualOffset && model.visualOffset !== undefined 
+      ? model.score + model.visualOffset 
+      : model.score;
+    const y = scoreToY(displayScore);
 
     const point = document.createElement("div");
     point.className = "scatterplot-point";
@@ -549,6 +563,11 @@ function createScatterPlot() {
   // Для левой части: каждые 0.01 (цент) до точки разрыва
   // Для правой части: каждые 0.1 (10 центов) после точки разрыва до конца правой зоны
   const maxCostForTicks = axisConfig.rightZone.max;
+  
+  // Вычисляем фактическую ширину правой секции до максимального значения
+  const maxCostXForWidth = costToX(maxCostForTicks);
+  const rightSectionActualWidth = maxCostXForWidth - RIGHT_SECTION_START;
+  freshContainer.style.setProperty('--right-section-width', `${rightSectionActualWidth}%`);
   
   // Засечки для левой части (каждые 0.01 до точки разрыва)
   for (let cost = 0.01; cost <= BREAK_POINT; cost += 0.01) {
