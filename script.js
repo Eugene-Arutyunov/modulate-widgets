@@ -235,6 +235,36 @@ function parseCost(costString) {
   return parseFloat(costString.replace("$", ""));
 }
 
+// Построение функций шкалы и общих параметров осей
+function buildAxisScale(config) {
+  const breakPoint = config.leftZone.max;
+  const leftSectionEnd = config.break.leftSectionEnd;
+  const rightSectionStart = config.break.rightSectionStart;
+
+  return {
+    breakPoint,
+    leftSectionEnd,
+    rightSectionStart,
+    costToX(cost) {
+      if (cost <= breakPoint) {
+        const normalized =
+          (cost - config.leftZone.min) /
+          (config.leftZone.max - config.leftZone.min);
+        return normalized * leftSectionEnd;
+      }
+      const normalized =
+        (cost - config.rightZone.min) /
+        (config.rightZone.max - config.rightZone.min);
+      return rightSectionStart + normalized * (100 - rightSectionStart);
+    },
+    scoreToY(score) {
+      const normalized =
+        (score - config.yAxis.min) / (config.yAxis.max - config.yAxis.min);
+      return (1 - normalized) * 100;
+    },
+  };
+}
+
 // Функция для заполнения индикатора данными модели
 function updateIndicator(model) {
   const indicator = document.querySelector(".indicator");
@@ -273,10 +303,17 @@ function hideIndicator() {
 // Глобальные переменные для хранения точек и их данных
 let pointsData = [];
 let activePoint = null;
+let axisScale = null;
+let interactionsInitialized = false;
+let currentContainer = null;
+let hoverRafId = null;
+let latestMouseEvent = null;
 
-// Функция для вычисления расстояния между двумя точками
-function getDistance(x1, y1, x2, y2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+// Функция для вычисления квадрата расстояния между двумя точками
+function getDistanceSquared(x1, y1, x2, y2) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  return dx * dx + dy * dy;
 }
 
 // Функция для поиска ближайшей точки к курсору
@@ -293,7 +330,7 @@ function findNearestPoint(mouseX, mouseY, container) {
   let minDistance = Infinity;
 
   pointsData.forEach((pointData) => {
-    const distance = getDistance(
+    const distance = getDistanceSquared(
       mouseXPercent,
       mouseYPercent,
       pointData.xPercent,
@@ -337,40 +374,11 @@ function highlightPoint(pointElement, modelData) {
     }
     activePoint = { element: pointElement, label: pointData?.label, model: modelData };
 
-    // Вычисляем позиции для лейблов
-    const costs = modelsData.map((d) => parseCost(d.cost));
-    const scores = modelsData.map((d) => d.score);
-    const minCost = Math.min(...costs);
-    // Используем значения из конфига (те же, что в createScatterPlot)
-    const maxCost = axisConfig.rightZone.max;
-    const minScore = Math.min(...scores);
-    const maxScore = axisConfig.yAxis.max;
-
-    // Константы для broken axis из конфига
-    const BREAK_POINT = axisConfig.leftZone.max;
-    const LEFT_SECTION_END = axisConfig.break.leftSectionEnd;
-    const RIGHT_SECTION_START = axisConfig.break.rightSectionStart;
-
-    function costToX(cost) {
-      if (cost <= BREAK_POINT) {
-        // Левая часть: масштабируем leftZone.min-leftZone.max на 0-LEFT_SECTION_END%
-        const normalized = (cost - axisConfig.leftZone.min) / (axisConfig.leftZone.max - axisConfig.leftZone.min);
-        return normalized * LEFT_SECTION_END;
-      } else {
-        // Правая часть: масштабируем rightZone.min-rightZone.max на RIGHT_SECTION_START-100%
-        const normalized = (cost - axisConfig.rightZone.min) / (axisConfig.rightZone.max - axisConfig.rightZone.min);
-        return RIGHT_SECTION_START + normalized * (100 - RIGHT_SECTION_START);
-      }
-    }
-
-    function scoreToY(score) {
-      const normalized = (score - axisConfig.yAxis.min) / (axisConfig.yAxis.max - axisConfig.yAxis.min);
-      return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
-    }
+    const scale = axisScale || buildAxisScale(axisConfig);
 
     const cost = parseCost(modelData.cost);
-    const x = costToX(cost);
-    const y = scoreToY(modelData.score);
+    const x = scale.costToX(cost);
+    const y = scale.scoreToY(modelData.score);
 
     // Обновляем лейбл цены и его засечку
     if (costLabel) {
@@ -411,10 +419,52 @@ function highlightPoint(pointElement, modelData) {
   }
 }
 
+// Инициализация взаимодействий (навешиваем один раз)
+function initInteractions(container) {
+  if (!container) return;
+  currentContainer = container;
+  if (interactionsInitialized) return;
+
+  const handleMove = (e) => {
+    latestMouseEvent = e;
+    if (hoverRafId) return;
+    hoverRafId = requestAnimationFrame(() => {
+      hoverRafId = null;
+      if (!latestMouseEvent || !currentContainer) return;
+      const nearestPointData = findNearestPoint(
+        latestMouseEvent.clientX,
+        latestMouseEvent.clientY,
+        currentContainer
+      );
+      if (nearestPointData) {
+        highlightPoint(nearestPointData.element, nearestPointData.model);
+        updateIndicator(nearestPointData.model);
+      }
+    });
+  };
+
+  const handleLeave = () => {
+    latestMouseEvent = null;
+    if (hoverRafId) {
+      cancelAnimationFrame(hoverRafId);
+      hoverRafId = null;
+    }
+    highlightPoint(null, null);
+    hideIndicator();
+  };
+
+  container.addEventListener("mousemove", handleMove);
+  container.addEventListener("mouseleave", handleLeave);
+  interactionsInitialized = true;
+}
+
 // Функция для создания scatter plot
 function createScatterPlot() {
   const container = document.querySelector(".scatterplot-aria");
   if (!container) return;
+
+  axisScale = buildAxisScale(axisConfig);
+  initInteractions(container);
 
   // Сохраняем подписи осей и background highlight перед очисткой
   const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
@@ -452,54 +502,26 @@ function createScatterPlot() {
 
   const freshContainer = container;
 
-  // Вычисляем диапазоны данных
-  const costs = modelsData.map((d) => parseCost(d.cost));
-  const scores = modelsData.map((d) => d.score);
-
-  const minCost = Math.min(...costs);
-  
   // Используем значения из конфига
-  const BREAK_POINT = axisConfig.leftZone.max; // Точка разрыва
-  const LEFT_SECTION_END = axisConfig.break.leftSectionEnd;
-  const RIGHT_SECTION_START = axisConfig.break.rightSectionStart;
+  const BREAK_POINT = axisScale.breakPoint; // Точка разрыва
+  const LEFT_SECTION_END = axisScale.leftSectionEnd;
+  const RIGHT_SECTION_START = axisScale.rightSectionStart;
   const GAP_SIZE = RIGHT_SECTION_START - LEFT_SECTION_END;
   const maxCost = axisConfig.rightZone.max; // Максимальное значение оси X
-  const maxScore = axisConfig.yAxis.max; // Максимальное значение оси Y
-  const minScore = Math.min(...scores);
 
   // Устанавливаем CSS переменные для горизонтальных линий сетки
   freshContainer.style.setProperty('--left-section-end', `${LEFT_SECTION_END}%`);
   freshContainer.style.setProperty('--right-section-start', `${RIGHT_SECTION_START}%`);
 
-  // Функция для преобразования стоимости в X координату (в процентах)
-  // С учетом broken axis
-  function costToX(cost) {
-    if (cost <= BREAK_POINT) {
-      // Левая часть: масштабируем leftZone.min-leftZone.max на 0-LEFT_SECTION_END%
-      const normalized = (cost - axisConfig.leftZone.min) / (axisConfig.leftZone.max - axisConfig.leftZone.min);
-      return normalized * LEFT_SECTION_END;
-    } else {
-      // Правая часть: масштабируем rightZone.min-rightZone.max на RIGHT_SECTION_START-100%
-      const normalized = (cost - axisConfig.rightZone.min) / (axisConfig.rightZone.max - axisConfig.rightZone.min);
-      return RIGHT_SECTION_START + normalized * (100 - RIGHT_SECTION_START);
-    }
-  }
-
-  // Функция для преобразования score в Y координату (в процентах, инвертированная)
-  function scoreToY(score) {
-    const normalized = (score - axisConfig.yAxis.min) / (axisConfig.yAxis.max - axisConfig.yAxis.min);
-    return (1 - normalized) * 100; // Инвертируем Y: 0% сверху, 100% снизу
-  }
-
   // Рисуем точки как абсолютно позиционированные div'ы
   modelsData.forEach((model) => {
     const cost = parseCost(model.cost);
-    const x = costToX(cost);
+    const x = axisScale.costToX(cost);
     // Вычисляем displayScore с учетом visualOffset, если включен режим корректировки
     const displayScore = axisConfig.useVisualOffset && model.visualOffset !== undefined 
       ? model.score + model.visualOffset 
       : model.score;
-    const y = scoreToY(displayScore);
+    const y = axisScale.scoreToY(displayScore);
 
     const point = document.createElement("div");
     point.className = "scatterplot-point";
@@ -537,7 +559,7 @@ function createScatterPlot() {
   // Пропускаем 0, до максимального значения
   const maxScoreInt = Math.floor(axisConfig.yAxis.max);
   for (let score = 1; score <= maxScoreInt; score++) {
-    const y = scoreToY(score);
+    const y = axisScale.scoreToY(score);
     // Засечка снаружи
     const tick = document.createElement("div");
     tick.className = "scatterplot-tick-y";
@@ -571,13 +593,13 @@ function createScatterPlot() {
   const maxCostForTicks = axisConfig.rightZone.max;
   
   // Вычисляем фактическую ширину правой секции до максимального значения
-  const maxCostXForWidth = costToX(maxCostForTicks);
+  const maxCostXForWidth = axisScale.costToX(maxCostForTicks);
   const rightSectionActualWidth = maxCostXForWidth - RIGHT_SECTION_START;
   freshContainer.style.setProperty('--right-section-width', `${rightSectionActualWidth}%`);
   
   // Засечки для левой части (каждые 0.01 до точки разрыва)
   for (let cost = 0.01; cost <= BREAK_POINT; cost += 0.01) {
-    const x = costToX(cost);
+    const x = axisScale.costToX(cost);
     // Проверяем, что засечка не попадает в зону разрыва
     if (x < LEFT_SECTION_END) {
       // Засечка снаружи
@@ -602,7 +624,7 @@ function createScatterPlot() {
   }
   
   // Подпись для крайнего правого значения первой зоны (максимальное значение из конфига)
-  const leftZoneMaxX = costToX(axisConfig.leftZone.max);
+  const leftZoneMaxX = axisScale.costToX(axisConfig.leftZone.max);
   const leftZoneMaxLabel = document.createElement("div");
   leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
   leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
@@ -610,7 +632,7 @@ function createScatterPlot() {
   freshContainer.appendChild(leftZoneMaxLabel);
   
   // Подпись для нижней границы правой части
-  const rightZoneStartX = costToX(axisConfig.rightZone.min);
+  const rightZoneStartX = axisScale.costToX(axisConfig.rightZone.min);
   const rightZoneStartLabel = document.createElement("div");
   rightZoneStartLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
   rightZoneStartLabel.style.left = `${rightZoneStartX}%`;
@@ -619,7 +641,7 @@ function createScatterPlot() {
   
   // Засечки для правой части (каждые 0.1 после точки разрыва до $2.0)
   for (let cost = BREAK_POINT + 0.1; cost <= maxCostForTicks; cost += 0.1) {
-    const x = costToX(cost);
+    const x = axisScale.costToX(cost);
     // Проверяем, что засечка не попадает в зону разрыва
     if (x >= RIGHT_SECTION_START) {
       // Засечка снаружи
@@ -638,7 +660,7 @@ function createScatterPlot() {
   
   // Подписи для каждого целого доллара в правой части (1 и 2)
   for (let dollar = 1; dollar <= Math.floor(maxCostForTicks); dollar++) {
-    const x = costToX(dollar);
+    const x = axisScale.costToX(dollar);
     if (x >= RIGHT_SECTION_START) {
       const dollarLabel = document.createElement("div");
       dollarLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
@@ -649,7 +671,7 @@ function createScatterPlot() {
   }
   
   // Подпись для крайнего правого значения на оси X (максимальное значение из конфига)
-  const maxCostX = costToX(axisConfig.rightZone.max);
+  const maxCostX = axisScale.costToX(axisConfig.rightZone.max);
   const maxCostLabel = document.createElement("div");
   maxCostLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
   maxCostLabel.style.left = `${maxCostX}%`;
@@ -699,20 +721,6 @@ function createScatterPlot() {
   zeroLabel.textContent = "0";
   freshContainer.appendChild(zeroLabel);
 
-  // Обработчик движения мыши внутри контейнера
-  freshContainer.addEventListener("mousemove", (e) => {
-    const nearestPointData = findNearestPoint(e.clientX, e.clientY, freshContainer);
-    if (nearestPointData) {
-      highlightPoint(nearestPointData.element, nearestPointData.model);
-      updateIndicator(nearestPointData.model);
-    }
-  });
-
-  // Обработчик выхода курсора из контейнера
-  freshContainer.addEventListener("mouseleave", () => {
-    highlightPoint(null, null);
-    hideIndicator();
-  });
 }
 
 // Инициализация при загрузке страницы

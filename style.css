@@ -48,25 +48,6 @@ body {
 .container {
   width: 1140px;
   margin: 120px auto;
-
-  & .text-width {
-    width: 70%;
-  }
-
-  h1 {
-    font-size: 3.3em;
-    line-height: 1.1;
-  }
-
-  p {
-    font-size: 1.2em;
-    line-height: 1.35;
-    margin-bottom: 0.5em;
-
-    &.L {
-      font-size: 1.5em;
-    }
-  }
 }
 
 .scatterplot-wrapper {
@@ -90,7 +71,6 @@ body {
     text-align: center;
     visibility: hidden;
 
-    & .indicator-label,
     & .indicator-value {
       font-size: 0.8em;
       text-transform: uppercase;
@@ -212,56 +192,49 @@ body {
 
 .scatterplot-point {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: var(--point-size, 14px);
+  height: var(--point-size, 14px);
   border-radius: 50%;
-  border: 1px solid rgba(var(--ids__bg-surface-RGB), 1);
+  border: var(--point-border, 1px solid rgba(var(--ids__bg-surface-RGB), 1));
   transform: translate(-50%, -50%) scale(1);
   z-index: 2;
 
   transition: transform 0.2s ease;
 
   /* Default color fallback */
-  background-color: rgba(var(--ids__text-RGB), 1);
+  background: var(--point-bg, rgba(var(--ids__text-RGB), 1));
+}
 
-  /* Modulate - 4 разных градиента (увеличены на 2px) */
-  &[data-vendor="Modulate"][data-model="velma-2-fast"],
-  &[data-vendor="Modulate"][data-model="velma-2"],
-  &[data-vendor="Modulate"][data-model="velma-1"],
-  &[data-vendor="Modulate"][data-model="velma-2-heavy"],
-  &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
-      [data-model="velma-2"]
-    ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
-    width: 16px;
-    height: 16px;
-  }
+/* Modulate */
+.scatterplot-point[data-vendor="Modulate"] {
+  --point-size: 16px;
 
-  &[data-vendor="Modulate"][data-model="velma-2-fast"] {
-    background: linear-gradient(
+  &[data-model="velma-2-fast"] {
+    --point-bg: linear-gradient(
       to bottom,
       rgba(var(--vendor-modulate-RGB), 1),
       rgba(var(--vendor-modulate-gradient-1-RGB), 1)
     );
   }
 
-  &[data-vendor="Modulate"][data-model="velma-2"] {
-    background: linear-gradient(
+  &[data-model="velma-2"] {
+    --point-bg: linear-gradient(
       to right,
       rgba(var(--vendor-modulate-RGB), 1),
       rgba(var(--vendor-modulate-gradient-2-RGB), 1)
     );
   }
 
-  &[data-vendor="Modulate"][data-model="velma-1"] {
-    background: linear-gradient(
+  &[data-model="velma-1"] {
+    --point-bg: linear-gradient(
       to bottom,
       rgba(var(--vendor-modulate-RGB), 1),
       rgba(var(--vendor-modulate-gradient-3-RGB), 1)
     );
   }
 
-  &[data-vendor="Modulate"][data-model="velma-2-heavy"] {
-    background: linear-gradient(
+  &[data-model="velma-2-heavy"] {
+    --point-bg: linear-gradient(
       to right,
       rgba(var(--vendor-modulate-RGB), 1),
       rgba(var(--vendor-modulate-gradient-4-RGB), 1)
@@ -269,100 +242,42 @@ body {
   }
 
   /* Fallback для других моделей Modulate */
-  &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
-      [data-model="velma-2"]
-    ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
-    background-color: rgba(var(--vendor-modulate-RGB), 1);
+  &:not([data-model="velma-2-fast"]):not([data-model="velma-2"]):not(
+      [data-model="velma-1"]
+    ):not([data-model="velma-2-heavy"]) {
+    --point-bg: rgba(var(--vendor-modulate-RGB), 1);
   }
+}
 
-  /* OpenAI */
-  &[data-vendor="OpenAI"] {
-    background-color: rgba(var(--ids__bg-surface-RGB), 1);
-    border: 2px solid rgba(var(--vendor-openai-RGB), 1);
-  }
+/* OpenAI */
+.scatterplot-point[data-vendor="OpenAI"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-openai-RGB), 1);
+}
 
-  /* Grok (увеличен на 2px) */
-  &[data-vendor="Grok"] {
-    width: 16px;
-    height: 16px;
-    background-color: rgba(var(--vendor-grok-RGB), 1);
-  }
+/* Grok (увеличен на 2px) */
+.scatterplot-point[data-vendor="Grok"] {
+  --point-size: 16px;
+  --point-bg: rgba(var(--vendor-grok-RGB), 1);
+}
 
-  /* Gemini */
-  &[data-vendor="Gemini"] {
-    background-color: rgba(var(--ids__bg-surface-RGB), 1);
-    border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
-  }
+/* Gemini */
+.scatterplot-point[data-vendor="Gemini"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
+}
 
-  /* DeepSeek (увеличен на 2px) */
-  &[data-vendor="DeepSeek"] {
-    width: 16px;
-    height: 16px;
-    background-color: rgba(var(--vendor-deepseek-RGB), 1);
-  }
+/* DeepSeek (увеличен на 2px) */
+.scatterplot-point[data-vendor="DeepSeek"] {
+  --point-size: 16px;
+  --point-bg: rgba(var(--vendor-deepseek-RGB), 1);
+}
 
-  /* Active state */
-  &.scatterplot-point-active {
-    transform: translate(-50%, -50%) scale(1.2);
-    transition: transform 0s ease;
-    z-index: 10;
-
-    &[data-vendor="Modulate"][data-model="velma-2-fast"] {
-      background: linear-gradient(
-        to bottom,
-        rgba(var(--vendor-modulate-RGB), 1),
-        rgba(var(--vendor-modulate-gradient-1-RGB), 1)
-      );
-    }
-
-    &[data-vendor="Modulate"][data-model="velma-2"] {
-      background: linear-gradient(
-        to right,
-        rgba(var(--vendor-modulate-RGB), 1),
-        rgba(var(--vendor-modulate-gradient-2-RGB), 1)
-      );
-    }
-
-    &[data-vendor="Modulate"][data-model="velma-1"] {
-      background: linear-gradient(
-        to bottom,
-        rgba(var(--vendor-modulate-RGB), 1),
-        rgba(var(--vendor-modulate-gradient-3-RGB), 1)
-      );
-    }
-
-    &[data-vendor="Modulate"][data-model="velma-2-heavy"] {
-      background: linear-gradient(
-        to right,
-        rgba(var(--vendor-modulate-RGB), 1),
-        rgba(var(--vendor-modulate-gradient-4-RGB), 1)
-      );
-    }
-
-    &[data-vendor="Modulate"]:not([data-model="velma-2-fast"]):not(
-        [data-model="velma-2"]
-      ):not([data-model="velma-1"]):not([data-model="velma-2-heavy"]) {
-      background-color: rgba(var(--vendor-modulate-RGB), 1);
-    }
-
-    &[data-vendor="OpenAI"] {
-      background-color: rgba(var(--ids__bg-surface-RGB), 1);
-      border: 2px solid rgba(var(--vendor-openai-RGB), 1);
-    }
-
-    &[data-vendor="Grok"] {
-      background-color: rgba(var(--vendor-grok-RGB), 1);
-    }
-
-    &[data-vendor="Gemini"] {
-      background-color: rgba(var(--ids__bg-surface-RGB), 1);
-      border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
-    }
-
-    &[data-vendor="DeepSeek"] {
-      background-color: rgba(var(--vendor-deepseek-RGB), 1);
-    }
-  }
+/* Active state */
+.scatterplot-point-active {
+  transform: translate(-50%, -50%) scale(1.2);
+  transition: transform 0s ease;
+  z-index: 10;
 }
 
 .scatterplot-axis-label-x {
