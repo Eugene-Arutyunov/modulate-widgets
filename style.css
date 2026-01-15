@@ -28,14 +28,14 @@
 
   /* Vendor colors */
   --vendor-modulate-RGB: 99, 102, 241; /* Indigo/Violet */
-  --vendor-modulate-gradient-1-RGB: 255, 152, 0; /* Orange (для градиента сверху вниз) */
-  --vendor-modulate-gradient-2-RGB: 255, 53, 84; /* Red/Error (для градиента слева вправо) */
-  --vendor-modulate-gradient-3-RGB: 0, 130, 244; /* Blue (для градиента к синему) */
-  --vendor-modulate-gradient-4-RGB: 255, 0, 255; /* Magenta (для более яркого) */
+  --vendor-modulate-gradient-2-RGB: 200, 102, 255; /* Red/Error (для градиента слева вправо) */
   --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
+
+  /* Highlight zone colors */
+  --highlight-zone-green-RGB: 0, 255, 0; /* Green for highlight zone */
 }
 
 body {
@@ -55,38 +55,15 @@ body {
   background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 8px;
-  padding: 30px 90px 30px 90px;
+  padding: 30px 90px 100px 90px;
 
   & .scatterplot-title {
     font-size: 1.3em;
-
+    font-weight: 600;
     margin: 0 0 20px 0;
     opacity: 0.8;
 
     text-align: center;
-  }
-
-  & .indicator {
-    margin-top: 90px;
-    text-align: center;
-    visibility: hidden;
-
-    & .indicator-value {
-      font-size: 0.8em;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: rgba(var(--ids__text-caption-RGB), 0.5);
-    }
-
-    & .indicator-value {
-      &:after {
-        content: ",";
-      }
-
-      &:last-child:after {
-        content: "";
-      }
-    }
   }
 }
 
@@ -103,8 +80,8 @@ body {
       position: absolute;
       left: 0;
       top: 0;
-      width: 300px;
-      height: 250px;
+      width: 50%;
+      height: 100%;
       overflow: hidden;
       z-index: 1;
       pointer-events: none;
@@ -112,13 +89,31 @@ body {
 
     & .scatterplot-background-highlight-ellipse {
       position: absolute;
-      width: 200px;
-      height: 150px;
+      width: 500px;
+      height: 450px;
       border-radius: 50%;
-      background-color: rgba(0, 255, 0, 0.3);
-      left: -50px;
-      top: -50px;
-      filter: blur(20px);
+      background-color: rgba(var(--highlight-zone-green-RGB), 0.3);
+      left: -50%;
+      top: -50%;
+      filter: blur(50px);
+      opacity: 1;
+    }
+
+    & .scatterplot-background-highlight-label {
+      position: absolute;
+      left: 130px;
+      top: 100px;
+      width: 80px;
+
+      font-size: 0.8em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 300;
+      color: rgba(var(--highlight-zone-green-RGB), 1);
+      filter: saturate(90%) brightness(0.8);
+      text-align: center;
+      line-height: 1.3;
+      z-index: 2;
     }
 
     /* Граница оси X создается через псевдоэлементы для поддержки разрыва */
@@ -169,8 +164,9 @@ body {
 
 .scatterplot-point-label {
   position: absolute;
-  font-size: 0.8em;
-  color: rgba(var(--ids__text-RGB), 0.8);
+  font-size: 0.85em;
+
+  color: rgba(var(--ids__text-RGB), 1);
   pointer-events: none;
   transform: translate(6px, calc(-50% - 1px));
   white-space: nowrap;
@@ -178,7 +174,7 @@ body {
   padding: 2px 4px;
   background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
   border-radius: 2px;
-  opacity: 0.8;
+  opacity: 0.6;
   transition: opacity 0.2s ease;
 }
 
@@ -188,6 +184,11 @@ body {
 
 .scatterplot-point-label-active {
   opacity: 1;
+}
+
+.scatterplot-point-label-left {
+  transform: translate(calc(-100% - 6px), calc(-50% - 1px));
+  text-align: right;
 }
 
 .scatterplot-point {
@@ -211,9 +212,9 @@ body {
 
   &[data-model="velma-2-fast"] {
     --point-bg: linear-gradient(
-      to bottom,
+      to right,
       rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-1-RGB), 1)
+      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
     );
   }
 
@@ -227,9 +228,9 @@ body {
 
   &[data-model="velma-1"] {
     --point-bg: linear-gradient(
-      to bottom,
+      to right,
       rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-3-RGB), 1)
+      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
     );
   }
 
@@ -237,7 +238,7 @@ body {
     --point-bg: linear-gradient(
       to right,
       rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-4-RGB), 1)
+      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
     );
   }
 
