@@ -14,7 +14,8 @@
   </head>
   <body>
     <div class="container">
-      <div class="scatterplot-wrapper">
+      <!-- Scatterplot 1: Conversation Understanding Benchmark -->
+      <div class="scatterplot-wrapper" id="scatterplot-1">
         <div class="scatterplot-title">
           Conversation Understanding Benchmark
         </div>
@@ -31,7 +32,41 @@
           </div>
         </div>
       </div>
+
+      <!-- Scatterplot 2: Transcription -->
+      <div class="scatterplot-wrapper" id="scatterplot-2">
+        <div class="scatterplot-title">Transcription Quality Benchmark</div>
+        <div class="scatterplot-container">
+          <div class="scatterplot-aria">
+            <div
+              class="scatterplot-background-highlight scatterplot-background-highlight-bottom-left">
+              <div class="scatterplot-background-highlight-ellipse"></div>
+              <div class="scatterplot-background-highlight-label">
+                Lowest word error lowest cost
+              </div>
+            </div>
+            <div class="scatterplot-axis-label-x">Cost</div>
+            <div class="scatterplot-axis-label-y">Word Error Rate (WER)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scatterplot 3: Synthetic Voice Detection -->
+      <div class="scatterplot-wrapper" id="scatterplot-3">
+        <div class="scatterplot-title">
+          Synthetic Voice / Deepfake Detection Model
+        </div>
+        <div class="scatterplot-container">
+          <div class="scatterplot-aria">
+            <div class="scatterplot-axis-label-x">Cost</div>
+            <div class="scatterplot-axis-label-y">Average F1-Score</div>
+          </div>
+        </div>
+      </div>
     </div>
+    <script src="config-sc1.js"></script>
+    <script src="config-sc2.js"></script>
+    <script src="config-sc3.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

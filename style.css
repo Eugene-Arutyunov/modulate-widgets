@@ -87,16 +87,28 @@ body {
       pointer-events: none;
     }
 
+    & .scatterplot-background-highlight-bottom-left {
+      top: auto;
+      bottom: 0;
+    }
+
     & .scatterplot-background-highlight-ellipse {
       position: absolute;
-      width: 500px;
-      height: 450px;
+      width: 550px;
+      height: 500px;
       border-radius: 50%;
       background-color: rgba(var(--highlight-zone-green-RGB), 0.3);
       left: -50%;
       top: -50%;
       filter: blur(50px);
       opacity: 1;
+    }
+
+    &
+      .scatterplot-background-highlight-bottom-left
+      .scatterplot-background-highlight-ellipse {
+      top: auto;
+      bottom: -50%;
     }
 
     & .scatterplot-background-highlight-label {
@@ -114,6 +126,13 @@ body {
       text-align: center;
       line-height: 1.3;
       z-index: 2;
+    }
+
+    &
+      .scatterplot-background-highlight-bottom-left
+      .scatterplot-background-highlight-label {
+      top: auto;
+      bottom: 100px;
     }
 
     /* Граница оси X создается через псевдоэлементы для поддержки разрыва */
@@ -160,6 +179,16 @@ body {
     left: -40px;
     transform: translateY(-50%);
   }
+}
+
+/* Специфичные стили для второго графика */
+#scatterplot-2
+  .scatterplot-container
+  .scatterplot-aria
+  .scatterplot-background-highlight-label {
+  width: 200px !important;
+  bottom: 80px !important;
+  left: 72px !important;
 }
 
 .scatterplot-point-label {
