@@ -15,6 +15,57 @@
   <body>
     <div class="container">
       <!-- Scatterplot 1: Conversation Understanding Benchmark -->
+      <div class="controls">
+        <div class="control-group">
+          <label for="width-control">Width:</label>
+          <input
+            type="number"
+            id="width-control"
+            min="100"
+            value="1140"
+            step="10" />
+        </div>
+        <div class="control-group">
+          <label for="height-control">Height:</label>
+          <input
+            type="number"
+            id="height-control"
+            min="100"
+            value="400"
+            step="10" />
+        </div>
+        <div class="control-group">
+          <label for="label-font-size-control">Label Font Size:</label>
+          <input
+            type="number"
+            id="label-font-size-control"
+            min="8"
+            max="24"
+            value="14"
+            step="1" />
+        </div>
+        <div class="control-group">
+          <label for="point-size-control">Point Size:</label>
+          <input
+            type="number"
+            id="point-size-control"
+            min="4"
+            max="32"
+            value="14"
+            step="1" />
+        </div>
+        <div class="control-group">
+          <label for="axis-font-size-control">Axis Label Font Size:</label>
+          <input
+            type="number"
+            id="axis-font-size-control"
+            min="8"
+            max="24"
+            value="13"
+            step="1" />
+        </div>
+      </div>
+
       <div class="scatterplot-wrapper" id="scatterplot-1">
         <div class="scatterplot-title">
           Conversation Understanding Benchmark
