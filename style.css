@@ -65,6 +65,14 @@ body {
 
     text-align: center;
   }
+  & .scatterplot-subtitle {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    opacity: 0.8;
+
+    text-align: center;
+  }
 }
 
 .scatterplot-container {
