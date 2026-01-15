@@ -28,6 +28,16 @@ class ScatterPlot {
     this.hoverRafId = null;
     this.latestMouseEvent = null;
     this.interactionsInitialized = false;
+    // Кэшированные DOM элементы
+    this.cachedElements = {
+      costLabel: null,
+      scoreLabel: null,
+      costLabelTick: null,
+      scoreLabelTick: null,
+    };
+    // Кэш для getBoundingClientRect
+    this.containerRect = null;
+    this.rectCacheValid = false;
   }
 
   // Построение функций шкалы и общих параметров осей
@@ -103,6 +113,9 @@ class ScatterPlot {
     const config = this.config;
     const scale = this.axisScale;
 
+    // Используем DocumentFragment для батчинга DOM операций
+    const fragment = document.createDocumentFragment();
+
     // Линии сетки для оси Y
     const yGridConfig = config.axisY.gridLines;
     // Генерируем все значения с шагом step для рисования линий
@@ -138,7 +151,7 @@ class ScatterPlot {
         const tick = document.createElement("div");
         tick.className = "scatterplot-tick-y";
         tick.style.top = `${y}%`;
-        container.appendChild(tick);
+        fragment.appendChild(tick);
         
         // Горизонтальная линия сетки
         if (scale.hasBreak) {
@@ -146,12 +159,12 @@ class ScatterPlot {
           const gridLineLeft = document.createElement("div");
           gridLineLeft.className = "scatterplot-grid-line-y scatterplot-grid-line-y-left";
           gridLineLeft.style.top = `${y}%`;
-          container.appendChild(gridLineLeft);
+          fragment.appendChild(gridLineLeft);
           
           const gridLineRight = document.createElement("div");
           gridLineRight.className = "scatterplot-grid-line-y scatterplot-grid-line-y-right";
           gridLineRight.style.top = `${y}%`;
-          container.appendChild(gridLineRight);
+          fragment.appendChild(gridLineRight);
         } else {
           // Без разрыва: одна линия
           const gridLine = document.createElement("div");
@@ -159,7 +172,7 @@ class ScatterPlot {
           gridLine.style.top = `${y}%`;
           gridLine.style.width = "100%";
           gridLine.style.left = "0";
-          container.appendChild(gridLine);
+          fragment.appendChild(gridLine);
         }
         
         // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
@@ -171,7 +184,7 @@ class ScatterPlot {
           // Форматируем число с правильным количеством знаков после запятой
           const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
           scoreLabel.textContent = score.toFixed(decimals);
-          container.appendChild(scoreLabel);
+          fragment.appendChild(scoreLabel);
         }
       }
     });
@@ -211,12 +224,12 @@ class ScatterPlot {
             const tick = document.createElement("div");
             tick.className = "scatterplot-tick-x";
             tick.style.left = `${x}%`;
-            container.appendChild(tick);
+            fragment.appendChild(tick);
             
             const gridLine = document.createElement("div");
             gridLine.className = "scatterplot-grid-line-x scatterplot-grid-line-x-left";
             gridLine.style.left = `${x}%`;
-            container.appendChild(gridLine);
+            fragment.appendChild(gridLine);
             
             // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
             const shouldAddLabel = isValueInLabels(cost, leftConfig.labels);
@@ -227,7 +240,7 @@ class ScatterPlot {
               // Для первой подписи добавляем "$", для остальных - только число
               const firstLabelValue = config.axisX.leftZone.min + leftConfig.step;
               costLabel.textContent = Math.abs(cost - firstLabelValue) < 0.0001 ? "$" + cost.toFixed(2) : cost.toFixed(2);
-              container.appendChild(costLabel);
+              fragment.appendChild(costLabel);
             }
           }
         }
@@ -239,7 +252,7 @@ class ScatterPlot {
       leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
       leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
       leftZoneMaxLabel.textContent = "$" + config.axisX.leftZone.max.toFixed(2);
-      container.appendChild(leftZoneMaxLabel);
+      fragment.appendChild(leftZoneMaxLabel);
 
       // Правая часть
       // Генерируем все значения с шагом step от нуля (как будто линии были от нуля)
@@ -273,12 +286,12 @@ class ScatterPlot {
             const tick = document.createElement("div");
             tick.className = "scatterplot-tick-x";
             tick.style.left = `${x}%`;
-            container.appendChild(tick);
+            fragment.appendChild(tick);
             
             const gridLine = document.createElement("div");
             gridLine.className = "scatterplot-grid-line-x scatterplot-grid-line-x-right";
             gridLine.style.left = `${x}%`;
-            container.appendChild(gridLine);
+            fragment.appendChild(gridLine);
             
             // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
             const shouldAddLabel = isValueInLabels(cost, rightConfig.labels);
@@ -287,7 +300,7 @@ class ScatterPlot {
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
               costLabel.textContent = "$" + cost.toFixed(2);
-              container.appendChild(costLabel);
+              fragment.appendChild(costLabel);
             }
           }
         }
@@ -328,12 +341,12 @@ class ScatterPlot {
           const tick = document.createElement("div");
           tick.className = "scatterplot-tick-x";
           tick.style.left = `${x}%`;
-          container.appendChild(tick);
+          fragment.appendChild(tick);
           
           const gridLine = document.createElement("div");
           gridLine.className = "scatterplot-grid-line-x";
           gridLine.style.left = `${x}%`;
-          container.appendChild(gridLine);
+          fragment.appendChild(gridLine);
           
           // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
           const shouldAddLabel = isValueInLabels(cost, xGridConfig.labels);
@@ -347,7 +360,7 @@ class ScatterPlot {
             } else {
               costLabel.textContent = "$" + cost.toFixed(0);
             }
-            container.appendChild(costLabel);
+            fragment.appendChild(costLabel);
           }
         }
       });
@@ -357,12 +370,29 @@ class ScatterPlot {
     const zeroLabel = document.createElement("div");
     zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
     zeroLabel.textContent = "0";
-    container.appendChild(zeroLabel);
+    fragment.appendChild(zeroLabel);
+
+    // Добавляем все элементы сетки одним батчем
+    container.appendChild(fragment);
+  }
+
+  // Инвалидация кэша getBoundingClientRect
+  invalidateRectCache() {
+    this.rectCacheValid = false;
+  }
+
+  // Получение кэшированного getBoundingClientRect
+  getContainerRect() {
+    if (!this.rectCacheValid || !this.containerRect) {
+      this.containerRect = this.container.getBoundingClientRect();
+      this.rectCacheValid = true;
+    }
+    return this.containerRect;
   }
 
   // Поиск ближайшей точки к курсору
   findNearestPoint(mouseX, mouseY) {
-    const rect = this.container.getBoundingClientRect();
+    const rect = this.getContainerRect();
     const containerWidth = rect.width;
     const containerHeight = rect.height;
 
@@ -371,7 +401,10 @@ class ScatterPlot {
 
     let nearestPoint = null;
     let minDistance = Infinity;
+    // Порог расстояния в процентах (примерно 10% от размера контейнера для более плавного ховера)
+    const thresholdSquared = 100; // 10% * 10% = 100
 
+    // Сначала находим ближайшую точку без учета порога
     this.pointsData.forEach((pointData) => {
       const distance = getDistanceSquared(
         mouseXPercent,
@@ -386,7 +419,12 @@ class ScatterPlot {
       }
     });
 
-    return nearestPoint;
+    // Проверяем, находится ли ближайшая точка в пределах порога
+    if (nearestPoint && minDistance < thresholdSquared) {
+      return nearestPoint;
+    }
+
+    return null;
   }
 
   // Подсветка точки
@@ -394,10 +432,11 @@ class ScatterPlot {
     const container = this.container;
     if (!container) return;
 
-    const costLabel = container.querySelector(".scatterplot-cost-label");
-    const scoreLabel = container.querySelector(".scatterplot-score-label");
-    const costLabelTick = container.querySelector(".scatterplot-cost-label-tick");
-    const scoreLabelTick = container.querySelector(".scatterplot-score-label-tick");
+    // Используем кэшированные элементы
+    const costLabel = this.cachedElements.costLabel;
+    const scoreLabel = this.cachedElements.scoreLabel;
+    const costLabelTick = this.cachedElements.costLabelTick;
+    const scoreLabelTick = this.cachedElements.scoreLabelTick;
 
     // Убираем подсветку с предыдущей точки
     if (this.activePoint && this.activePoint.element) {
@@ -478,6 +517,9 @@ class ScatterPlot {
         );
         if (nearestPointData) {
           this.highlightPoint(nearestPointData.element, nearestPointData.model);
+        } else {
+          // Если точка не найдена, убираем подсветку
+          this.highlightPoint(null, null);
         }
       });
     };
@@ -532,6 +574,12 @@ class ScatterPlot {
     container.innerHTML = "";
     this.pointsData = [];
     this.activePoint = null;
+    // Инвалидируем кэш элементов и rect
+    this.cachedElements.costLabel = null;
+    this.cachedElements.scoreLabel = null;
+    this.cachedElements.costLabelTick = null;
+    this.cachedElements.scoreLabelTick = null;
+    this.invalidateRectCache();
 
     // Восстанавливаем background highlight
     if (backgroundHighlightClone) {
@@ -573,6 +621,9 @@ class ScatterPlot {
       return;
     }
 
+    // Используем DocumentFragment для батчинга точек и лейблов
+    const pointsFragment = document.createDocumentFragment();
+
     config.data.forEach((model) => {
       const cost = parseCost(model.cost);
       const x = scale.valueToX(cost);
@@ -610,7 +661,7 @@ class ScatterPlot {
       modelLabel.dataset.vendor = model.vendor;
       modelLabel.style.left = `${x}%`;
       modelLabel.style.top = `${y}%`;
-      container.appendChild(modelLabel);
+      pointsFragment.appendChild(modelLabel);
 
       // Сохраняем данные точки
       this.pointsData.push({
@@ -621,8 +672,11 @@ class ScatterPlot {
         yPercent: y,
       });
 
-      container.appendChild(point);
+      pointsFragment.appendChild(point);
     });
+
+    // Добавляем все точки и лейблы одним батчем
+    container.appendChild(pointsFragment);
 
     // Создаем линии сетки
     this.createGridLines();
@@ -632,22 +686,26 @@ class ScatterPlot {
     costLabel.className = "scatterplot-cost-label";
     costLabel.style.display = "none";
     container.appendChild(costLabel);
+    this.cachedElements.costLabel = costLabel;
 
     const scoreLabel = document.createElement("div");
     scoreLabel.className = "scatterplot-score-label";
     scoreLabel.style.display = "none";
     container.appendChild(scoreLabel);
+    this.cachedElements.scoreLabel = scoreLabel;
 
     // Создаем засечки и линии для лейблов активной точки
     const costLabelTick = document.createElement("div");
     costLabelTick.className = "scatterplot-cost-label-tick";
     costLabelTick.style.display = "none";
     container.appendChild(costLabelTick);
+    this.cachedElements.costLabelTick = costLabelTick;
 
     const scoreLabelTick = document.createElement("div");
     scoreLabelTick.className = "scatterplot-score-label-tick";
     scoreLabelTick.style.display = "none";
     container.appendChild(scoreLabelTick);
+    this.cachedElements.scoreLabelTick = scoreLabelTick;
 
     // Создаем визуальный элемент разрыва оси (если есть)
     if (scale.hasBreak) {
@@ -700,14 +758,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const plot3 = new ScatterPlot(container3, scatterPlotConfig3);
   plot3.createScatterPlot();
 
-  // Перерисовка при изменении размера окна
+  // Перерисовка при изменении размера окна с использованием ResizeObserver
   let resizeTimeout;
+  const plots = [plot1, plot2, plot3];
+  
+  // Используем ResizeObserver для более точного отслеживания изменений размера
+  const resizeObserver = new ResizeObserver(() => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      plots.forEach(plot => {
+        plot.invalidateRectCache();
+        plot.createScatterPlot();
+      });
+    }, 300); // Увеличена задержка до 300ms для более агрессивного debounce
+  });
+
+  // Наблюдаем за контейнерами графиков
+  plots.forEach(plot => {
+    if (plot.container) {
+      resizeObserver.observe(plot.container);
+    }
+  });
+
+  // Fallback на window.resize для старых браузеров
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      plot1.createScatterPlot();
-      plot2.createScatterPlot();
-      plot3.createScatterPlot();
-    }, 100);
+      plots.forEach(plot => {
+        plot.invalidateRectCache();
+        plot.createScatterPlot();
+      });
+    }, 300);
   });
 });
