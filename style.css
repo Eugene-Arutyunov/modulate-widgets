@@ -64,12 +64,17 @@ body {
 }
 
 .controls {
+  position: sticky;
+  top: 0;
   display: flex;
   gap: 20px;
-  margin-bottom: 20px;
-  padding: 15px;
+  margin: 0 -20px 20px;
+  padding: 7px;
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 8px;
+  background-color: rgba(var(--ids__background-RGB), 1);
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .control-group {
@@ -86,7 +91,7 @@ body {
 }
 
 .control-group input {
-  padding: 8px 12px;
+  padding: 5px 10px;
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 4px;
   font-size: 0.9em;
