@@ -4,6 +4,38 @@ function parseCost(costString) {
   return parseFloat(costString.toString().replace("$", ""));
 }
 
+// Функция для определения, нужно ли форматировать значение как валюту
+function shouldFormatAsCurrency(config) {
+  // Проверяем первую запись данных
+  if (config.data && config.data.length > 0) {
+    const firstValue = config.data[0].cost || config.data[0].parametersNumber;
+    if (typeof firstValue === 'string' && firstValue.startsWith('$')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Функция для форматирования значения оси X
+function formatAxisXValue(value, config, decimals = 2) {
+  const isCurrency = shouldFormatAsCurrency(config);
+  if (isCurrency) {
+    return "$" + value.toFixed(decimals);
+  }
+  return value.toFixed(decimals);
+}
+
+// Функция для получения количества знаков после запятой с учетом исключений
+function getDecimals(config, axis, vendor = null) {
+  const decimalsConfig = config[axis].hoverDecimals;
+  if (typeof decimalsConfig === 'object' && decimalsConfig.exceptions) {
+    return vendor && decimalsConfig.exceptions[vendor] !== undefined 
+      ? decimalsConfig.exceptions[vendor] 
+      : decimalsConfig.default;
+  }
+  return decimalsConfig;
+}
+
 // Функция для вычисления квадрата расстояния между двумя точками
 function getDistanceSquared(x1, y1, x2, y2) {
   const dx = x2 - x1;
@@ -169,8 +201,8 @@ class ScatterPlot {
           scoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
           scoreLabel.style.top = `${y}%`;
           // Форматируем число с правильным количеством знаков после запятой
-          const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
-          scoreLabel.textContent = score.toFixed(decimals);
+          const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : (yGridConfig.step.toString().split('.')[1]?.length || 0);
+          scoreLabel.textContent = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
           container.appendChild(scoreLabel);
         }
       }
@@ -224,9 +256,8 @@ class ScatterPlot {
               const costLabel = document.createElement("div");
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
-              // Для первой подписи добавляем "$", для остальных - только число
-              const firstLabelValue = config.axisX.leftZone.min + leftConfig.step;
-              costLabel.textContent = Math.abs(cost - firstLabelValue) < 0.0001 ? "$" + cost.toFixed(2) : cost.toFixed(2);
+              const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
+              costLabel.textContent = formatAxisXValue(cost, config, decimals);
               container.appendChild(costLabel);
             }
           }
@@ -238,7 +269,8 @@ class ScatterPlot {
       const leftZoneMaxLabel = document.createElement("div");
       leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
       leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
-      leftZoneMaxLabel.textContent = "$" + config.axisX.leftZone.max.toFixed(2);
+      const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
+      leftZoneMaxLabel.textContent = formatAxisXValue(config.axisX.leftZone.max, config, decimals);
       container.appendChild(leftZoneMaxLabel);
 
       // Правая часть
@@ -286,7 +318,8 @@ class ScatterPlot {
               const costLabel = document.createElement("div");
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
-              costLabel.textContent = "$" + cost.toFixed(2);
+              const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
+              costLabel.textContent = formatAxisXValue(cost, config, decimals);
               container.appendChild(costLabel);
             }
           }
@@ -342,11 +375,8 @@ class ScatterPlot {
             costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
             costLabel.style.left = `${x}%`;
             // Форматируем в зависимости от значения
-            if (cost < 1) {
-              costLabel.textContent = "$" + cost.toFixed(2);
-            } else {
-              costLabel.textContent = "$" + cost.toFixed(0);
-            }
+            const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : (cost < 1 ? 2 : 0);
+            costLabel.textContent = formatAxisXValue(cost, config, decimals);
             container.appendChild(costLabel);
           }
         }
@@ -416,7 +446,8 @@ class ScatterPlot {
       }
       this.activePoint = { element: pointElement, label: pointData?.label, model: modelData };
 
-      const cost = parseCost(modelData.cost);
+      const costValue = modelData.cost || modelData.parametersNumber;
+      const cost = parseCost(costValue);
       const x = this.axisScale.valueToX(cost);
       const displayScore = this.config.useVisualOffset && modelData.visualOffset !== undefined 
         ? modelData.score + modelData.visualOffset 
@@ -426,8 +457,8 @@ class ScatterPlot {
       // Обновляем лейбл цены и его засечку
       if (costLabel) {
         costLabel.style.left = `${x}%`;
-        const decimals = modelData.vendor === "Modulate" ? 4 : 3;
-        costLabel.textContent = "$" + cost.toFixed(decimals);
+        const decimals = getDecimals(this.config, 'axisX', modelData.vendor);
+        costLabel.textContent = formatAxisXValue(cost, this.config, decimals);
         costLabel.style.display = "block";
       }
       if (costLabelTick) {
@@ -438,7 +469,8 @@ class ScatterPlot {
       // Обновляем лейбл оценки и его засечку
       if (scoreLabel) {
         scoreLabel.style.top = `${y}%`;
-        scoreLabel.textContent = modelData.score.toFixed(1);
+        const decimals = getDecimals(this.config, 'axisY', modelData.vendor);
+        scoreLabel.textContent = modelData.score.toFixed(decimals);
         scoreLabel.style.display = "block";
       }
       if (scoreLabelTick) {
@@ -574,7 +606,8 @@ class ScatterPlot {
     }
 
     config.data.forEach((model) => {
-      const cost = parseCost(model.cost);
+      const costValue = model.cost || model.parametersNumber;
+      const cost = parseCost(costValue);
       const x = scale.valueToX(cost);
       const displayScore = config.useVisualOffset && model.visualOffset !== undefined 
         ? model.score + model.visualOffset 
@@ -594,7 +627,8 @@ class ScatterPlot {
       point.dataset.model = model.model;
       point.dataset.modelType = model.modelType || "";
       point.dataset.score = model.score;
-      point.dataset.cost = typeof model.cost === 'string' ? model.cost : "$" + model.cost.toFixed(2);
+      const isCurrency = shouldFormatAsCurrency(config);
+      point.dataset.cost = typeof costValue === 'string' ? costValue : (isCurrency ? "$" + cost.toFixed(2) : cost.toFixed(2));
       if (model.speed !== undefined) {
         point.dataset.speed = model.speed;
       }

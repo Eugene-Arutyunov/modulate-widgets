@@ -21,16 +21,20 @@ const scatterPlotConfig1 = {
         labels: [0.10, 0.50, 1.00, 1.50], // конкретные значения для подписей
       },
     },
+    staticDecimals: 2,
+    hoverDecimals: { default: 2, exceptions: { "Modulate": 4 } },
   },
   axisY: {
     label: "Accuracy score",
     min: 0,
-    max: 5.7,
+    max: 5.5,
     // Настройки частоты линий сетки для оси Y
     gridLines: {
       step: 1, // шаг между линиями (каждое целое число)
       labels: [], // автоматически генерируются для каждого целого от 1 до max
     },
+    staticDecimals: 0,
+    hoverDecimals: 2,
   },
   data: [
     {
