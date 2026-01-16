@@ -784,104 +784,195 @@ document.addEventListener("DOMContentLoaded", () => {
   const plot3 = new ScatterPlot(container3, scatterPlotConfig3);
   plot3.createScatterPlot();
 
-  // Управление размером scatterplot-1
+  // Управление размером всех графиков
   const widthControl = document.getElementById("width-control");
   const heightControl = document.getElementById("height-control");
   const labelFontSizeControl = document.getElementById("label-font-size-control");
   const pointSizeControl = document.getElementById("point-size-control");
   const axisFontSizeControl = document.getElementById("axis-font-size-control");
-  const scatterplotWrapper = document.querySelector("#scatterplot-1");
-  const scatterplotAria = document.querySelector("#scatterplot-1 .scatterplot-aria");
+  
+  const scatterplotWrappers = [
+    document.querySelector("#scatterplot-1"),
+    document.querySelector("#scatterplot-2"),
+    document.querySelector("#scatterplot-3"),
+  ];
+  const scatterplotArias = [
+    document.querySelector("#scatterplot-1 .scatterplot-aria"),
+    document.querySelector("#scatterplot-2 .scatterplot-aria"),
+    document.querySelector("#scatterplot-3 .scatterplot-aria"),
+  ];
   const root = document.documentElement;
 
-  if (widthControl && heightControl && scatterplotWrapper && scatterplotAria) {
-    // Функция для перерисовки графика
-    const redrawPlot = () => {
-      plot1.createScatterPlot();
+  // Функция для перерисовки всех графиков
+  const redrawAllPlots = () => {
+    plot1.createScatterPlot();
+    plot2.createScatterPlot();
+    plot3.createScatterPlot();
+  };
+
+  // Универсальная функция для создания обработчика контролов с дебаунсингом
+  function createDebouncedControlHandler({
+    parseValue,
+    validateValue,
+    applyValue,
+    getMinMax,
+    redrawCallback,
+  }) {
+    let timeoutId = null;
+
+    return {
+      onInput: (e) => {
+        // Очищаем предыдущий таймаут
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+
+        const input = e.target;
+        const rawValue = input.value;
+        const parsed = parseValue(rawValue);
+        const { min, max } = getMinMax(input);
+
+        // Убираем класс invalid при вводе
+        input.classList.remove("invalid");
+
+        // Устанавливаем таймаут для применения значения
+        timeoutId = setTimeout(() => {
+          if (validateValue(parsed, min, max)) {
+            applyValue(parsed, input);
+            redrawCallback();
+          } else {
+            // Значение невалидно - красим красным
+            input.classList.add("invalid");
+          }
+        }, 500); // 500ms дебаунсинг
+      },
+
+      onChange: (e) => {
+        // Для события change (стрелки) применяем мгновенно
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+
+        const input = e.target;
+        const rawValue = input.value;
+        const parsed = parseValue(rawValue);
+        const { min, max } = getMinMax(input);
+
+        input.classList.remove("invalid");
+
+        if (validateValue(parsed, min, max)) {
+          applyValue(parsed, input);
+          redrawCallback();
+        } else {
+          input.classList.add("invalid");
+        }
+      },
     };
+  }
+
+  if (widthControl && heightControl && scatterplotWrappers[0] && scatterplotArias[0]) {
 
     // Обработчик для ширины
-    const updateWidth = (e) => {
-      let value = parseFloat(e.target.value);
-      if (isNaN(value) || value < 100) {
-        value = 1140;
-      }
-      e.target.value = value;
-      scatterplotWrapper.style.width = `${value}px`;
-      redrawPlot();
-    };
-
-    widthControl.addEventListener("input", updateWidth);
-    widthControl.addEventListener("change", updateWidth);
+    const widthHandler = createDebouncedControlHandler({
+      parseValue: (val) => parseFloat(val),
+      validateValue: (val, min, max) => !isNaN(val) && val >= min,
+      applyValue: (val, input) => {
+        const min = parseFloat(input.min) || 100;
+        const finalValue = Math.max(min, val);
+        input.value = finalValue;
+        scatterplotWrappers.forEach((wrapper) => {
+          if (wrapper) wrapper.style.width = `${finalValue}px`;
+        });
+      },
+      getMinMax: (input) => ({ min: parseFloat(input.min) || 100, max: Infinity }),
+      redrawCallback: redrawAllPlots,
+    });
+    widthControl.addEventListener("input", widthHandler.onInput);
+    widthControl.addEventListener("change", widthHandler.onChange);
 
     // Обработчик для высоты
-    const updateHeight = (e) => {
-      let value = parseFloat(e.target.value);
-      if (isNaN(value) || value < 100) {
-        value = 400;
-      }
-      e.target.value = value;
-      scatterplotAria.style.height = `${value}px`;
-      redrawPlot();
-    };
-
-    heightControl.addEventListener("input", updateHeight);
-    heightControl.addEventListener("change", updateHeight);
+    const heightHandler = createDebouncedControlHandler({
+      parseValue: (val) => parseFloat(val),
+      validateValue: (val, min, max) => !isNaN(val) && val >= min,
+      applyValue: (val, input) => {
+        const min = parseFloat(input.min) || 100;
+        const finalValue = Math.max(min, val);
+        input.value = finalValue;
+        scatterplotArias.forEach((aria) => {
+          if (aria) aria.style.height = `${finalValue}px`;
+        });
+      },
+      getMinMax: (input) => ({ min: parseFloat(input.min) || 100, max: Infinity }),
+      redrawCallback: redrawAllPlots,
+    });
+    heightControl.addEventListener("input", heightHandler.onInput);
+    heightControl.addEventListener("change", heightHandler.onChange);
 
     // Обработчик для размера текста лейблов
     if (labelFontSizeControl) {
-      const updateLabelFontSize = (e) => {
-        let value = parseFloat(e.target.value);
-        if (isNaN(value) || value < 8) {
-          value = 14;
-        }
-        value = Math.max(8, Math.min(24, value));
-        e.target.value = Math.round(value); // Округляем до целого числа
-        root.style.setProperty("--scatterplot-label-font-size", `${Math.round(value)}px`);
-        redrawPlot();
-      };
-
-      labelFontSizeControl.addEventListener("input", updateLabelFontSize);
-      labelFontSizeControl.addEventListener("change", updateLabelFontSize);
+      const labelFontSizeHandler = createDebouncedControlHandler({
+        parseValue: (val) => parseFloat(val),
+        validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
+        applyValue: (val, input) => {
+          const min = parseFloat(input.min) || 8;
+          const max = parseFloat(input.max) || 24;
+          const finalValue = Math.max(min, Math.min(max, val));
+          input.value = Math.round(finalValue);
+          root.style.setProperty("--scatterplot-label-font-size", `${Math.round(finalValue)}px`);
+        },
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 8, max: parseFloat(input.max) || 24 }),
+        redrawCallback: redrawAllPlots,
+      });
+      labelFontSizeControl.addEventListener("input", labelFontSizeHandler.onInput);
+      labelFontSizeControl.addEventListener("change", labelFontSizeHandler.onChange);
     }
 
     // Обработчик для размера точек
     if (pointSizeControl) {
-      const updatePointSize = (e) => {
-        let value = parseFloat(e.target.value);
-        if (isNaN(value) || value < 4) {
-          value = 14;
-        }
-        value = Math.max(4, Math.min(32, value));
-        e.target.value = value;
-        root.style.setProperty("--scatterplot-point-size", `${value}px`);
-        redrawPlot();
-      };
-
-      pointSizeControl.addEventListener("input", updatePointSize);
-      pointSizeControl.addEventListener("change", updatePointSize);
+      const pointSizeHandler = createDebouncedControlHandler({
+        parseValue: (val) => parseFloat(val),
+        validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
+        applyValue: (val, input) => {
+          const min = parseFloat(input.min) || 4;
+          const max = parseFloat(input.max) || 32;
+          const finalValue = Math.max(min, Math.min(max, val));
+          input.value = finalValue;
+          root.style.setProperty("--scatterplot-point-size", `${finalValue}px`);
+        },
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 4, max: parseFloat(input.max) || 32 }),
+        redrawCallback: redrawAllPlots,
+      });
+      pointSizeControl.addEventListener("input", pointSizeHandler.onInput);
+      pointSizeControl.addEventListener("change", pointSizeHandler.onChange);
     }
 
     // Обработчик для размера подписей на осях
     if (axisFontSizeControl) {
-      const updateAxisFontSize = (e) => {
-        let value = parseFloat(e.target.value);
-        if (isNaN(value) || value < 8) {
-          value = 13;
-        }
-        value = Math.max(8, Math.min(24, value));
-        e.target.value = Math.round(value); // Округляем до целого числа
-        root.style.setProperty("--scatterplot-axis-font-size", `${Math.round(value)}px`);
-        redrawPlot();
-      };
-
-      axisFontSizeControl.addEventListener("input", updateAxisFontSize);
-      axisFontSizeControl.addEventListener("change", updateAxisFontSize);
+      const axisFontSizeHandler = createDebouncedControlHandler({
+        parseValue: (val) => parseFloat(val),
+        validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
+        applyValue: (val, input) => {
+          const min = parseFloat(input.min) || 8;
+          const max = parseFloat(input.max) || 24;
+          const finalValue = Math.max(min, Math.min(max, val));
+          input.value = Math.round(finalValue);
+          root.style.setProperty("--scatterplot-axis-font-size", `${Math.round(finalValue)}px`);
+        },
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 8, max: parseFloat(input.max) || 24 }),
+        redrawCallback: redrawAllPlots,
+      });
+      axisFontSizeControl.addEventListener("input", axisFontSizeHandler.onInput);
+      axisFontSizeControl.addEventListener("change", axisFontSizeHandler.onChange);
     }
 
     // Инициализация значений по умолчанию
-    scatterplotWrapper.style.width = "1140px";
-    scatterplotAria.style.height = "400px";
+    scatterplotWrappers.forEach((wrapper) => {
+      if (wrapper) wrapper.style.width = "1140px";
+    });
+    scatterplotArias.forEach((aria) => {
+      if (aria) aria.style.height = "400px";
+    });
   }
 
   // Перерисовка при изменении размера окна

@@ -101,6 +101,11 @@ body {
   min-width: 100px;
 }
 
+.control-group input.invalid {
+  color: rgba(var(--ids__UI-error-RGB), 1);
+  border-color: rgba(var(--ids__UI-error-RGB), 0.5);
+}
+
 .control-group input#width-control,
 .control-group input#height-control {
   width: 80px;
