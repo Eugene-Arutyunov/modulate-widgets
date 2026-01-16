@@ -184,10 +184,10 @@ body {
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria & {
-        width: 80%;
-        left: -50%;
+        width: 65%;
+        left: -45%;
         top: auto;
-        bottom: -40%;
+        bottom: -50%;
       }
 
       #scatterplot-3 .scatterplot-container .scatterplot-aria & {
@@ -219,7 +219,7 @@ body {
       #scatterplot-2 .scatterplot-container .scatterplot-aria & {
         width: 200px;
         bottom: 19%;
-        left: 8%;
+        left: 5%;
         top: auto;
       }
 
