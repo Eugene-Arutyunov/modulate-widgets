@@ -1,7 +1,5 @@
 const scatterPlotConfig1 = {
-  title: "Conversation Understanding Benchmark",
   axisX: {
-    label: "Inference cost",
     leftZone: { min: 0, max: 0.07 },
     rightZone: { min: 0.08, max: 1.50 },
     break: {
@@ -25,7 +23,6 @@ const scatterPlotConfig1 = {
     hoverDecimals: { default: 2, exceptions: { "Modulate": 4 } },
   },
   axisY: {
-    label: "Accuracy score",
     min: 0,
     max: 5.5,
     // Настройки частоты линий сетки для оси Y

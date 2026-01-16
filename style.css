@@ -33,6 +33,14 @@
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
+  --vendor-nvidia-RGB: 118, 185, 0; /* NVIDIA green */
+  --vendor-mistral-RGB: 225, 5, 0; /* Mistral red */
+  --vendor-assemblyai-RGB: 188, 231, 244; /* AssemblyAI light blue */
+  --vendor-deepgram-RGB: 6, 214, 160; /* Deepgram cyan */
+  --vendor-elevenlabs-RGB: 196, 125, 229; /* ElevenLabs purple */
+  --vendor-microsoft-RGB: 0, 120, 212; /* Microsoft Azure blue */
+  --vendor-amazon-RGB: 255, 153, 0; /* Amazon AWS orange */
+  --vendor-gray-border-RGB: 100, 100, 100; /* Dark gray border for vendors without official colors */
 
   /* Highlight zone colors */
   --highlight-zone-green-RGB: 0, 255, 0; /* Green for highlight zone */
@@ -136,43 +144,46 @@ body {
       position: absolute;
       left: 0;
       top: 0;
-      width: 50%;
+      width: 100%;
       height: 100%;
       overflow: hidden;
       z-index: 1;
       pointer-events: none;
     }
 
-    & .scatterplot-background-highlight-bottom-left {
-      top: auto;
-      bottom: 0;
-    }
-
     & .scatterplot-background-highlight-ellipse {
       position: absolute;
-      width: 114.6%;
-      height: 125%;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       background-color: rgba(var(--highlight-zone-green-RGB), 0.3);
-      left: -50%;
-      top: -50%;
       filter: blur(50px);
       opacity: 1;
-    }
 
-    &
-      .scatterplot-background-highlight-bottom-left
-      .scatterplot-background-highlight-ellipse {
-      top: auto;
-      bottom: -50%;
+      #scatterplot-1 .scatterplot-container .scatterplot-aria & {
+        width: 90%;
+        height: 130%;
+        left: -58%;
+        top: -48%;
+      }
+
+      #scatterplot-2 .scatterplot-container .scatterplot-aria & {
+        width: 80%;
+        left: -50%;
+        top: auto;
+        bottom: -40%;
+      }
+
+      #scatterplot-3 .scatterplot-container .scatterplot-aria & {
+        width: 50%;
+        height: 100%;
+        left: 18%;
+        top: -60%;
+      }
     }
 
     & .scatterplot-background-highlight-label {
       position: absolute;
-      left: 27%;
-      top: 25%;
-      width: 80px;
-
       font-size: 0.8em;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -182,13 +193,25 @@ body {
       text-align: center;
       line-height: 1.3;
       z-index: 2;
-    }
 
-    &
-      .scatterplot-background-highlight-bottom-left
-      .scatterplot-background-highlight-label {
-      top: auto;
-      bottom: 25%;
+      #scatterplot-1 .scatterplot-container .scatterplot-aria & {
+        left: 13.5%;
+        top: 25%;
+        width: 80px;
+      }
+
+      #scatterplot-2 .scatterplot-container .scatterplot-aria & {
+        width: 200px;
+        bottom: 19%;
+        left: 8%;
+        top: auto;
+      }
+
+      #scatterplot-3 .scatterplot-container .scatterplot-aria & {
+        left: 35%;
+        top: 18%;
+        width: 200px;
+      }
     }
 
     /* Граница оси X создается через псевдоэлементы для поддержки разрыва */
@@ -213,8 +236,8 @@ body {
     }
   }
 
-  & .scatterplot-cost-label,
-  & .scatterplot-score-label {
+  & .scatterplot-axis-x-label,
+  & .scatterplot-axis-y-label {
     position: absolute;
     font-size: var(--scatterplot-axis-font-size, 13px);
     font-weight: 600;
@@ -226,25 +249,15 @@ body {
     padding: 0px 2px;
   }
 
-  & .scatterplot-cost-label {
+  & .scatterplot-axis-x-label {
     bottom: -30px;
     transform: translateX(-50%);
   }
 
-  & .scatterplot-score-label {
-    left: -40px;
-    transform: translateY(-50%);
+  & .scatterplot-axis-y-label {
+    transform: translateY(-50%) translateX(calc(-100% - 12px));
+    text-align: right;
   }
-}
-
-/* Специфичные стили для второго графика */
-#scatterplot-2
-  .scatterplot-container
-  .scatterplot-aria
-  .scatterplot-background-highlight-label {
-  width: 200px !important;
-  bottom: 20% !important;
-  left: 15% !important;
 }
 
 .scatterplot-point-label {
@@ -288,6 +301,7 @@ body {
   height: var(--point-size, var(--scatterplot-point-size, 14px));
   border-radius: 50%;
   border: var(--point-border, 1px solid rgba(var(--ids__bg-surface-RGB), 1));
+  box-sizing: border-box;
   transform: translate(-50%, -50%) scale(1);
   z-index: 2;
 
@@ -361,6 +375,102 @@ body {
   --point-bg: rgba(var(--vendor-deepseek-RGB), 1);
 }
 
+/* NVIDIA */
+.scatterplot-point[data-vendor="NVIDIA"] {
+  --point-bg: rgba(var(--vendor-nvidia-RGB), 1);
+}
+
+/* Mistral */
+.scatterplot-point[data-vendor="Mistral"] {
+  --point-bg: rgba(var(--vendor-mistral-RGB), 1);
+}
+
+/* Google */
+.scatterplot-point[data-vendor="Google"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
+}
+
+/* AssemblyAI */
+.scatterplot-point[data-vendor="AssemblyAI"] {
+  --point-bg: rgba(var(--vendor-assemblyai-RGB), 1);
+}
+
+/* Deepgram */
+.scatterplot-point[data-vendor="Deepgram"] {
+  --point-bg: rgba(var(--vendor-deepgram-RGB), 1);
+}
+
+/* ElevenLabs */
+.scatterplot-point[data-vendor="ElevenLabs"] {
+  --point-bg: rgba(var(--vendor-elevenlabs-RGB), 1);
+}
+
+/* Speechmatics */
+.scatterplot-point[data-vendor="Speechmatics"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Gladia */
+.scatterplot-point[data-vendor="Gladia"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Microsoft */
+.scatterplot-point[data-vendor="Microsoft"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-microsoft-RGB), 1);
+}
+
+/* Amazon */
+.scatterplot-point[data-vendor="Amazon"] {
+  --point-bg: rgba(var(--vendor-amazon-RGB), 1);
+}
+
+/* Resemble AI */
+.scatterplot-point[data-vendor="Resemble AI"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Deep Learning & Media System Laboratory */
+.scatterplot-point[data-vendor="Deep Learning & Media System Laboratory"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Whispeak */
+.scatterplot-point[data-vendor="Whispeak"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* DF Arena ML Researchers || No Company */
+.scatterplot-point[data-vendor="DF Arena ML Researchers || No Company"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Momenta */
+.scatterplot-point[data-vendor="Momenta"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Syntra */
+.scatterplot-point[data-vendor="Syntra"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+/* Singapore Agency for Science, Technology & Research */
+.scatterplot-point[data-vendor="Singapore Agency for Science, Technology & Research"] {
+  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
 /* Active state */
 .scatterplot-point-active {
   transform: translate(-50%, -50%) scale(1.2);
@@ -382,9 +492,9 @@ body {
 
 .scatterplot-axis-label-y {
   position: absolute;
-  left: -125px;
+  left: -60px;
   top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
+  transform: translateX(-50%) translateY(0%) rotate(-90deg);
   transform-origin: center;
   margin: 0;
   font-size: 0.8em;
@@ -461,21 +571,21 @@ body {
   right: 0;
 }
 
-.scatterplot-cost-label-tick,
-.scatterplot-score-label-tick {
+.scatterplot-axis-x-tick,
+.scatterplot-axis-y-tick {
   position: absolute;
   background-color: rgba(var(--ids__text-RGB), 1);
   pointer-events: none;
 }
 
-.scatterplot-cost-label-tick {
+.scatterplot-axis-x-tick {
   width: 2px;
   height: 12px;
   bottom: -12px;
   transform: translateX(-50%);
 }
 
-.scatterplot-score-label-tick {
+.scatterplot-axis-y-tick {
   width: 12px;
   height: 2px;
   left: -12px;
@@ -490,7 +600,7 @@ body {
 }
 
 .scatterplot-static-label-zero {
-  left: -25px;
+  left: -23px;
   bottom: -30px;
 }
 
@@ -500,8 +610,8 @@ body {
 }
 
 .scatterplot-static-label-score {
-  left: -25px;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateX(calc(-100% - 14px));
+  text-align: right;
 }
 
 .scatterplot-axis-break {

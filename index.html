@@ -68,7 +68,7 @@
 
       <div class="scatterplot-wrapper" id="scatterplot-1">
         <div class="scatterplot-title">
-          Conversation Understanding Benchmark
+          Evaluating Accuracy and Cost for Conversation Understanding AI
         </div>
 
         <div class="scatterplot-container">
@@ -88,15 +88,14 @@
       <!-- Scatterplot 2: Transcription -->
       <div class="scatterplot-wrapper" id="scatterplot-2">
         <div class="scatterplot-title">
-          Transcription Quality Word Benchmark
+          Transcription Accuracy on Noisy Conversations
         </div>
-        <div class="scatterplot-subtitle">
+        <!-- <div class="scatterplot-subtitle">
           Word Error Rate, cost per 1000 minutes of audio
-        </div>
+        </div> -->
         <div class="scatterplot-container">
           <div class="scatterplot-aria">
-            <div
-              class="scatterplot-background-highlight scatterplot-background-highlight-bottom-left">
+            <div class="scatterplot-background-highlight">
               <div class="scatterplot-background-highlight-ellipse"></div>
               <div class="scatterplot-background-highlight-label">
                 Lowest word error lowest cost
@@ -114,11 +113,15 @@
 
       <!-- Scatterplot 3: Synthetic Voice Detection -->
       <div class="scatterplot-wrapper" id="scatterplot-3">
-        <div class="scatterplot-title">
-          Synthetic Voice / Deepfake Detection Model
-        </div>
+        <div class="scatterplot-title">Synthetic Voice Detection Accuracy</div>
         <div class="scatterplot-container">
           <div class="scatterplot-aria">
+            <div class="scatterplot-background-highlight">
+              <div class="scatterplot-background-highlight-ellipse"></div>
+              <div class="scatterplot-background-highlight-label">
+                Leading deepfake detection
+              </div>
+            </div>
             <div class="scatterplot-axis-label-x">Number of parameters (M)</div>
             <div class="scatterplot-axis-label-y">Average F1 score</div>
           </div>

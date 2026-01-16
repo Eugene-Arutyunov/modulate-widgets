@@ -1,7 +1,5 @@
 const scatterPlotConfig3 = {
-  title: "Synthetic Voice / Deepfake Detection Model",
   axisX: {
-    label: "Number of parameters (M)",
     leftZone: { min: 0, max: 650 },
     rightZone: { min: 650, max: 3000 },
     break: {
@@ -13,7 +11,7 @@ const scatterPlotConfig3 = {
       left: {
         step: 100, // шаг между линиями
         max: 650, // до какого значения рисовать
-        labels: [0, 100, 200, 300, 400, 500, 600, 650], // конкретные значения для подписей
+        labels: [100, 200, 300, 400, 500, 600, 650], // конкретные значения для подписей
       },
       right: {
         step: 125, // шаг между линиями
@@ -25,7 +23,6 @@ const scatterPlotConfig3 = {
     hoverDecimals: 0,
   },
   axisY: {
-    label: "Average F1-Score",
     min: 0.75,
     max: 1.0,
     // Настройки частоты линий сетки для оси Y
@@ -104,5 +101,9 @@ const scatterPlotConfig3 = {
       parametersNumber: 100,
     },
   ],
+  backgroundHighlight: {
+    text: "LEADING DEEPFAKE DETECTION",
+    position: "top-left",
+  },
   useVisualOffset: false,
 };

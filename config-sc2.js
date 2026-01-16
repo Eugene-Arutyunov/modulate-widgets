@@ -1,7 +1,5 @@
 const scatterPlotConfig2 = {
-  title: "Transcription",
   axisX: {
-    label: "Cost",
     leftZone: { min: 0, max: 5 },
     rightZone: { min: 6, max: 24 },
     break: {
@@ -25,17 +23,17 @@ const scatterPlotConfig2 = {
     hoverDecimals: 2,
   },
   axisY: {
-    label: "Word Error Rate (WER)",
     min: 0,
     max: 40,
     inverted: false, // обычная шкала (ноль внизу, большее значение выше)
+    unit: "&hairsp;%", // единица измерения для подписей
     // Настройки частоты линий сетки для оси Y
     gridLines: {
       step: 5, // шаг между линиями
       labels: [10, 20, 30, 40], // автоматически генерируются
     },
     staticDecimals: 0,
-    hoverDecimals: 2,
+    hoverDecimals: 1,
   },
   data: [
     {
