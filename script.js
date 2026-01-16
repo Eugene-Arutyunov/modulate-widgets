@@ -169,7 +169,13 @@ class ScatterPlot {
       : yValues.filter(val => val <= config.axisY.max && val >= config.axisY.min);
     
     const yLastValue = yLabelValues.length > 0 ? yLabelValues[yLabelValues.length - 1] : null;
-    const showUnitsOnLastY = config.axisY.showUnitsOnFirstAndLast !== false;
+    const yFirstValue = yLabelValues.length > 0 ? yLabelValues[0] : null;
+    // Для процентов показываем только у последнего, для других единиц - у первого и последнего
+    const unit = config.axisY.unit || "";
+    const isPercent = unit.includes("%");
+    const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined 
+      ? config.axisY.showUnitsOnFirstAndLast 
+      : !isPercent; // По умолчанию: проценты - только последний, иначе первый и последний
 
     yValues.forEach((score) => {
       if (score <= config.axisY.max && score >= config.axisY.min) {
@@ -213,7 +219,9 @@ class ScatterPlot {
           const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : (yGridConfig.step.toString().split('.')[1]?.length || 0);
           const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
           const unit = config.axisY.unit || "";
-          const showUnit = showUnitsOnLastY && (score === yLastValue);
+          const showUnit = showUnitsOnFirstAndLastY 
+            ? (score === yFirstValue || score === yLastValue)
+            : (score === yLastValue);
           scoreLabel.innerHTML = formattedValue + (showUnit ? unit : "");
           container.appendChild(scoreLabel);
         }
@@ -254,7 +262,12 @@ class ScatterPlot {
         : leftValues.filter(val => val <= leftConfig.max && val >= config.axisX.leftZone.min);
       
       const leftLastValue = config.axisX.leftZone.max;
-      const showUnitsOnLast = config.axisX.showUnitsOnFirstAndLast !== false;
+      const leftFirstValue = leftLabelValues.length > 0 ? leftLabelValues[0] : null;
+      // Для валюты показываем у первого и последнего, иначе только у последнего
+      const isCurrency = shouldFormatAsCurrency(config);
+      const showUnitsOnFirstAndLast = config.axisX.showUnitsOnFirstAndLast !== undefined 
+        ? config.axisX.showUnitsOnFirstAndLast 
+        : isCurrency; // По умолчанию: валюта - первый и последний, иначе только последний
 
       leftValues.forEach((cost) => {
         if (cost <= leftConfig.max && cost >= config.axisX.leftZone.min) {
@@ -277,7 +290,9 @@ class ScatterPlot {
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
               const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-              const showUnit = showUnitsOnLast && (cost === leftLastValue);
+              const showUnit = showUnitsOnFirstAndLast 
+                ? (cost === leftFirstValue || cost === leftLastValue)
+                : (cost === leftLastValue);
               costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
               container.appendChild(costLabel);
             }
@@ -291,7 +306,9 @@ class ScatterPlot {
       leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
       leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
       const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-      const showUnitLeftMax = showUnitsOnLast && (config.axisX.leftZone.max === leftLastValue);
+      const showUnitLeftMax = showUnitsOnFirstAndLast 
+        ? (config.axisX.leftZone.max === leftFirstValue || config.axisX.leftZone.max === leftLastValue)
+        : (config.axisX.leftZone.max === leftLastValue);
       leftZoneMaxLabel.textContent = formatAxisXValue(config.axisX.leftZone.max, config, decimals, showUnitLeftMax);
       container.appendChild(leftZoneMaxLabel);
 
@@ -326,6 +343,7 @@ class ScatterPlot {
         : rightValues.filter(val => val <= rightConfig.max && val >= config.axisX.rightZone.min);
       
       const rightLastValue = rightLabelValues.length > 0 ? rightLabelValues[rightLabelValues.length - 1] : null;
+      const rightFirstValue = rightLabelValues.length > 0 ? rightLabelValues[0] : null;
 
       rightValues.forEach((cost) => {
         if (cost <= rightConfig.max && cost >= config.axisX.rightZone.min) {
@@ -348,7 +366,9 @@ class ScatterPlot {
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
               const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-              const showUnit = showUnitsOnLast && (cost === rightLastValue);
+              const showUnit = showUnitsOnFirstAndLast 
+                ? (cost === rightFirstValue || cost === rightLastValue)
+                : (cost === rightLastValue);
               costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
               container.appendChild(costLabel);
             }
@@ -390,7 +410,12 @@ class ScatterPlot {
         : xValues.filter(val => val <= config.axisX.max && val >= config.axisX.min);
       
       const xLastValue = xLabelValues.length > 0 ? xLabelValues[xLabelValues.length - 1] : null;
-      const showUnitsOnLastX = config.axisX.showUnitsOnFirstAndLast !== false;
+      const xFirstValue = xLabelValues.length > 0 ? xLabelValues[0] : null;
+      // Для валюты показываем у первого и последнего, иначе только у последнего
+      const isCurrencyX = shouldFormatAsCurrency(config);
+      const showUnitsOnFirstAndLastX = config.axisX.showUnitsOnFirstAndLast !== undefined 
+        ? config.axisX.showUnitsOnFirstAndLast 
+        : isCurrencyX; // По умолчанию: валюта - первый и последний, иначе только последний
 
       xValues.forEach((cost) => {
         if (cost <= config.axisX.max && cost >= config.axisX.min) {
@@ -414,7 +439,9 @@ class ScatterPlot {
             costLabel.style.left = `${x}%`;
             // Форматируем в зависимости от значения
             const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : (cost < 1 ? 2 : 0);
-            const showUnit = showUnitsOnLastX && (cost === xLastValue);
+            const showUnit = showUnitsOnFirstAndLastX 
+              ? (cost === xFirstValue || cost === xLastValue)
+              : (cost === xLastValue);
             costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
             container.appendChild(costLabel);
           }

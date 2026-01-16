@@ -171,10 +171,10 @@ body {
       opacity: 1;
 
       #scatterplot-1 .scatterplot-container .scatterplot-aria & {
-        width: 90%;
-        height: 130%;
+        width: 85%;
+        height: 100%;
         left: -58%;
-        top: -48%;
+        top: -50%;
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria & {
@@ -205,8 +205,8 @@ body {
       z-index: 2;
 
       #scatterplot-1 .scatterplot-container .scatterplot-aria & {
-        left: 13.5%;
-        top: 25%;
+        left: 12.5%;
+        top: 17%;
         width: 80px;
       }
 

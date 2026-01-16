@@ -1,7 +1,7 @@
 const scatterPlotConfig2 = {
   axisX: {
-    leftZone: { min: 0, max: 5 },
-    rightZone: { min: 6, max: 24 },
+    leftZone: { min: 0, max: 4 },
+    rightZone: { min: 4, max: 25 },
     break: {
       leftSectionEnd: 63,
       rightSectionStart: 70,
@@ -10,13 +10,13 @@ const scatterPlotConfig2 = {
     gridLines: {
       left: {
         step: 1, // шаг между линиями
-        max: 24, // до какого значения рисовать
+        max: 4, // до какого значения рисовать
         labels: [], // автоматически генерируются
       },
       right: {
         step: 1, // шаг между линиями
-        max: 24, // до какого значения рисовать
-        labels: [6, 12, 18, 24], // автоматически генерируются
+        max: 25, // до какого значения рисовать
+        labels: [5, 10, 15, 20, 25], // автоматически генерируются
       },
     },
     staticDecimals: 0,
@@ -78,12 +78,7 @@ const scatterPlotConfig2 = {
       score: 24.70,
       cost: "$2.5000",
     },
-    {
-      vendor: "Mistral",
-      model: "mistral-voxtral-small",
-      score: 28.20,
-      cost: "$4.0000",
-    },
+    
     {
       vendor: "OpenAI",
       model: "whisper-large-v3",

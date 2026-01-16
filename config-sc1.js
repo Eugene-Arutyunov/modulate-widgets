@@ -118,7 +118,7 @@ const scatterPlotConfig1 = {
     },
     {
       vendor: "Gemini",
-      model: "gemini-3-flash",
+      model: "gemini-3-flash-min",
       modelType: "",
       score: 3.52,
       cost: "$0.090620",
@@ -136,7 +136,7 @@ const scatterPlotConfig1 = {
     },
     {
       vendor: "OpenAI",
-      model: "gpt-o4",
+      model: "  ",
       modelType: "",
       score: 3.03,
       cost: "$0.104280",
@@ -145,7 +145,7 @@ const scatterPlotConfig1 = {
     },
     {
       vendor: "Gemini",
-      model: "gemini-3-flash",
+      model: "gemini-3-flash-med",
       modelType: "",
       score: 3.89,
       cost: "$0.118550",
