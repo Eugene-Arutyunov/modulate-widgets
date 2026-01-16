@@ -33,13 +33,15 @@
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
-  --vendor-nvidia-RGB: 118, 185, 0; /* NVIDIA green */
-  --vendor-mistral-RGB: 225, 5, 0; /* Mistral red */
-  --vendor-assemblyai-RGB: 188, 231, 244; /* AssemblyAI light blue */
+  --vendor-nvidia-RGB: 90, 200, 150; /* NVIDIA green */
+  --vendor-mistral-RGB: 225, 100, 150; /* Mistral red */
+  --vendor-assemblyai-RGB: 120, 190, 250; /* AssemblyAI light blue */
   --vendor-deepgram-RGB: 6, 214, 160; /* Deepgram cyan */
   --vendor-elevenlabs-RGB: 196, 125, 229; /* ElevenLabs purple */
-  --vendor-microsoft-RGB: 0, 120, 212; /* Microsoft Azure blue */
-  --vendor-amazon-RGB: 255, 153, 0; /* Amazon AWS orange */
+  --vendor-microsoft-RGB: 75, 164, 234; /* Microsoft Azure blue */
+  --vendor-amazon-RGB: 255, 153, 100; /* Amazon AWS orange */
+  --vendor-speechmatics-RGB: 40, 90, 110; /* Speechmatics */
+  --vendor-whispeak-RGB: 135, 58, 226; /* Whispeak */
   --vendor-gray-border-RGB: 100, 100, 100; /* Dark gray border for vendors without official colors */
 
   /* Highlight zone colors */
@@ -174,7 +176,7 @@ body {
         width: 85%;
         height: 100%;
         left: -58%;
-        top: -50%;
+        top: -60%;
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria & {
@@ -418,8 +420,7 @@ body {
 
 /* Speechmatics */
 .scatterplot-point[data-vendor="Speechmatics"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+  --point-bg: rgba(var(--vendor-speechmatics-RGB), 1);
 }
 
 /* Gladia */
@@ -430,8 +431,7 @@ body {
 
 /* Microsoft */
 .scatterplot-point[data-vendor="Microsoft"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-microsoft-RGB), 1);
+  --point-bg: rgba(var(--vendor-microsoft-RGB), 1);
 }
 
 /* Amazon */
@@ -454,7 +454,7 @@ body {
 /* Whispeak */
 .scatterplot-point[data-vendor="Whispeak"] {
   --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+  --point-border: 2px solid rgba(var(--vendor-whispeak-RGB), 1);
 }
 
 /* DF Arena ML Researchers || No Company */

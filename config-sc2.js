@@ -50,7 +50,7 @@ const scatterPlotConfig2 = {
     },
     {
       vendor: "Mistral",
-      model: "mistral-voxtral-mini",
+      model: "voxtral-mini",
       score: 26.50,
       cost: "$1.0000",
     },
