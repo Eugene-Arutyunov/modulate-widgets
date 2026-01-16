@@ -128,7 +128,7 @@ body {
   & .scatterplot-title {
     font-size: 1.3em;
     font-weight: 600;
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
     opacity: 0.8;
 
     text-align: center;
@@ -136,6 +136,7 @@ body {
   & .scatterplot-subtitle {
     font-size: 1em;
 
+    color: rgba(var(--ids__text-RGB), 0.7);
     margin: 0 0 20px 0;
     opacity: 0.8;
 
