@@ -59,7 +59,7 @@ const scatterPlotConfig3 = {
       parametersNumber: 98,
     },
     {
-      vendor: "DF Arena ML Researchers || No Company",
+      vendor: "DF Arena ML Researchers",
       model: "df-arena-1b-v1",
       score: 0.8860,
       parametersNumber: 1000,
@@ -83,7 +83,7 @@ const scatterPlotConfig3 = {
       parametersNumber: 376,
     },
     {
-      vendor: "DF Arena ML Researchers || No Company",
+      vendor: "DF Arena ML Researchers",
       model: "df-arena-100m-v1",
       score: 0.8370,
       parametersNumber: 100,
@@ -95,7 +95,7 @@ const scatterPlotConfig3 = {
       parametersNumber: 2112,
     },
     {
-      vendor: "DF Arena ML Researchers || No Company",
+      vendor: "DF Arena ML Researchers",
       model: "df-arena-100m-v0",
       score: 0.8000,
       parametersNumber: 100,

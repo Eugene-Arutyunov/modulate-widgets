@@ -50,6 +50,61 @@ function isValueInLabels(value, labels, epsilon = 0.0001) {
   return labels.some(label => Math.abs(value - label) < epsilon);
 }
 
+// Функции для работы с типами точек и классами вендоров
+const OUTLINED_VENDORS = [
+  "OpenAI",
+  "Gemini",
+  "Google",
+  "Whispeak",
+  "Gladia",
+  "Resemble AI",
+  "Deep Learning & Media System Laboratory",
+  "DF Arena ML Researchers",
+  "Momenta",
+  "Syntra",
+  "Singapore Agency for Science, Technology & Research",
+];
+
+const GRAY_BORDER_VENDORS = [
+  "Gladia",
+  "Resemble AI",
+  "Deep Learning & Media System Laboratory",
+  "DF Arena ML Researchers",
+  "Momenta",
+  "Syntra",
+  "Singapore Agency for Science, Technology & Research",
+];
+
+const MODULATE_GRADIENT_MODELS = [
+  "velma-2-fast",
+  "velma-2",
+  "velma-1",
+  "velma-2-heavy",
+];
+
+function getPointType(vendor) {
+  return OUTLINED_VENDORS.includes(vendor) ? "outlined" : "filled";
+}
+
+function needsGrayBorder(vendor) {
+  return GRAY_BORDER_VENDORS.includes(vendor);
+}
+
+function needsModulateGradient(vendor, model) {
+  return vendor === "Modulate" && MODULATE_GRADIENT_MODELS.includes(model);
+}
+
+function normalizeVendorName(vendor) {
+  return vendor
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/\|\|/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 // Класс для создания scatter plot
 class ScatterPlot {
   constructor(containerElement, config) {
@@ -692,7 +747,17 @@ class ScatterPlot {
       }
 
       const point = document.createElement("div");
-      point.className = "scatterplot-point";
+      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+      const pointType = getPointType(model.vendor);
+      point.className = `scatterplot-point ${vendorClass} ${pointType}`;
+      
+      if (needsGrayBorder(model.vendor)) {
+        point.classList.add("vendor-gray-border");
+      }
+      if (needsModulateGradient(model.vendor, model.model)) {
+        point.classList.add("vendor-modulate-gradient");
+      }
+      
       point.style.left = `${x}%`;
       point.style.top = `${y}%`;
       point.dataset.vendor = model.vendor;
@@ -810,6 +875,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const plot3 = new ScatterPlot(container3, scatterPlotConfig3);
   plot3.createScatterPlot();
+
+  // Создаем легенду вендоров для конкретного графика
+  function createVendorsLegend(containerSelector, config) {
+    const vendorsContainer = document.querySelector(containerSelector);
+    if (!vendorsContainer || !config || !config.data) return;
+
+    // Собираем уникальные вендоры из данных этого графика
+    const vendorsSet = new Set();
+    config.data.forEach((item) => {
+      vendorsSet.add(item.vendor);
+    });
+
+    // Сортируем вендоры: сначала Modulate, потом остальные по алфавиту
+    const vendorsArray = Array.from(vendorsSet);
+    const vendors = vendorsArray.sort((a, b) => {
+      if (a === "Modulate") return -1;
+      if (b === "Modulate") return 1;
+      return a.localeCompare(b);
+    });
+
+    // Создаем элементы для каждого вендора
+    vendors.forEach((vendor) => {
+      const vendorItem = document.createElement("div");
+      vendorItem.className = "vendor-item";
+
+      const point = document.createElement("div");
+      const vendorClass = `vendor-${normalizeVendorName(vendor)}`;
+      const pointType = getPointType(vendor);
+      point.className = `scatterplot-point ${vendorClass} ${pointType}`;
+
+      if (vendor === "Modulate") {
+        point.classList.add("vendor-modulate-gradient");
+      }
+
+      if (needsGrayBorder(vendor)) {
+        point.classList.add("vendor-gray-border");
+      }
+
+      const label = document.createElement("span");
+      label.className = "vendor-label";
+      label.textContent = vendor;
+
+      vendorItem.appendChild(point);
+      vendorItem.appendChild(label);
+      vendorsContainer.appendChild(vendorItem);
+    });
+  }
+
+  // Создаем легенды для каждого графика
+  createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1);
+  createVendorsLegend("#scatterplot-2 .vendors", scatterPlotConfig2);
+  createVendorsLegend("#scatterplot-3 .vendors", scatterPlotConfig3);
 
   // Управление размером всех графиков
   const widthControl = document.getElementById("width-control");

@@ -123,7 +123,7 @@ body {
   background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
   border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
   border-radius: 8px;
-  padding: 30px 90px 100px 90px;
+  padding: 30px 90px 30px 90px;
 
   & .scatterplot-title {
     font-size: 1.3em;
@@ -140,6 +140,10 @@ body {
     opacity: 0.8;
 
     text-align: center;
+  }
+
+  & .paddind-spacer {
+    height: 70px;
   }
 }
 
@@ -312,7 +316,7 @@ body {
   width: var(--point-size, var(--scatterplot-point-size, 14px));
   height: var(--point-size, var(--scatterplot-point-size, 14px));
   border-radius: 50%;
-  border: var(--point-border, 1px solid rgba(var(--ids__bg-surface-RGB), 1));
+  border: var(--point-border, none);
   box-sizing: border-box;
   transform: translate(-50%, -50%) scale(1);
   z-index: 2;
@@ -323,162 +327,116 @@ body {
   background: var(--point-bg, rgba(var(--ids__text-RGB), 1));
 }
 
-/* Modulate */
-.scatterplot-point[data-vendor="Modulate"] {
-  &[data-model="velma-2-fast"] {
-    --point-bg: linear-gradient(
-      to right,
-      rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
-    );
-  }
-
-  &[data-model="velma-2"] {
-    --point-bg: linear-gradient(
-      to right,
-      rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
-    );
-  }
-
-  &[data-model="velma-1"] {
-    --point-bg: linear-gradient(
-      to right,
-      rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
-    );
-  }
-
-  &[data-model="velma-2-heavy"] {
-    --point-bg: linear-gradient(
-      to right,
-      rgba(var(--vendor-modulate-RGB), 1),
-      rgba(var(--vendor-modulate-gradient-2-RGB), 1)
-    );
-  }
-
-  /* Fallback для других моделей Modulate */
-  &:not([data-model="velma-2-fast"]):not([data-model="velma-2"]):not(
-      [data-model="velma-1"]
-    ):not([data-model="velma-2-heavy"]) {
-    --point-bg: rgba(var(--vendor-modulate-RGB), 1);
-  }
+/* Базовые классы для типов точек */
+.scatterplot-point.filled {
+  --point-bg: rgba(var(--brand-color), 1);
 }
 
-/* OpenAI */
-.scatterplot-point[data-vendor="OpenAI"] {
+.scatterplot-point.outlined {
   --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-openai-RGB), 1);
+  --point-border: 2px solid rgba(var(--brand-color), 1);
 }
 
-/* Grok (увеличен на 2px) */
-.scatterplot-point[data-vendor="Grok"] {
-  --point-bg: rgba(var(--vendor-grok-RGB), 1);
-}
-
-/* Gemini */
-.scatterplot-point[data-vendor="Gemini"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
-}
-
-/* DeepSeek (увеличен на 2px) */
-.scatterplot-point[data-vendor="DeepSeek"] {
-  --point-bg: rgba(var(--vendor-deepseek-RGB), 1);
-}
-
-/* NVIDIA */
-.scatterplot-point[data-vendor="NVIDIA"] {
-  --point-bg: rgba(var(--vendor-nvidia-RGB), 1);
-}
-
-/* Mistral */
-.scatterplot-point[data-vendor="Mistral"] {
-  --point-bg: rgba(var(--vendor-mistral-RGB), 1);
-}
-
-/* Google */
-.scatterplot-point[data-vendor="Google"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gemini-RGB), 1);
-}
-
-/* AssemblyAI */
-.scatterplot-point[data-vendor="AssemblyAI"] {
-  --point-bg: rgba(var(--vendor-assemblyai-RGB), 1);
-}
-
-/* Deepgram */
-.scatterplot-point[data-vendor="Deepgram"] {
-  --point-bg: rgba(var(--vendor-deepgram-RGB), 1);
-}
-
-/* ElevenLabs */
-.scatterplot-point[data-vendor="ElevenLabs"] {
-  --point-bg: rgba(var(--vendor-elevenlabs-RGB), 1);
-}
-
-/* Speechmatics */
-.scatterplot-point[data-vendor="Speechmatics"] {
-  --point-bg: rgba(var(--vendor-speechmatics-RGB), 1);
-}
-
-/* Gladia */
-.scatterplot-point[data-vendor="Gladia"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
+.scatterplot-point.outlined.vendor-gray-border {
   --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
 }
 
-/* Microsoft */
-.scatterplot-point[data-vendor="Microsoft"] {
-  --point-bg: rgba(var(--vendor-microsoft-RGB), 1);
+/* Классы вендоров */
+.vendor-modulate {
+  --brand-color: var(--vendor-modulate-RGB);
 }
 
-/* Amazon */
-.scatterplot-point[data-vendor="Amazon"] {
-  --point-bg: rgba(var(--vendor-amazon-RGB), 1);
+.vendor-openai {
+  --brand-color: var(--vendor-openai-RGB);
 }
 
-/* Resemble AI */
-.scatterplot-point[data-vendor="Resemble AI"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-grok {
+  --brand-color: var(--vendor-grok-RGB);
 }
 
-/* Deep Learning & Media System Laboratory */
-.scatterplot-point[data-vendor="Deep Learning & Media System Laboratory"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-gemini {
+  --brand-color: var(--vendor-gemini-RGB);
 }
 
-/* Whispeak */
-.scatterplot-point[data-vendor="Whispeak"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-whispeak-RGB), 1);
+.vendor-deepseek {
+  --brand-color: var(--vendor-deepseek-RGB);
 }
 
-/* DF Arena ML Researchers || No Company */
-.scatterplot-point[data-vendor="DF Arena ML Researchers || No Company"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-nvidia {
+  --brand-color: var(--vendor-nvidia-RGB);
 }
 
-/* Momenta */
-.scatterplot-point[data-vendor="Momenta"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-mistral {
+  --brand-color: var(--vendor-mistral-RGB);
 }
 
-/* Syntra */
-.scatterplot-point[data-vendor="Syntra"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-google {
+  --brand-color: var(--vendor-gemini-RGB);
 }
 
-/* Singapore Agency for Science, Technology & Research */
-.scatterplot-point[data-vendor="Singapore Agency for Science, Technology & Research"] {
-  --point-bg: rgba(var(--ids__bg-surface-RGB), 1);
-  --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
+.vendor-assemblyai {
+  --brand-color: var(--vendor-assemblyai-RGB);
+}
+
+.vendor-deepgram {
+  --brand-color: var(--vendor-deepgram-RGB);
+}
+
+.vendor-elevenlabs {
+  --brand-color: var(--vendor-elevenlabs-RGB);
+}
+
+.vendor-speechmatics {
+  --brand-color: var(--vendor-speechmatics-RGB);
+}
+
+.vendor-gladia {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-microsoft {
+  --brand-color: var(--vendor-microsoft-RGB);
+}
+
+.vendor-amazon {
+  --brand-color: var(--vendor-amazon-RGB);
+}
+
+.vendor-resemble-ai {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-deep-learning-media-system-laboratory {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-whispeak {
+  --brand-color: var(--vendor-whispeak-RGB);
+}
+
+.vendor-df-arena-ml-researchers-no-company {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-momenta {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-syntra {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-singapore-agency-science-technology-research {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+/* Специальный класс для градиентов Modulate */
+.scatterplot-point.vendor-modulate-gradient {
+  --point-bg: linear-gradient(
+    to right,
+    rgba(var(--vendor-modulate-RGB), 1),
+    rgba(var(--vendor-modulate-gradient-2-RGB), 1)
+  );
 }
 
 /* Active state */
@@ -660,4 +618,43 @@ body {
 .scatterplot-axis-break-right::after {
   left: -14px;
   transform-origin: center;
+}
+
+/* Легенда вендоров */
+.vendors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 20px 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.vendor-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vendor-item .scatterplot-point {
+  position: static;
+  transform: none;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.vendor-item .scatterplot-point.outlined {
+  --point-border: 1px solid rgba(var(--brand-color), 1);
+}
+
+.vendor-item .scatterplot-point.outlined.vendor-gray-border {
+  --point-border: 1px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
+.vendor-label {
+  font-size: 14px;
+  color: rgba(var(--ids__text-RGB), 1);
+  white-space: nowrap;
 }
