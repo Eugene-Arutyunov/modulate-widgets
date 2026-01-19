@@ -99,8 +99,8 @@ const scatterPlotConfig2 = {
     },
     {
       vendor: "ElevenLabs",
-      model: "eleven-labs",
-      score: 28.10,
+      model: "eleven-labs-scribe-v2",
+      score: 26.6,
       cost: "$6.6700",
     },
     {

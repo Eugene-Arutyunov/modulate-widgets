@@ -33,7 +33,7 @@
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
-  --vendor-nvidia-RGB: 140, 180, 120; /* NVIDIA green - warmer, more grassy */
+  --vendor-nvidia-RGB: 133, 183, 55; /* NVIDIA green - warmer, more grassy */
   --vendor-mistral-RGB: 225, 100, 150; /* Mistral red */
   --vendor-assemblyai-RGB: 120, 190, 250; /* AssemblyAI light blue */
   --vendor-deepgram-RGB: 0, 200, 220; /* Deepgram - cooler, turquoise/blue */

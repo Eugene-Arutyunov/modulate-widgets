@@ -938,9 +938,9 @@ document.addEventListener("DOMContentLoaded", () => {
   createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1, [
     "Modulate", "xAI", "Google", "DeepSeek", "OpenAI"
   ]);
-  // Scatter plot 2: Modulate, NVIDIA, Mistral, Google, AssemblyAI, Deepgram, Gladia, Speechmatics, ElevenLabs, OpenAI, Microsoft, Amazon
+  // Scatter plot 2: Modulate, NVIDIA, Mistral, Google, AssemblyAI, Deepgram, Speechmatics, ElevenLabs, Gladia, OpenAI, Microsoft, Amazon
   createVendorsLegend("#scatterplot-2 .vendors", scatterPlotConfig2, [
-    "Modulate", "NVIDIA", "Mistral", "Google", "AssemblyAI", "Deepgram", "Gladia", "Speechmatics", "ElevenLabs", "OpenAI", "Microsoft", "Amazon"
+    "Modulate", "NVIDIA", "Mistral", "Google", "AssemblyAI", "Deepgram", "Speechmatics", "ElevenLabs", "Gladia", "OpenAI", "Microsoft", "Amazon"
   ]);
   createVendorsLegend("#scatterplot-3 .vendors", scatterPlotConfig3);
 
