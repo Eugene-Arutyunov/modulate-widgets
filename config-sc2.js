@@ -6,17 +6,17 @@ const scatterPlotConfig2 = {
       leftSectionEnd: 63,
       rightSectionStart: 70,
     },
-    // Настройки частоты линий сетки для оси X (без разрыва)
+    // Grid line frequency settings for X axis (without break)
     gridLines: {
       left: {
-        step: 1, // шаг между линиями
-        max: 4, // до какого значения рисовать
-        labels: [], // автоматически генерируются
+        step: 1, // step between lines
+        max: 4, // draw up to this value
+        labels: [], // auto-generated
       },
       right: {
-        step: 1, // шаг между линиями
-        max: 25, // до какого значения рисовать
-        labels: [5, 10, 15, 20, 25], // автоматически генерируются
+        step: 1, // step between lines
+        max: 25, // draw up to this value
+        labels: [5, 10, 15, 20, 25], // auto-generated
       },
     },
     staticDecimals: 0,
@@ -25,12 +25,12 @@ const scatterPlotConfig2 = {
   axisY: {
     min: 0,
     max: 40,
-    inverted: false, // обычная шкала (ноль внизу, большее значение выше)
-    unit: "&hairsp;%", // единица измерения для подписей
-    // Настройки частоты линий сетки для оси Y
+    inverted: false, // normal scale (zero at bottom, larger value higher)
+    unit: "&hairsp;%", // unit of measurement for labels
+    // Grid line frequency settings for Y axis
     gridLines: {
-      step: 5, // шаг между линиями
-      labels: [10, 20, 30, 40], // автоматически генерируются
+      step: 5, // step between lines
+      labels: [10, 20, 30, 40], // auto-generated
     },
     staticDecimals: 0,
     hoverDecimals: 1,
@@ -136,7 +136,7 @@ const scatterPlotConfig2 = {
   ],
   backgroundHighlight: {
     text: "Lowest word error lowest cost",
-    position: "bottom-left", // позиция: top-left или bottom-left
+    position: "bottom-left", // position: top-left or bottom-left
   },
   useVisualOffset: false,
 };

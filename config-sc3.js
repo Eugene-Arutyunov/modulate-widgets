@@ -6,17 +6,17 @@ const scatterPlotConfig3 = {
       leftSectionEnd: 63,
       rightSectionStart: 70,
     },
-    // Настройки частоты линий сетки для оси X (с разрывом)
+    // Grid line frequency settings for X axis (with break)
     gridLines: {
       left: {
-        step: 100, // шаг между линиями
-        max: 650, // до какого значения рисовать
-        labels: [100, 200, 300, 400, 500, 600, 650], // конкретные значения для подписей
+        step: 100, // step between lines
+        max: 650, // draw up to this value
+        labels: [100, 200, 300, 400, 500, 600, 650], // specific values for labels
       },
       right: {
-        step: 125, // шаг между линиями
-        max: 3000, // до какого значения рисовать
-        labels: [650, 1000, 1500, 2000, 2500, 3000], // конкретные значения для подписей
+        step: 125, // step between lines
+        max: 3000, // draw up to this value
+        labels: [650, 1000, 1500, 2000, 2500, 3000], // specific values for labels
       },
     },
     staticDecimals: 0,
@@ -25,9 +25,9 @@ const scatterPlotConfig3 = {
   axisY: {
     min: 0.75,
     max: 1.0,
-    // Настройки частоты линий сетки для оси Y
+    // Grid line frequency settings for Y axis
     gridLines: {
-      step: 0.025, // шаг между линиями
+      step: 0.025, // step between lines
       labels: [0.8, 0.9, 1.0],
     },
     staticDecimals: 1,

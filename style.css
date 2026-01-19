@@ -15,7 +15,7 @@
   /* BACKGROUND */
   --ids__background-RGB: 255, 255, 255;
   --ids__bg-surface-RGB: 242, 242, 246;
-  --ids__bg-surface-light-RGB: 249, 249, 251; /* В два раза светлее surface для использования без прозрачности */
+  --ids__bg-surface-light-RGB: 249, 249, 251; /* Twice as light as surface for use without transparency */
   --ids__bg-accent-RGB: 20, 20, 50;
   --ids__bg-hover-RGB: var(--ids__text-hover-RGB);
   --ids__bg-mark-RGB: 255, 200, 29;
@@ -28,7 +28,7 @@
 
   /* Vendor colors */
   --vendor-modulate-RGB: 99, 102, 241; /* Indigo/Violet */
-  --vendor-modulate-gradient-2-RGB: 200, 102, 255; /* Red/Error (для градиента слева вправо) */
+  --vendor-modulate-gradient-2-RGB: 200, 102, 255; /* Red/Error (for gradient left to right) */
   --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
@@ -251,7 +251,7 @@ body {
       }
     }
 
-    /* Граница оси X создается через псевдоэлементы для поддержки разрыва */
+    /* X axis border created via pseudo-elements to support break */
     &::before {
       content: "";
       position: absolute;
@@ -348,7 +348,7 @@ body {
   background: var(--point-bg, rgba(var(--ids__text-RGB), 1));
 }
 
-/* Базовые классы для типов точек */
+/* Base classes for point types */
 .scatterplot-point.filled {
   --point-bg: rgba(var(--brand-color), 1);
 }
@@ -362,7 +362,7 @@ body {
   --point-border: 2px solid rgba(var(--vendor-gray-border-RGB), 1);
 }
 
-/* Классы вендоров */
+/* Vendor classes */
 .vendor-modulate {
   --brand-color: var(--vendor-modulate-RGB);
 }
@@ -451,7 +451,7 @@ body {
   --brand-color: var(--vendor-gray-border-RGB);
 }
 
-/* Специальный класс для градиентов Modulate */
+/* Special class for Modulate gradients */
 .scatterplot-point.vendor-modulate-gradient {
   --point-bg: linear-gradient(
     to right,
@@ -641,7 +641,7 @@ body {
   transform-origin: center;
 }
 
-/* Легенда вендоров */
+/* Vendor legend */
 .vendors {
   display: flex;
   flex-wrap: wrap;

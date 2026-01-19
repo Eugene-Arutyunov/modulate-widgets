@@ -1,12 +1,12 @@
-// Функция для парсинга стоимости из строки "$0.000930" -> 0.000930
+// Function to parse cost from string "$0.000930" -> 0.000930
 function parseCost(costString) {
   if (typeof costString === 'number') return costString;
   return parseFloat(costString.toString().replace("$", ""));
 }
 
-// Функция для определения, нужно ли форматировать значение как валюту
+// Function to determine if value should be formatted as currency
 function shouldFormatAsCurrency(config) {
-  // Проверяем первую запись данных
+  // Check the first data entry
   if (config.data && config.data.length > 0) {
     const firstValue = config.data[0].cost || config.data[0].parametersNumber;
     if (typeof firstValue === 'string' && firstValue.startsWith('$')) {
@@ -16,7 +16,7 @@ function shouldFormatAsCurrency(config) {
   return false;
 }
 
-// Функция для форматирования значения оси X
+// Function to format X axis value
 function formatAxisXValue(value, config, decimals = 2, showUnit = true) {
   const isCurrency = shouldFormatAsCurrency(config);
   const formattedValue = value.toFixed(decimals);
@@ -26,7 +26,7 @@ function formatAxisXValue(value, config, decimals = 2, showUnit = true) {
   return formattedValue;
 }
 
-// Функция для получения количества знаков после запятой с учетом исключений
+// Function to get number of decimal places with exceptions
 function getDecimals(config, axis, vendor = null) {
   const decimalsConfig = config[axis].hoverDecimals;
   if (typeof decimalsConfig === 'object' && decimalsConfig.exceptions) {
@@ -37,20 +37,20 @@ function getDecimals(config, axis, vendor = null) {
   return decimalsConfig;
 }
 
-// Функция для вычисления квадрата расстояния между двумя точками
+// Function to calculate squared distance between two points
 function getDistanceSquared(x1, y1, x2, y2) {
   const dx = x2 - x1;
   const dy = y2 - y1;
   return dx * dx + dy * dy;
 }
 
-// Функция для проверки, находится ли значение в массиве с учетом погрешности округления
+// Function to check if value is in array considering rounding tolerance
 function isValueInLabels(value, labels, epsilon = 0.0001) {
   if (labels.length === 0) return true;
   return labels.some(label => Math.abs(value - label) < epsilon);
 }
 
-// Функции для работы с типами точек и классами вендоров
+// Functions for working with point types and vendor classes
 const OUTLINED_VENDORS = [
   "OpenAI",
   "Google",
@@ -102,7 +102,7 @@ function normalizeVendorName(vendor) {
     .replace(/^-|-$/g, "");
 }
 
-// Класс для создания scatter plot
+// Class for creating scatter plot
 class ScatterPlot {
   constructor(containerElement, config) {
     this.container = containerElement;
@@ -115,11 +115,11 @@ class ScatterPlot {
     this.interactionsInitialized = false;
   }
 
-  // Построение функций шкалы и общих параметров осей
+  // Build scale functions and common axis parameters
   buildAxisScale() {
     const config = this.config;
 
-    // Проверяем, есть ли разрыв оси
+    // Check if axis has a break
     const hasBreak = config.axisX.leftZone && config.axisX.rightZone && config.axisX.break;
 
     if (hasBreak) {
@@ -145,20 +145,20 @@ class ScatterPlot {
           return rightSectionStart + normalized * (100 - rightSectionStart);
         },
         valueToY(value) {
-          // Для инвертированной оси: меньшее значение должно быть выше (y ближе к 0%)
+          // For inverted axis: smaller value should be higher (y closer to 0%)
           if (config.axisY.inverted) {
-            // Инвертируем: большее значение score -> ниже на графике
+            // Invert: larger score value -> lower on chart
             const normalized = (config.axisY.max - value) / (config.axisY.max - config.axisY.min);
             return (1 - normalized) * 100;
           } else {
-            // Обычная ось: большее значение -> выше на графике
+            // Normal axis: larger value -> higher on chart
             const normalized = (value - config.axisY.min) / (config.axisY.max - config.axisY.min);
             return (1 - normalized) * 100;
           }
         },
       };
     } else {
-      // Без разрыва оси
+      // Without axis break
       return {
         hasBreak: false,
         valueToX(value) {
@@ -167,13 +167,13 @@ class ScatterPlot {
           return normalized * 100;
         },
         valueToY(value) {
-          // Для инвертированной оси: меньшее значение должно быть выше (y ближе к 0%)
+          // For inverted axis: smaller value should be higher (y closer to 0%)
           if (config.axisY.inverted) {
-            // Инвертируем: большее значение score -> ниже на графике
+            // Invert: larger score value -> lower on chart
             const normalized = (config.axisY.max - value) / (config.axisY.max - config.axisY.min);
             return (1 - normalized) * 100;
           } else {
-            // Обычная ось: большее значение -> выше на графике
+            // Normal axis: larger value -> higher on chart
             const normalized = (value - config.axisY.min) / (config.axisY.max - config.axisY.min);
             return (1 - normalized) * 100;
           }
@@ -182,66 +182,66 @@ class ScatterPlot {
     }
   }
 
-  // Построение линий сетки на основе конфигурации
+  // Build grid lines based on configuration
   createGridLines() {
     const container = this.container;
     const config = this.config;
     const scale = this.axisScale;
 
-    // Линии сетки для оси Y
+    // Grid lines for Y axis
     const yGridConfig = config.axisY.gridLines;
-    // Генерируем все значения с шагом step для рисования линий
+    // Generate all values with step interval for drawing lines
     const yValues = [];
-    // Определяем количество знаков после запятой для округления
+    // Determine number of decimal places for rounding
     const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
     for (let val = config.axisY.min + yGridConfig.step; val <= config.axisY.max; val += yGridConfig.step) {
-      // Округляем значение, чтобы избежать погрешностей с плавающей точкой
+      // Round value to avoid floating point errors
       const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
       yValues.push(roundedVal);
     }
 
-    // Добавляем значения из labels, если они не попали в последовательность
+    // Add values from labels if they didn't fall into the sequence
     if (yGridConfig.labels.length > 0) {
       yGridConfig.labels.forEach(label => {
         if (label >= config.axisY.min && label <= config.axisY.max) {
-          // Проверяем, нет ли уже такого значения в yValues (с учетом погрешности)
+          // Check if value already exists in yValues (with tolerance)
           const exists = yValues.some(val => Math.abs(val - label) < 0.0001);
           if (!exists) {
             yValues.push(label);
           }
         }
       });
-      // Сортируем значения
+      // Sort values
       yValues.sort((a, b) => a - b);
     }
 
-    // Определяем последнее значение, которое будет отображаться с подписью для оси Y
+    // Determine the last value that will be displayed with a label for Y axis
     const yLabelValues = yGridConfig.labels.length > 0
       ? yValues.filter(val => isValueInLabels(val, yGridConfig.labels))
       : yValues.filter(val => val <= config.axisY.max && val >= config.axisY.min);
 
     const yLastValue = yLabelValues.length > 0 ? yLabelValues[yLabelValues.length - 1] : null;
     const yFirstValue = yLabelValues.length > 0 ? yLabelValues[0] : null;
-    // Для процентов показываем только у последнего, для других единиц - у первого и последнего
+    // For percentages show only on last, for other units - on first and last
     const unit = config.axisY.unit || "";
     const isPercent = unit.includes("%");
     const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined
       ? config.axisY.showUnitsOnFirstAndLast
-      : !isPercent; // По умолчанию: проценты - только последний, иначе первый и последний
+      : !isPercent; // Default: percentages - only last, otherwise first and last
 
     yValues.forEach((score) => {
       if (score <= config.axisY.max && score >= config.axisY.min) {
         const y = scale.valueToY(score);
 
-        // Засечка снаружи
+        // External tick mark
         const tick = document.createElement("div");
         tick.className = "scatterplot-tick-y";
         tick.style.top = `${y}%`;
         container.appendChild(tick);
 
-        // Горизонтальная линия сетки
+        // Horizontal grid line
         if (scale.hasBreak) {
-          // С разрывом: две части
+          // With break: two parts
           const gridLineLeft = document.createElement("div");
           gridLineLeft.className = "scatterplot-grid-line-y scatterplot-grid-line-y-left";
           gridLineLeft.style.top = `${y}%`;
@@ -252,7 +252,7 @@ class ScatterPlot {
           gridLineRight.style.top = `${y}%`;
           container.appendChild(gridLineRight);
         } else {
-          // Без разрыва: одна линия
+          // Without break: single line
           const gridLine = document.createElement("div");
           gridLine.className = "scatterplot-grid-line-y";
           gridLine.style.top = `${y}%`;
@@ -261,13 +261,13 @@ class ScatterPlot {
           container.appendChild(gridLine);
         }
 
-        // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
+        // Add labels only for values from labels (if specified) or for all (if labels is empty)
         const shouldAddLabel = isValueInLabels(score, yGridConfig.labels);
         if (shouldAddLabel) {
           const scoreLabel = document.createElement("div");
           scoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
           scoreLabel.style.top = `${y}%`;
-          // Форматируем число с правильным количеством знаков после запятой
+          // Format number with correct number of decimal places
           const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : (yGridConfig.step.toString().split('.')[1]?.length || 0);
           const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
           const unit = config.axisY.unit || "";
@@ -280,46 +280,46 @@ class ScatterPlot {
       }
     });
 
-    // Линии сетки для оси X
+    // Grid lines for X axis
     if (scale.hasBreak) {
-      // С разрывом: левая и правая части
+      // With break: left and right parts
       const leftConfig = config.axisX.gridLines.left;
       const rightConfig = config.axisX.gridLines.right;
 
-      // Левая часть
-      // Генерируем все значения с шагом step для рисования линий
+      // Left part
+      // Generate all values with step interval for drawing lines
       const leftValues = [];
       for (let val = config.axisX.leftZone.min + leftConfig.step; val <= leftConfig.max; val += leftConfig.step) {
         leftValues.push(val);
       }
 
-      // Добавляем значения из labels, если они не попали в последовательность
+      // Add values from labels if they didn't fall into the sequence
       if (leftConfig.labels.length > 0) {
         leftConfig.labels.forEach(label => {
           if (label >= config.axisX.leftZone.min && label <= leftConfig.max) {
-            // Проверяем, нет ли уже такого значения в leftValues (с учетом погрешности)
+            // Check if value already exists in leftValues (with tolerance)
             const exists = leftValues.some(val => Math.abs(val - label) < 0.0001);
             if (!exists) {
               leftValues.push(label);
             }
           }
         });
-        // Сортируем значения
+        // Sort values
         leftValues.sort((a, b) => a - b);
       }
 
-      // Определяем последнее значение, которое будет отображаться с подписью
+      // Determine the last value that will be displayed with a label
       const leftLabelValues = leftConfig.labels.length > 0
         ? leftValues.filter(val => isValueInLabels(val, leftConfig.labels))
         : leftValues.filter(val => val <= leftConfig.max && val >= config.axisX.leftZone.min);
 
       const leftLastValue = config.axisX.leftZone.max;
       const leftFirstValue = leftLabelValues.length > 0 ? leftLabelValues[0] : null;
-      // Для валюты показываем у первого и последнего, иначе только у последнего
+      // For currency show on first and last, otherwise only on last
       const isCurrency = shouldFormatAsCurrency(config);
       const showUnitsOnFirstAndLast = config.axisX.showUnitsOnFirstAndLast !== undefined
         ? config.axisX.showUnitsOnFirstAndLast
-        : isCurrency; // По умолчанию: валюта - первый и последний, иначе только последний
+        : isCurrency; // Default: currency - first and last, otherwise only last
 
       leftValues.forEach((cost) => {
         if (cost <= leftConfig.max && cost >= config.axisX.leftZone.min) {
@@ -335,7 +335,7 @@ class ScatterPlot {
             gridLine.style.left = `${x}%`;
             container.appendChild(gridLine);
 
-            // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
+            // Add labels only for values from labels (if specified) or for all (if labels is empty)
             const shouldAddLabel = isValueInLabels(cost, leftConfig.labels);
             if (shouldAddLabel) {
               const costLabel = document.createElement("div");
@@ -352,7 +352,7 @@ class ScatterPlot {
         }
       });
 
-      // Подпись для крайнего правого значения первой зоны
+      // Label for the rightmost value of the first zone
       const leftZoneMaxX = scale.valueToX(config.axisX.leftZone.max);
       const leftZoneMaxLabel = document.createElement("div");
       leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
@@ -364,32 +364,32 @@ class ScatterPlot {
       leftZoneMaxLabel.textContent = formatAxisXValue(config.axisX.leftZone.max, config, decimals, showUnitLeftMax);
       container.appendChild(leftZoneMaxLabel);
 
-      // Правая часть
-      // Генерируем все значения с шагом step от нуля (как будто линии были от нуля)
+      // Right part
+      // Generate all values with step interval from zero (as if lines were from zero)
       const rightValues = [];
       for (let val = rightConfig.step; val <= rightConfig.max; val += rightConfig.step) {
-        // Добавляем только те значения, которые попадают в диапазон правой зоны
+        // Add only values that fall within the right zone range
         if (val >= config.axisX.rightZone.min && val <= rightConfig.max) {
           rightValues.push(val);
         }
       }
 
-      // Добавляем значения из labels, если они не попали в последовательность
+      // Add values from labels if they didn't fall into the sequence
       if (rightConfig.labels.length > 0) {
         rightConfig.labels.forEach(label => {
           if (label >= config.axisX.rightZone.min && label <= rightConfig.max) {
-            // Проверяем, нет ли уже такого значения в rightValues (с учетом погрешности)
+            // Check if value already exists in rightValues (with tolerance)
             const exists = rightValues.some(val => Math.abs(val - label) < 0.0001);
             if (!exists) {
               rightValues.push(label);
             }
           }
         });
-        // Сортируем значения
+        // Sort values
         rightValues.sort((a, b) => a - b);
       }
 
-      // Определяем последнее значение, которое будет отображаться с подписью для правой части
+      // Determine the last value that will be displayed with a label for the right part
       const rightLabelValues = rightConfig.labels.length > 0
         ? rightValues.filter(val => isValueInLabels(val, rightConfig.labels))
         : rightValues.filter(val => val <= rightConfig.max && val >= config.axisX.rightZone.min);
@@ -411,7 +411,7 @@ class ScatterPlot {
             gridLine.style.left = `${x}%`;
             container.appendChild(gridLine);
 
-            // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
+            // Add labels only for values from labels (if specified) or for all (if labels is empty)
             const shouldAddLabel = isValueInLabels(cost, rightConfig.labels);
             if (shouldAddLabel) {
               const costLabel = document.createElement("div");
@@ -428,46 +428,46 @@ class ScatterPlot {
         }
       });
 
-      // Вычисляем фактическую ширину правой секции
+      // Calculate actual width of right section
       const maxCostXForWidth = scale.valueToX(config.axisX.rightZone.max);
       const rightSectionActualWidth = maxCostXForWidth - scale.rightSectionStart;
       container.style.setProperty('--right-section-width', `${rightSectionActualWidth}%`);
     } else {
-      // Без разрыва: единые настройки
+      // Without break: unified settings
       const xGridConfig = config.axisX.gridLines;
-      // Генерируем все значения с шагом step для рисования линий
+      // Generate all values with step interval for drawing lines
       const xValues = [];
       for (let val = config.axisX.min + xGridConfig.step; val <= config.axisX.max; val += xGridConfig.step) {
         xValues.push(val);
       }
 
-      // Добавляем значения из labels, если они не попали в последовательность
+      // Add values from labels if they didn't fall into the sequence
       if (xGridConfig.labels.length > 0) {
         xGridConfig.labels.forEach(label => {
           if (label >= config.axisX.min && label <= config.axisX.max) {
-            // Проверяем, нет ли уже такого значения в xValues (с учетом погрешности)
+            // Check if value already exists in xValues (with tolerance)
             const exists = xValues.some(val => Math.abs(val - label) < 0.0001);
             if (!exists) {
               xValues.push(label);
             }
           }
         });
-        // Сортируем значения
+        // Sort values
         xValues.sort((a, b) => a - b);
       }
 
-      // Определяем последнее значение, которое будет отображаться с подписью
+      // Determine the last value that will be displayed with a label
       const xLabelValues = xGridConfig.labels.length > 0
         ? xValues.filter(val => isValueInLabels(val, xGridConfig.labels))
         : xValues.filter(val => val <= config.axisX.max && val >= config.axisX.min);
 
       const xLastValue = xLabelValues.length > 0 ? xLabelValues[xLabelValues.length - 1] : null;
       const xFirstValue = xLabelValues.length > 0 ? xLabelValues[0] : null;
-      // Для валюты показываем у первого и последнего, иначе только у последнего
+      // For currency show on first and last, otherwise only on last
       const isCurrencyX = shouldFormatAsCurrency(config);
       const showUnitsOnFirstAndLastX = config.axisX.showUnitsOnFirstAndLast !== undefined
         ? config.axisX.showUnitsOnFirstAndLast
-        : isCurrencyX; // По умолчанию: валюта - первый и последний, иначе только последний
+        : isCurrencyX; // Default: currency - first and last, otherwise only last
 
       xValues.forEach((cost) => {
         if (cost <= config.axisX.max && cost >= config.axisX.min) {
@@ -483,13 +483,13 @@ class ScatterPlot {
           gridLine.style.left = `${x}%`;
           container.appendChild(gridLine);
 
-          // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
+          // Add labels only for values from labels (if specified) or for all (if labels is empty)
           const shouldAddLabel = isValueInLabels(cost, xGridConfig.labels);
           if (shouldAddLabel) {
             const costLabel = document.createElement("div");
             costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
             costLabel.style.left = `${x}%`;
-            // Форматируем в зависимости от значения
+            // Format depending on value
             const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : (cost < 1 ? 2 : 0);
             const showUnit = showUnitsOnFirstAndLastX
               ? (cost === xFirstValue || cost === xLastValue)
@@ -501,14 +501,14 @@ class ScatterPlot {
       });
     }
 
-    // Ноль (0) на оси X
+    // Zero (0) on X axis
     const zeroLabel = document.createElement("div");
     zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
     zeroLabel.textContent = "0";
     container.appendChild(zeroLabel);
   }
 
-  // Поиск ближайшей точки к курсору
+  // Find nearest point to cursor
   findNearestPoint(mouseX, mouseY) {
     const rect = this.container.getBoundingClientRect();
     const containerWidth = rect.width;
@@ -537,7 +537,7 @@ class ScatterPlot {
     return nearestPoint;
   }
 
-  // Подсветка точки
+  // Highlight point
   highlightPoint(pointElement, modelData) {
     const container = this.container;
     if (!container) return;
@@ -547,7 +547,7 @@ class ScatterPlot {
     const costLabelTick = container.querySelector(".scatterplot-axis-x-tick");
     const scoreLabelTick = container.querySelector(".scatterplot-axis-y-tick");
 
-    // Убираем подсветку с предыдущей точки
+    // Remove highlight from previous point
     if (this.activePoint && this.activePoint.element) {
       this.activePoint.element.classList.remove("scatterplot-point-active");
       if (this.activePoint.label) {
@@ -555,7 +555,7 @@ class ScatterPlot {
       }
     }
 
-    // Подсвечиваем новую точку и обновляем лейблы
+    // Highlight new point and update labels
     if (pointElement && modelData) {
       pointElement.classList.add("scatterplot-point-active");
       const pointData = this.pointsData.find(p => p.element === pointElement);
@@ -572,7 +572,7 @@ class ScatterPlot {
         : modelData.score;
       const y = this.axisScale.valueToY(displayScore);
 
-      // Обновляем лейбл цены и его засечку
+      // Update cost label and its tick
       if (costLabel) {
         costLabel.style.left = `${x}%`;
         const decimals = getDecimals(this.config, 'axisX', modelData.vendor);
@@ -584,7 +584,7 @@ class ScatterPlot {
         costLabelTick.style.display = "block";
       }
 
-      // Обновляем лейбл оценки и его засечку
+      // Update score label and its tick
       if (scoreLabel) {
         scoreLabel.style.top = `${y}%`;
         const decimals = getDecimals(this.config, 'axisY', modelData.vendor);
@@ -598,7 +598,7 @@ class ScatterPlot {
         scoreLabelTick.style.display = "block";
       }
     } else {
-      // Убираем активное состояние с точки и лейбла
+      // Remove active state from point and label
       if (this.activePoint && this.activePoint.element) {
         this.activePoint.element.classList.remove("scatterplot-point-active");
         if (this.activePoint.label) {
@@ -606,7 +606,7 @@ class ScatterPlot {
         }
       }
       this.activePoint = null;
-      // Скрываем лейблы и засечки
+      // Hide labels and ticks
       if (costLabel) costLabel.style.display = "none";
       if (scoreLabel) scoreLabel.style.display = "none";
       if (costLabelTick) costLabelTick.style.display = "none";
@@ -614,7 +614,7 @@ class ScatterPlot {
     }
   }
 
-  // Инициализация взаимодействий
+  // Initialize interactions
   initInteractions() {
     if (!this.container || this.interactionsInitialized) return;
 
@@ -648,46 +648,46 @@ class ScatterPlot {
     this.interactionsInitialized = true;
   }
 
-  // Создание scatter plot
+  // Create scatter plot
   createScatterPlot() {
     const container = this.container;
     if (!container) {
-      console.error("Контейнер не найден для создания графика");
+      console.error("Container not found for creating chart");
       return;
     }
 
     const config = this.config;
     if (!config || !config.data) {
-      console.error("Конфигурация или данные отсутствуют:", config);
+      console.error("Configuration or data missing:", config);
       return;
     }
 
     this.axisScale = this.buildAxisScale();
     if (!this.axisScale) {
-      console.error("Не удалось построить шкалу осей");
+      console.error("Failed to build axis scale");
       return;
     }
 
     this.initInteractions();
 
-    // Сохраняем подписи осей и background highlight перед очисткой
+    // Save axis labels and background highlight before clearing
     const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
     const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
     const backgroundHighlight = container.querySelector(".scatterplot-background-highlight");
 
-    // Клонируем элементы перед очисткой, чтобы сохранить их структуру
+    // Clone elements before clearing to preserve their structure
     const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
     const axisLabelYClone = axisLabelY ? axisLabelY.cloneNode(true) : null;
     const backgroundHighlightClone = backgroundHighlight ? backgroundHighlight.cloneNode(true) : null;
 
-    // Очищаем контейнер и данные
+    // Clear container and data
     container.innerHTML = "";
     this.pointsData = [];
     this.activePoint = null;
 
-    // Восстанавливаем background highlight
+    // Restore background highlight
     if (backgroundHighlightClone) {
-      // Обновляем текст подписи из конфигурации, если указан
+      // Update label text from configuration if specified
       if (config.backgroundHighlight && config.backgroundHighlight.text) {
         const labelElement = backgroundHighlightClone.querySelector(".scatterplot-background-highlight-label");
         if (labelElement) {
@@ -697,7 +697,7 @@ class ScatterPlot {
       container.appendChild(backgroundHighlightClone);
     }
 
-    // Восстанавливаем подписи осей
+    // Restore axis labels
     if (axisLabelXClone) {
       container.appendChild(axisLabelXClone);
     }
@@ -707,19 +707,19 @@ class ScatterPlot {
 
     const scale = this.axisScale;
 
-    // Устанавливаем CSS переменные для горизонтальных линий сетки (если есть разрыв)
+    // Set CSS variables for horizontal grid lines (if there's a break)
     if (scale.hasBreak) {
       container.style.setProperty('--left-section-end', `${scale.leftSectionEnd}%`);
       container.style.setProperty('--right-section-start', `${scale.rightSectionStart}%`);
     }
 
-    // Рисуем точки
+    // Draw points
     if (!config.data || config.data.length === 0) {
-      console.warn("Нет данных для отображения");
+      console.warn("No data to display");
       return;
     }
 
-    // Находим максимальное значение по оси X для определения крайних точек справа
+    // Find maximum X axis value to determine rightmost points
     let maxXValue = -Infinity;
     config.data.forEach((model) => {
       const costValue = model.cost || model.parametersNumber;
@@ -739,7 +739,7 @@ class ScatterPlot {
       const y = scale.valueToY(displayScore);
 
       if (isNaN(x) || isNaN(y)) {
-        console.warn("Некорректные координаты для точки:", { model, x, y, cost, displayScore });
+        console.warn("Invalid coordinates for point:", { model, x, y, cost, displayScore });
         return;
       }
 
@@ -767,14 +767,14 @@ class ScatterPlot {
         point.dataset.speed = model.speed;
       }
 
-      // Создаем подпись названия модели
+      // Create model name label
       const modelLabel = document.createElement("div");
       modelLabel.className = "scatterplot-point-label";
-      // Для gpt-5.2 и gpt-5.2-pro подпись слева
+      // For gpt-5.2 and gpt-5.2-pro label on left
       if (model.model === "gpt-5.2" || model.model === "gpt-5.2-pro") {
         modelLabel.classList.add("scatterplot-point-label-left");
       }
-      // Для крайних точек справа (в последних 5% диапазона) подпись слева
+      // For rightmost points (in last 5% of range) label on left
       const threshold = maxXValue * 0.95;
       if (cost >= threshold) {
         modelLabel.classList.add("scatterplot-point-label-left");
@@ -785,7 +785,7 @@ class ScatterPlot {
       modelLabel.style.top = `${y}%`;
       container.appendChild(modelLabel);
 
-      // Сохраняем данные точки
+      // Save point data
       this.pointsData.push({
         element: point,
         label: modelLabel,
@@ -797,10 +797,10 @@ class ScatterPlot {
       container.appendChild(point);
     });
 
-    // Создаем линии сетки
+    // Create grid lines
     this.createGridLines();
 
-    // Создаем динамические лейблы для активной точки
+    // Create dynamic labels for active point
     const costLabel = document.createElement("div");
     costLabel.className = "scatterplot-axis-x-label";
     costLabel.style.display = "none";
@@ -811,7 +811,7 @@ class ScatterPlot {
     scoreLabel.style.display = "none";
     container.appendChild(scoreLabel);
 
-    // Создаем засечки и линии для лейблов активной точки
+    // Create ticks and lines for active point labels
     const costLabelTick = document.createElement("div");
     costLabelTick.className = "scatterplot-axis-x-tick";
     costLabelTick.style.display = "none";
@@ -822,7 +822,7 @@ class ScatterPlot {
     scoreLabelTick.style.display = "none";
     container.appendChild(scoreLabelTick);
 
-    // Создаем визуальный элемент разрыва оси (если есть)
+    // Create visual axis break element (if exists)
     if (scale.hasBreak) {
       const GAP_SIZE = scale.rightSectionStart - scale.leftSectionEnd;
 
@@ -841,29 +841,29 @@ class ScatterPlot {
   }
 }
 
-// Инициализация при загрузке страницы
+// Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM загружен, начинаем инициализацию графиков");
+  console.log("DOM loaded, starting chart initialization");
 
-  // Проверяем наличие конфигураций
+  // Check if configurations exist
   if (typeof scatterPlotConfig1 === 'undefined' ||
     typeof scatterPlotConfig2 === 'undefined' ||
     typeof scatterPlotConfig3 === 'undefined') {
-    console.error("Конфигурации не загружены. Убедитесь, что все config-*.js файлы подключены перед script.js");
+    console.error("Configurations not loaded. Make sure all config-*.js files are included before script.js");
     return;
   }
 
-  // Находим контейнеры
+  // Find containers
   const container1 = document.querySelector("#scatterplot-1 .scatterplot-aria");
   const container2 = document.querySelector("#scatterplot-2 .scatterplot-aria");
   const container3 = document.querySelector("#scatterplot-3 .scatterplot-aria");
 
   if (!container1 || !container2 || !container3) {
-    console.error("Не найдены контейнеры для графиков:", { container1, container2, container3 });
+    console.error("Chart containers not found:", { container1, container2, container3 });
     return;
   }
 
-  // Создаем три инстанса ScatterPlot
+  // Create three ScatterPlot instances
   const plot1 = new ScatterPlot(container1, scatterPlotConfig1);
   plot1.createScatterPlot();
 
@@ -873,31 +873,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const plot3 = new ScatterPlot(container3, scatterPlotConfig3);
   plot3.createScatterPlot();
 
-  // Создаем легенду вендоров для конкретного графика
+  // Create vendor legend for specific chart
   function createVendorsLegend(containerSelector, config, customOrder) {
     const vendorsContainer = document.querySelector(containerSelector);
     if (!vendorsContainer || !config || !config.data) return;
 
-    // Собираем уникальные вендоры из данных этого графика
+    // Collect unique vendors from this chart's data
     const vendorsSet = new Set();
     config.data.forEach((item) => {
       vendorsSet.add(item.vendor);
     });
 
-    // Сортируем вендоры: используем customOrder если предоставлен, иначе по умолчанию
+    // Sort vendors: use customOrder if provided, otherwise default
     const vendorsArray = Array.from(vendorsSet);
     let vendors;
     if (customOrder && Array.isArray(customOrder)) {
-      // Используем кастомный порядок
+      // Use custom order
       vendors = customOrder.filter(vendor => vendorsSet.has(vendor));
-      // Добавляем любые вендоры, которые не были в списке customOrder
+      // Add any vendors that weren't in the customOrder list
       vendorsArray.forEach(vendor => {
         if (!vendors.includes(vendor)) {
           vendors.push(vendor);
         }
       });
     } else {
-      // Сортируем вендоры: сначала Modulate, потом остальные по алфавиту
+      // Sort vendors: Modulate first, then others alphabetically
       vendors = vendorsArray.sort((a, b) => {
         if (a === "Modulate") return -1;
         if (b === "Modulate") return 1;
@@ -905,7 +905,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Создаем элементы для каждого вендора
+    // Create elements for each vendor
     vendors.forEach((vendor) => {
       const vendorItem = document.createElement("div");
       vendorItem.className = "vendor-item";
@@ -933,7 +933,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Создаем легенды для каждого графика
+  // Create legends for each chart
   // Scatter plot 1: Modulate, xAI, Google, DeepSeek, OpenAI
   createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1, [
     "Modulate", "xAI", "Google", "DeepSeek", "OpenAI"
@@ -944,7 +944,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ]);
   createVendorsLegend("#scatterplot-3 .vendors", scatterPlotConfig3);
 
-  // Управление размером всех графиков
+  // Control size of all charts
   const widthControl = document.getElementById("width-control");
   const heightControl = document.getElementById("height-control");
   const labelFontSizeControl = document.getElementById("label-font-size-control");
@@ -963,14 +963,14 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   const root = document.documentElement;
 
-  // Функция для перерисовки всех графиков
+  // Function to redraw all charts
   const redrawAllPlots = () => {
     plot1.createScatterPlot();
     plot2.createScatterPlot();
     plot3.createScatterPlot();
   };
 
-  // Универсальная функция для создания обработчика контролов с дебаунсингом
+  // Universal function to create control handler with debouncing
   function createDebouncedControlHandler({
     parseValue,
     validateValue,
@@ -982,7 +982,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return {
       onInput: (e) => {
-        // Очищаем предыдущий таймаут
+        // Clear previous timeout
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
@@ -992,23 +992,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const parsed = parseValue(rawValue);
         const { min, max } = getMinMax(input);
 
-        // Убираем класс invalid при вводе
+        // Remove invalid class on input
         input.classList.remove("invalid");
 
-        // Устанавливаем таймаут для применения значения
+        // Set timeout to apply value
         timeoutId = setTimeout(() => {
           if (validateValue(parsed, min, max)) {
             applyValue(parsed, input);
             redrawCallback();
           } else {
-            // Значение невалидно - красим красным
+            // Value invalid - color red
             input.classList.add("invalid");
           }
-        }, 500); // 500ms дебаунсинг
+        }, 500); // 500ms debouncing
       },
 
       onChange: (e) => {
-        // Для события change (стрелки) применяем мгновенно
+        // For change event (arrows) apply immediately
         if (timeoutId) {
           clearTimeout(timeoutId);
           timeoutId = null;
@@ -1033,7 +1033,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (widthControl && heightControl && scatterplotWrappers[0] && scatterplotArias[0]) {
 
-    // Обработчик для ширины
+    // Handler for width
     const widthHandler = createDebouncedControlHandler({
       parseValue: (val) => parseFloat(val),
       validateValue: (val, min, max) => !isNaN(val) && val >= min,
@@ -1051,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", () => {
     widthControl.addEventListener("input", widthHandler.onInput);
     widthControl.addEventListener("change", widthHandler.onChange);
 
-    // Обработчик для высоты
+    // Handler for height
     const heightHandler = createDebouncedControlHandler({
       parseValue: (val) => parseFloat(val),
       validateValue: (val, min, max) => !isNaN(val) && val >= min,
@@ -1069,7 +1069,7 @@ document.addEventListener("DOMContentLoaded", () => {
     heightControl.addEventListener("input", heightHandler.onInput);
     heightControl.addEventListener("change", heightHandler.onChange);
 
-    // Обработчик для размера текста лейблов
+    // Handler for label font size
     if (labelFontSizeControl) {
       const labelFontSizeHandler = createDebouncedControlHandler({
         parseValue: (val) => parseFloat(val),
@@ -1088,7 +1088,7 @@ document.addEventListener("DOMContentLoaded", () => {
       labelFontSizeControl.addEventListener("change", labelFontSizeHandler.onChange);
     }
 
-    // Обработчик для размера точек
+    // Handler for point size
     if (pointSizeControl) {
       const pointSizeHandler = createDebouncedControlHandler({
         parseValue: (val) => parseFloat(val),
@@ -1107,7 +1107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       pointSizeControl.addEventListener("change", pointSizeHandler.onChange);
     }
 
-    // Обработчик для размера подписей на осях
+    // Handler for axis label font size
     if (axisFontSizeControl) {
       const axisFontSizeHandler = createDebouncedControlHandler({
         parseValue: (val) => parseFloat(val),
@@ -1126,7 +1126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       axisFontSizeControl.addEventListener("change", axisFontSizeHandler.onChange);
     }
 
-    // Инициализация значений по умолчанию
+    // Initialize default values
     scatterplotWrappers.forEach((wrapper) => {
       if (wrapper) wrapper.style.width = "1140px";
     });
@@ -1135,7 +1135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Перерисовка при изменении размера окна
+  // Redraw on window resize
   let resizeTimeout;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
