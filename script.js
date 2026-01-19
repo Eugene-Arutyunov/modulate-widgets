@@ -30,8 +30,8 @@ function formatAxisXValue(value, config, decimals = 2, showUnit = true) {
 function getDecimals(config, axis, vendor = null) {
   const decimalsConfig = config[axis].hoverDecimals;
   if (typeof decimalsConfig === 'object' && decimalsConfig.exceptions) {
-    return vendor && decimalsConfig.exceptions[vendor] !== undefined 
-      ? decimalsConfig.exceptions[vendor] 
+    return vendor && decimalsConfig.exceptions[vendor] !== undefined
+      ? decimalsConfig.exceptions[vendor]
       : decimalsConfig.default;
   }
   return decimalsConfig;
@@ -118,10 +118,10 @@ class ScatterPlot {
   // Построение функций шкалы и общих параметров осей
   buildAxisScale() {
     const config = this.config;
-    
+
     // Проверяем, есть ли разрыв оси
     const hasBreak = config.axisX.leftZone && config.axisX.rightZone && config.axisX.break;
-    
+
     if (hasBreak) {
       const breakPoint = config.axisX.leftZone.max;
       const leftSectionEnd = config.axisX.break.leftSectionEnd;
@@ -199,7 +199,7 @@ class ScatterPlot {
       const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
       yValues.push(roundedVal);
     }
-    
+
     // Добавляем значения из labels, если они не попали в последовательность
     if (yGridConfig.labels.length > 0) {
       yGridConfig.labels.forEach(label => {
@@ -219,26 +219,26 @@ class ScatterPlot {
     const yLabelValues = yGridConfig.labels.length > 0
       ? yValues.filter(val => isValueInLabels(val, yGridConfig.labels))
       : yValues.filter(val => val <= config.axisY.max && val >= config.axisY.min);
-    
+
     const yLastValue = yLabelValues.length > 0 ? yLabelValues[yLabelValues.length - 1] : null;
     const yFirstValue = yLabelValues.length > 0 ? yLabelValues[0] : null;
     // Для процентов показываем только у последнего, для других единиц - у первого и последнего
     const unit = config.axisY.unit || "";
     const isPercent = unit.includes("%");
-    const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined 
-      ? config.axisY.showUnitsOnFirstAndLast 
+    const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined
+      ? config.axisY.showUnitsOnFirstAndLast
       : !isPercent; // По умолчанию: проценты - только последний, иначе первый и последний
 
     yValues.forEach((score) => {
       if (score <= config.axisY.max && score >= config.axisY.min) {
         const y = scale.valueToY(score);
-        
+
         // Засечка снаружи
         const tick = document.createElement("div");
         tick.className = "scatterplot-tick-y";
         tick.style.top = `${y}%`;
         container.appendChild(tick);
-        
+
         // Горизонтальная линия сетки
         if (scale.hasBreak) {
           // С разрывом: две части
@@ -246,7 +246,7 @@ class ScatterPlot {
           gridLineLeft.className = "scatterplot-grid-line-y scatterplot-grid-line-y-left";
           gridLineLeft.style.top = `${y}%`;
           container.appendChild(gridLineLeft);
-          
+
           const gridLineRight = document.createElement("div");
           gridLineRight.className = "scatterplot-grid-line-y scatterplot-grid-line-y-right";
           gridLineRight.style.top = `${y}%`;
@@ -260,7 +260,7 @@ class ScatterPlot {
           gridLine.style.left = "0";
           container.appendChild(gridLine);
         }
-        
+
         // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
         const shouldAddLabel = isValueInLabels(score, yGridConfig.labels);
         if (shouldAddLabel) {
@@ -271,7 +271,7 @@ class ScatterPlot {
           const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : (yGridConfig.step.toString().split('.')[1]?.length || 0);
           const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
           const unit = config.axisY.unit || "";
-          const showUnit = showUnitsOnFirstAndLastY 
+          const showUnit = showUnitsOnFirstAndLastY
             ? (score === yFirstValue || score === yLastValue)
             : (score === yLastValue);
           scoreLabel.innerHTML = formattedValue + (showUnit ? unit : "");
@@ -285,14 +285,14 @@ class ScatterPlot {
       // С разрывом: левая и правая части
       const leftConfig = config.axisX.gridLines.left;
       const rightConfig = config.axisX.gridLines.right;
-      
+
       // Левая часть
       // Генерируем все значения с шагом step для рисования линий
       const leftValues = [];
       for (let val = config.axisX.leftZone.min + leftConfig.step; val <= leftConfig.max; val += leftConfig.step) {
         leftValues.push(val);
       }
-      
+
       // Добавляем значения из labels, если они не попали в последовательность
       if (leftConfig.labels.length > 0) {
         leftConfig.labels.forEach(label => {
@@ -309,16 +309,16 @@ class ScatterPlot {
       }
 
       // Определяем последнее значение, которое будет отображаться с подписью
-      const leftLabelValues = leftConfig.labels.length > 0 
+      const leftLabelValues = leftConfig.labels.length > 0
         ? leftValues.filter(val => isValueInLabels(val, leftConfig.labels))
         : leftValues.filter(val => val <= leftConfig.max && val >= config.axisX.leftZone.min);
-      
+
       const leftLastValue = config.axisX.leftZone.max;
       const leftFirstValue = leftLabelValues.length > 0 ? leftLabelValues[0] : null;
       // Для валюты показываем у первого и последнего, иначе только у последнего
       const isCurrency = shouldFormatAsCurrency(config);
-      const showUnitsOnFirstAndLast = config.axisX.showUnitsOnFirstAndLast !== undefined 
-        ? config.axisX.showUnitsOnFirstAndLast 
+      const showUnitsOnFirstAndLast = config.axisX.showUnitsOnFirstAndLast !== undefined
+        ? config.axisX.showUnitsOnFirstAndLast
         : isCurrency; // По умолчанию: валюта - первый и последний, иначе только последний
 
       leftValues.forEach((cost) => {
@@ -329,12 +329,12 @@ class ScatterPlot {
             tick.className = "scatterplot-tick-x";
             tick.style.left = `${x}%`;
             container.appendChild(tick);
-            
+
             const gridLine = document.createElement("div");
             gridLine.className = "scatterplot-grid-line-x scatterplot-grid-line-x-left";
             gridLine.style.left = `${x}%`;
             container.appendChild(gridLine);
-            
+
             // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
             const shouldAddLabel = isValueInLabels(cost, leftConfig.labels);
             if (shouldAddLabel) {
@@ -342,7 +342,7 @@ class ScatterPlot {
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
               const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-              const showUnit = showUnitsOnFirstAndLast 
+              const showUnit = showUnitsOnFirstAndLast
                 ? (cost === leftFirstValue || cost === leftLastValue)
                 : (cost === leftLastValue);
               costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
@@ -358,7 +358,7 @@ class ScatterPlot {
       leftZoneMaxLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
       leftZoneMaxLabel.style.left = `${leftZoneMaxX}%`;
       const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-      const showUnitLeftMax = showUnitsOnFirstAndLast 
+      const showUnitLeftMax = showUnitsOnFirstAndLast
         ? (config.axisX.leftZone.max === leftFirstValue || config.axisX.leftZone.max === leftLastValue)
         : (config.axisX.leftZone.max === leftLastValue);
       leftZoneMaxLabel.textContent = formatAxisXValue(config.axisX.leftZone.max, config, decimals, showUnitLeftMax);
@@ -373,7 +373,7 @@ class ScatterPlot {
           rightValues.push(val);
         }
       }
-      
+
       // Добавляем значения из labels, если они не попали в последовательность
       if (rightConfig.labels.length > 0) {
         rightConfig.labels.forEach(label => {
@@ -393,7 +393,7 @@ class ScatterPlot {
       const rightLabelValues = rightConfig.labels.length > 0
         ? rightValues.filter(val => isValueInLabels(val, rightConfig.labels))
         : rightValues.filter(val => val <= rightConfig.max && val >= config.axisX.rightZone.min);
-      
+
       const rightLastValue = rightLabelValues.length > 0 ? rightLabelValues[rightLabelValues.length - 1] : null;
       const rightFirstValue = rightLabelValues.length > 0 ? rightLabelValues[0] : null;
 
@@ -405,12 +405,12 @@ class ScatterPlot {
             tick.className = "scatterplot-tick-x";
             tick.style.left = `${x}%`;
             container.appendChild(tick);
-            
+
             const gridLine = document.createElement("div");
             gridLine.className = "scatterplot-grid-line-x scatterplot-grid-line-x-right";
             gridLine.style.left = `${x}%`;
             container.appendChild(gridLine);
-            
+
             // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
             const shouldAddLabel = isValueInLabels(cost, rightConfig.labels);
             if (shouldAddLabel) {
@@ -418,7 +418,7 @@ class ScatterPlot {
               costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
               costLabel.style.left = `${x}%`;
               const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : 2;
-              const showUnit = showUnitsOnFirstAndLast 
+              const showUnit = showUnitsOnFirstAndLast
                 ? (cost === rightFirstValue || cost === rightLastValue)
                 : (cost === rightLastValue);
               costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
@@ -440,7 +440,7 @@ class ScatterPlot {
       for (let val = config.axisX.min + xGridConfig.step; val <= config.axisX.max; val += xGridConfig.step) {
         xValues.push(val);
       }
-      
+
       // Добавляем значения из labels, если они не попали в последовательность
       if (xGridConfig.labels.length > 0) {
         xGridConfig.labels.forEach(label => {
@@ -460,29 +460,29 @@ class ScatterPlot {
       const xLabelValues = xGridConfig.labels.length > 0
         ? xValues.filter(val => isValueInLabels(val, xGridConfig.labels))
         : xValues.filter(val => val <= config.axisX.max && val >= config.axisX.min);
-      
+
       const xLastValue = xLabelValues.length > 0 ? xLabelValues[xLabelValues.length - 1] : null;
       const xFirstValue = xLabelValues.length > 0 ? xLabelValues[0] : null;
       // Для валюты показываем у первого и последнего, иначе только у последнего
       const isCurrencyX = shouldFormatAsCurrency(config);
-      const showUnitsOnFirstAndLastX = config.axisX.showUnitsOnFirstAndLast !== undefined 
-        ? config.axisX.showUnitsOnFirstAndLast 
+      const showUnitsOnFirstAndLastX = config.axisX.showUnitsOnFirstAndLast !== undefined
+        ? config.axisX.showUnitsOnFirstAndLast
         : isCurrencyX; // По умолчанию: валюта - первый и последний, иначе только последний
 
       xValues.forEach((cost) => {
         if (cost <= config.axisX.max && cost >= config.axisX.min) {
           const x = scale.valueToX(cost);
-          
+
           const tick = document.createElement("div");
           tick.className = "scatterplot-tick-x";
           tick.style.left = `${x}%`;
           container.appendChild(tick);
-          
+
           const gridLine = document.createElement("div");
           gridLine.className = "scatterplot-grid-line-x";
           gridLine.style.left = `${x}%`;
           container.appendChild(gridLine);
-          
+
           // Подписи добавляем только для значений из labels (если указаны) или для всех (если labels пустой)
           const shouldAddLabel = isValueInLabels(cost, xGridConfig.labels);
           if (shouldAddLabel) {
@@ -491,7 +491,7 @@ class ScatterPlot {
             costLabel.style.left = `${x}%`;
             // Форматируем в зависимости от значения
             const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : (cost < 1 ? 2 : 0);
-            const showUnit = showUnitsOnFirstAndLastX 
+            const showUnit = showUnitsOnFirstAndLastX
               ? (cost === xFirstValue || cost === xLastValue)
               : (cost === xLastValue);
             costLabel.textContent = formatAxisXValue(cost, config, decimals, showUnit);
@@ -567,8 +567,8 @@ class ScatterPlot {
       const costValue = modelData.cost || modelData.parametersNumber;
       const cost = parseCost(costValue);
       const x = this.axisScale.valueToX(cost);
-      const displayScore = this.config.useVisualOffset && modelData.visualOffset !== undefined 
-        ? modelData.score + modelData.visualOffset 
+      const displayScore = this.config.useVisualOffset && modelData.visualOffset !== undefined
+        ? modelData.score + modelData.visualOffset
         : modelData.score;
       const y = this.axisScale.valueToY(displayScore);
 
@@ -733,8 +733,8 @@ class ScatterPlot {
       const costValue = model.cost || model.parametersNumber;
       const cost = parseCost(costValue);
       const x = scale.valueToX(cost);
-      const displayScore = config.useVisualOffset && model.visualOffset !== undefined 
-        ? model.score + model.visualOffset 
+      const displayScore = config.useVisualOffset && model.visualOffset !== undefined
+        ? model.score + model.visualOffset
         : model.score;
       const y = scale.valueToY(displayScore);
 
@@ -747,14 +747,14 @@ class ScatterPlot {
       const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
       const pointType = getPointType(model.vendor);
       point.className = `scatterplot-point ${vendorClass} ${pointType}`;
-      
+
       if (needsGrayBorder(model.vendor)) {
         point.classList.add("vendor-gray-border");
       }
       if (needsModulateGradient(model.vendor, model.model)) {
         point.classList.add("vendor-modulate-gradient");
       }
-      
+
       point.style.left = `${x}%`;
       point.style.top = `${y}%`;
       point.dataset.vendor = model.vendor;
@@ -825,7 +825,7 @@ class ScatterPlot {
     // Создаем визуальный элемент разрыва оси (если есть)
     if (scale.hasBreak) {
       const GAP_SIZE = scale.rightSectionStart - scale.leftSectionEnd;
-      
+
       const axisBreakLeft = document.createElement("div");
       axisBreakLeft.className = "scatterplot-axis-break scatterplot-axis-break-left";
       axisBreakLeft.style.left = `${scale.leftSectionEnd}%`;
@@ -844,11 +844,11 @@ class ScatterPlot {
 // Инициализация при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM загружен, начинаем инициализацию графиков");
-  
+
   // Проверяем наличие конфигураций
-  if (typeof scatterPlotConfig1 === 'undefined' || 
-      typeof scatterPlotConfig2 === 'undefined' || 
-      typeof scatterPlotConfig3 === 'undefined') {
+  if (typeof scatterPlotConfig1 === 'undefined' ||
+    typeof scatterPlotConfig2 === 'undefined' ||
+    typeof scatterPlotConfig3 === 'undefined') {
     console.error("Конфигурации не загружены. Убедитесь, что все config-*.js файлы подключены перед script.js");
     return;
   }
@@ -950,7 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const labelFontSizeControl = document.getElementById("label-font-size-control");
   const pointSizeControl = document.getElementById("point-size-control");
   const axisFontSizeControl = document.getElementById("axis-font-size-control");
-  
+
   const scatterplotWrappers = [
     document.querySelector("#scatterplot-1"),
     document.querySelector("#scatterplot-2"),
