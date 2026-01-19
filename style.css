@@ -188,6 +188,15 @@ body {
     text-align: center;
   }
 
+  & .scatterplot-subtitle {
+    width: 80%;
+    margin: 0 auto 1.5625em;
+    font-size: 1em;
+    color: rgba(var(--ids__text-RGB), 0.7);
+    opacity: 0.8;
+    text-align: center;
+  }
+
   & .paddind-spacer {
     height: 3.75em;
   }
