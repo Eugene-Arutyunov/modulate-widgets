@@ -841,6 +841,271 @@ class ScatterPlot {
   }
 }
 
+// Class for creating bar chart
+class BarChart {
+  constructor(containerElement, config) {
+    this.container = containerElement;
+    this.config = config;
+    this.barsData = [];
+    this.activeBar = null;
+    this.axisScale = null;
+  }
+
+  // Build scale functions for Y axis (X axis is categorical)
+  buildAxisScale() {
+    const config = this.config;
+
+    return {
+      hasBreak: false,
+      valueToY(value) {
+        // Normal axis: larger value -> higher on chart
+        const normalized = (value - config.axisY.min) / (config.axisY.max - config.axisY.min);
+        return (1 - normalized) * 100;
+      },
+      indexToX(index, totalBars) {
+        // Categorical X axis: equal distribution
+        // Each bar occupies equal space, return center position
+        const segmentWidth = 100 / totalBars;
+        return (index * segmentWidth) + (segmentWidth / 2); // Center of each segment
+      },
+    };
+  }
+
+  // Build grid lines for Y axis only (X axis is categorical, no grid lines)
+  createGridLines() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+
+    // Grid lines for Y axis
+    const yGridConfig = config.axisY.gridLines;
+    // Generate all values with step interval for drawing lines
+    const yValues = [];
+    // Determine number of decimal places for rounding
+    const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
+    for (let val = config.axisY.min + yGridConfig.step; val <= config.axisY.max; val += yGridConfig.step) {
+      // Round value to avoid floating point errors
+      const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
+      yValues.push(roundedVal);
+    }
+
+    // Add values from labels if they didn't fall into the sequence
+    if (yGridConfig.labels.length > 0) {
+      yGridConfig.labels.forEach(label => {
+        if (label >= config.axisY.min && label <= config.axisY.max) {
+          // Check if value already exists in yValues (with tolerance)
+          const exists = yValues.some(val => Math.abs(val - label) < 0.0001);
+          if (!exists) {
+            yValues.push(label);
+          }
+        }
+      });
+      // Sort values
+      yValues.sort((a, b) => a - b);
+    }
+
+    // Determine the last value that will be displayed with a label for Y axis
+    const yLabelValues = yGridConfig.labels.length > 0
+      ? yValues.filter(val => isValueInLabels(val, yGridConfig.labels))
+      : yValues.filter(val => val <= config.axisY.max && val >= config.axisY.min);
+
+    const yLastValue = yLabelValues.length > 0 ? yLabelValues[yLabelValues.length - 1] : null;
+    const yFirstValue = yLabelValues.length > 0 ? yLabelValues[0] : null;
+    // For percentages show only on last, for other units - on first and last
+    const unit = config.axisY.unit || "";
+    const isPercent = unit.includes("%");
+    const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined
+      ? config.axisY.showUnitsOnFirstAndLast
+      : !isPercent; // Default: percentages - only last, otherwise first and last
+
+    yValues.forEach((score) => {
+      if (score <= config.axisY.max && score >= config.axisY.min) {
+        const y = scale.valueToY(score);
+
+        // External tick mark
+        const tick = document.createElement("div");
+        tick.className = "scatterplot-tick-y";
+        tick.style.top = `${y}%`;
+        container.appendChild(tick);
+
+        // Horizontal grid line
+        const gridLine = document.createElement("div");
+        gridLine.className = "scatterplot-grid-line-y";
+        gridLine.style.top = `${y}%`;
+        gridLine.style.width = "100%";
+        gridLine.style.left = "0";
+        container.appendChild(gridLine);
+
+        // Add labels only for values from labels (if specified) or for all (if labels is empty)
+        const shouldAddLabel = isValueInLabels(score, yGridConfig.labels);
+        if (shouldAddLabel) {
+          const scoreLabel = document.createElement("div");
+          scoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
+          scoreLabel.style.top = `${y}%`;
+          // Format number with correct number of decimal places
+          // Use labelDecimals for axis labels, fallback to staticDecimals or step decimals
+          const decimals = config.axisY.labelDecimals !== undefined
+            ? config.axisY.labelDecimals
+            : (config.axisY.staticDecimals !== undefined
+              ? config.axisY.staticDecimals
+              : (yGridConfig.step.toString().split('.')[1]?.length || 0));
+          const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
+          const unit = config.axisY.unit || "";
+          const showUnit = showUnitsOnFirstAndLastY
+            ? (score === yFirstValue || score === yLastValue)
+            : (score === yLastValue);
+          scoreLabel.innerHTML = formattedValue + (showUnit ? unit : "");
+          container.appendChild(scoreLabel);
+        }
+      }
+    });
+  }
+
+  // Create bars for the chart
+  createBars() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+
+    if (!config.data || config.data.length === 0) {
+      console.warn("No data to display");
+      return;
+    }
+
+    const totalBars = config.data.length;
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width || container.offsetWidth || 1000; // Fallback width
+    const gapPixels = 1; // 1 pixel gap between bars
+    const totalGapPixels = gapPixels * (totalBars - 1);
+    const availableWidth = containerWidth - totalGapPixels;
+    const barWidthPixels = availableWidth / totalBars;
+    const segmentWidth = 100 / totalBars;
+
+    config.data.forEach((model, index) => {
+      const x = scale.indexToX(index, totalBars);
+      const score = model.score;
+      const yTop = scale.valueToY(score);
+      const yBottom = scale.valueToY(config.axisY.min); // Bottom of chart (0)
+
+      if (isNaN(x) || isNaN(yTop) || isNaN(yBottom)) {
+        console.warn("Invalid coordinates for bar:", { model, x, yTop, yBottom });
+        return;
+      }
+
+      // Create bar element
+      const bar = document.createElement("div");
+      bar.className = "bar-chart-bar";
+
+      // Color: green for Modulate, gray for others
+      if (model.vendor === "Modulate") {
+        bar.classList.add("modulate");
+      }
+
+      // Calculate position: each bar gets equal space with gaps
+      // Simple calculation: left = (index * barWidth + index * gap) / containerWidth * 100%
+      const barLeftPixels = index * barWidthPixels + index * gapPixels;
+      const barLeftPercent = (barLeftPixels / containerWidth) * 100;
+      const barWidthPercent = (barWidthPixels / containerWidth) * 100;
+
+      bar.style.left = `${barLeftPercent}%`;
+      bar.style.width = `${barWidthPercent}%`;
+      bar.style.bottom = `${100 - yBottom}%`;
+      bar.style.height = `${yBottom - yTop}%`;
+      bar.dataset.vendor = model.vendor;
+      bar.dataset.model = model.model;
+      bar.dataset.score = model.score;
+
+      // Create label inside bar (model first, then vendor)
+      const barLabelContainer = document.createElement("div");
+      barLabelContainer.className = "bar-chart-bar-label-container";
+
+      const modelLabel = document.createElement("div");
+      modelLabel.className = "bar-chart-bar-model-label";
+      modelLabel.textContent = model.model;
+      barLabelContainer.appendChild(modelLabel);
+
+      const vendorLabel = document.createElement("div");
+      vendorLabel.className = "bar-chart-bar-vendor-label";
+      vendorLabel.textContent = model.vendor;
+      barLabelContainer.appendChild(vendorLabel);
+
+      bar.appendChild(barLabelContainer);
+
+      // Create score label above bar (aligned to left edge of bar)
+      const scoreLabel = document.createElement("div");
+      scoreLabel.className = "bar-chart-score-label";
+      const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : 1;
+      scoreLabel.textContent = score.toFixed(decimals);
+      scoreLabel.style.left = `${barLeftPercent}%`;
+      scoreLabel.style.top = `${yTop}%`;
+      container.appendChild(scoreLabel);
+
+      container.appendChild(bar);
+
+      // Save bar data
+      this.barsData.push({
+        element: bar,
+        model: model,
+        xPercent: x,
+        yPercent: yTop,
+      });
+    });
+  }
+
+  // Create X axis labels (vendor and model names) - removed, now inside bars
+  createXAxisLabels() {
+    // Labels are now created inside bars in createBars()
+  }
+
+  // Create bar chart
+  createBarChart() {
+    const container = this.container;
+    if (!container) {
+      console.error("Container not found for creating chart");
+      return;
+    }
+
+    const config = this.config;
+    if (!config || !config.data) {
+      console.error("Configuration or data missing:", config);
+      return;
+    }
+
+    this.axisScale = this.buildAxisScale();
+    if (!this.axisScale) {
+      console.error("Failed to build axis scale");
+      return;
+    }
+
+    // Save axis labels before clearing
+    const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+    const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
+
+    // Clone elements before clearing to preserve their structure
+    const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
+    const axisLabelYClone = axisLabelY ? axisLabelY.cloneNode(true) : null;
+
+    // Clear container and data
+    container.innerHTML = "";
+    this.barsData = [];
+    this.activeBar = null;
+
+    // Restore axis labels
+    if (axisLabelXClone) {
+      container.appendChild(axisLabelXClone);
+    }
+    if (axisLabelYClone) {
+      container.appendChild(axisLabelYClone);
+    }
+
+    // Create grid lines (Y axis only)
+    this.createGridLines();
+
+    // Create bars (includes labels inside bars and score labels above)
+    this.createBars();
+  }
+}
+
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded, starting chart initialization");
@@ -1140,12 +1405,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Initialize bar chart
+  let barChart1 = null;
+  const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
+  if (barChart1Container && window.barChartConfig1) {
+    barChart1 = new BarChart(barChart1Container, window.barChartConfig1);
+    barChart1.createBarChart();
+  }
+
   // Redraw on window resize
   let resizeTimeout;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       plots.forEach(plot => plot.createScatterPlot());
+      if (barChart1) {
+        barChart1.createBarChart();
+      }
     }, 100);
   });
 });
