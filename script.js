@@ -1074,13 +1074,13 @@ document.addEventListener("DOMContentLoaded", () => {
         parseValue: (val) => parseFloat(val),
         validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
         applyValue: (val, input) => {
-          const min = parseFloat(input.min) || 8;
-          const max = parseFloat(input.max) || 24;
+          const min = parseFloat(input.min) || 0.5;
+          const max = parseFloat(input.max) || 1.5;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = Math.round(finalValue);
-          root.style.setProperty("--scatterplot-label-font-size", `${Math.round(finalValue)}px`);
+          input.value = Math.round(finalValue * 100) / 100;
+          root.style.setProperty("--scatterplot-label-font-size", `${Math.round(finalValue * 100) / 100}em`);
         },
-        getMinMax: (input) => ({ min: parseFloat(input.min) || 8, max: parseFloat(input.max) || 24 }),
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 0.5, max: parseFloat(input.max) || 1.5 }),
         redrawCallback: redrawAllPlots,
       });
       labelFontSizeControl.addEventListener("input", labelFontSizeHandler.onInput);
@@ -1093,13 +1093,13 @@ document.addEventListener("DOMContentLoaded", () => {
         parseValue: (val) => parseFloat(val),
         validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
         applyValue: (val, input) => {
-          const min = parseFloat(input.min) || 4;
-          const max = parseFloat(input.max) || 32;
+          const min = parseFloat(input.min) || 0.25;
+          const max = parseFloat(input.max) || 2;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = finalValue;
-          root.style.setProperty("--scatterplot-point-size", `${finalValue}px`);
+          input.value = Math.round(finalValue * 100) / 100;
+          root.style.setProperty("--scatterplot-point-size", `${Math.round(finalValue * 100) / 100}em`);
         },
-        getMinMax: (input) => ({ min: parseFloat(input.min) || 4, max: parseFloat(input.max) || 32 }),
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 0.25, max: parseFloat(input.max) || 2 }),
         redrawCallback: redrawAllPlots,
       });
       pointSizeControl.addEventListener("input", pointSizeHandler.onInput);
@@ -1112,13 +1112,13 @@ document.addEventListener("DOMContentLoaded", () => {
         parseValue: (val) => parseFloat(val),
         validateValue: (val, min, max) => !isNaN(val) && val >= min && val <= max,
         applyValue: (val, input) => {
-          const min = parseFloat(input.min) || 8;
-          const max = parseFloat(input.max) || 24;
+          const min = parseFloat(input.min) || 0.5;
+          const max = parseFloat(input.max) || 1.5;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = Math.round(finalValue);
-          root.style.setProperty("--scatterplot-axis-font-size", `${Math.round(finalValue)}px`);
+          input.value = Math.round(finalValue * 100) / 100;
+          root.style.setProperty("--scatterplot-axis-font-size", `${Math.round(finalValue * 100) / 100}em`);
         },
-        getMinMax: (input) => ({ min: parseFloat(input.min) || 8, max: parseFloat(input.max) || 24 }),
+        getMinMax: (input) => ({ min: parseFloat(input.min) || 0.5, max: parseFloat(input.max) || 1.5 }),
         redrawCallback: redrawAllPlots,
       });
       axisFontSizeControl.addEventListener("input", axisFontSizeHandler.onInput);
@@ -1133,10 +1133,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (aria) aria.style.height = "400px";
     });
   } else {
-    // Initialize default values even without controls
-    allScatterplotWrappers.forEach((wrapper) => {
-      if (wrapper) wrapper.style.width = "1140px";
-    });
+    // Without controls, don't set fixed pixel widths - let CSS handle it
+    // Only set height for aria containers
     allScatterplotArias.forEach((aria) => {
       if (aria) aria.style.height = "400px";
     });
