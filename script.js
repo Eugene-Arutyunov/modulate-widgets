@@ -845,65 +845,76 @@ class ScatterPlot {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded, starting chart initialization");
 
-  // Check if configurations exist
-  if (typeof scatterPlotConfig1 === 'undefined' ||
-    typeof scatterPlotConfig2 === 'undefined' ||
-    typeof scatterPlotConfig3 === 'undefined') {
-    console.error("Configurations not loaded. Make sure all config-*.js files are included before script.js");
+  // Debug: Check available configs
+  const availableConfigs = Object.keys(window).filter(k => k.startsWith('scatterPlotConfig'));
+  console.log("Available configurations:", availableConfigs);
+
+  // Find all scatterplot wrappers on the page
+  const scatterplotWrappers = document.querySelectorAll(".scatterplot-wrapper");
+  console.log(`Found ${scatterplotWrappers.length} scatterplot wrapper(s)`);
+  const plots = [];
+  const plotConfigs = [];
+
+  // Find all available scatterplots and their configurations
+  scatterplotWrappers.forEach((wrapper, index) => {
+    const id = wrapper.id;
+    if (!id) {
+      console.warn(`Scatterplot wrapper at index ${index} has no ID, skipping`);
+      return;
+    }
+
+    // Extract number from ID (e.g., "scatterplot-1" -> 1)
+    const match = id.match(/scatterplot-(\d+)/);
+    if (!match) {
+      console.warn(`Scatterplot wrapper ID "${id}" doesn't match expected pattern, skipping`);
+      return;
+    }
+
+    const plotNumber = parseInt(match[1], 10);
+    const configName = `scatterPlotConfig${plotNumber}`;
+    const config = window[configName];
+
+    if (!config) {
+      console.error(`Configuration ${configName} not found for ${id}`);
+      console.error(`Make sure config-sc${plotNumber}.js is loaded before script.js`);
+      console.error(`Available configs:`, Object.keys(window).filter(k => k.startsWith('scatterPlotConfig')));
+      return;
+    }
+
+    const container = wrapper.querySelector(".scatterplot-aria");
+    if (!container) {
+      console.warn(`Container not found for ${id}, skipping`);
+      return;
+    }
+
+    // Create ScatterPlot instance
+    const plot = new ScatterPlot(container, config);
+    plot.createScatterPlot();
+    plots.push(plot);
+    plotConfigs.push({ plot, config, id, plotNumber });
+  });
+
+  if (plots.length === 0) {
+    console.warn("No scatterplots found or initialized");
     return;
   }
 
-  // Find containers
-  const container1 = document.querySelector("#scatterplot-1 .scatterplot-aria");
-  const container2 = document.querySelector("#scatterplot-2 .scatterplot-aria");
-  const container3 = document.querySelector("#scatterplot-3 .scatterplot-aria");
-
-  if (!container1 || !container2 || !container3) {
-    console.error("Chart containers not found:", { container1, container2, container3 });
-    return;
-  }
-
-  // Create three ScatterPlot instances
-  const plot1 = new ScatterPlot(container1, scatterPlotConfig1);
-  plot1.createScatterPlot();
-
-  const plot2 = new ScatterPlot(container2, scatterPlotConfig2);
-  plot2.createScatterPlot();
-
-  const plot3 = new ScatterPlot(container3, scatterPlotConfig3);
-  plot3.createScatterPlot();
+  console.log(`Initialized ${plots.length} scatterplot(s)`);
 
   // Create vendor legend for specific chart
-  function createVendorsLegend(containerSelector, config, customOrder) {
+  function createVendorsLegend(containerSelector, config) {
     const vendorsContainer = document.querySelector(containerSelector);
     if (!vendorsContainer || !config || !config.data) return;
 
-    // Collect unique vendors from this chart's data
+    // Collect unique vendors in order of first appearance in data
+    const vendors = [];
     const vendorsSet = new Set();
     config.data.forEach((item) => {
-      vendorsSet.add(item.vendor);
+      if (!vendorsSet.has(item.vendor)) {
+        vendorsSet.add(item.vendor);
+        vendors.push(item.vendor);
+      }
     });
-
-    // Sort vendors: use customOrder if provided, otherwise default
-    const vendorsArray = Array.from(vendorsSet);
-    let vendors;
-    if (customOrder && Array.isArray(customOrder)) {
-      // Use custom order
-      vendors = customOrder.filter(vendor => vendorsSet.has(vendor));
-      // Add any vendors that weren't in the customOrder list
-      vendorsArray.forEach(vendor => {
-        if (!vendors.includes(vendor)) {
-          vendors.push(vendor);
-        }
-      });
-    } else {
-      // Sort vendors: Modulate first, then others alphabetically
-      vendors = vendorsArray.sort((a, b) => {
-        if (a === "Modulate") return -1;
-        if (b === "Modulate") return 1;
-        return a.localeCompare(b);
-      });
-    }
 
     // Create elements for each vendor
     vendors.forEach((vendor) => {
@@ -933,16 +944,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Create legends for each chart
-  // Scatter plot 1: Modulate, xAI, Google, DeepSeek, OpenAI
-  createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1, [
-    "Modulate", "xAI", "Google", "DeepSeek", "OpenAI"
-  ]);
-  // Scatter plot 2: Modulate, NVIDIA, Mistral, Google, AssemblyAI, Deepgram, Speechmatics, ElevenLabs, Gladia, OpenAI, Microsoft, Amazon
-  createVendorsLegend("#scatterplot-2 .vendors", scatterPlotConfig2, [
-    "Modulate", "NVIDIA", "Mistral", "Google", "AssemblyAI", "Deepgram", "Speechmatics", "ElevenLabs", "Gladia", "OpenAI", "Microsoft", "Amazon"
-  ]);
-  createVendorsLegend("#scatterplot-3 .vendors", scatterPlotConfig3);
+  // Create legends for each chart using order from data
+  plotConfigs.forEach(({ id, config }) => {
+    createVendorsLegend(`#${id} .vendors`, config);
+  });
 
   // Control size of all charts
   const widthControl = document.getElementById("width-control");
@@ -951,23 +956,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const pointSizeControl = document.getElementById("point-size-control");
   const axisFontSizeControl = document.getElementById("axis-font-size-control");
 
-  const scatterplotWrappers = [
-    document.querySelector("#scatterplot-1"),
-    document.querySelector("#scatterplot-2"),
-    document.querySelector("#scatterplot-3"),
-  ];
-  const scatterplotArias = [
-    document.querySelector("#scatterplot-1 .scatterplot-aria"),
-    document.querySelector("#scatterplot-2 .scatterplot-aria"),
-    document.querySelector("#scatterplot-3 .scatterplot-aria"),
-  ];
+  // Collect all scatterplot wrappers and aria containers dynamically
+  const allScatterplotWrappers = Array.from(scatterplotWrappers);
+  const allScatterplotArias = plotConfigs.map(({ id }) =>
+    document.querySelector(`#${id} .scatterplot-aria`)
+  ).filter(Boolean);
   const root = document.documentElement;
 
   // Function to redraw all charts
   const redrawAllPlots = () => {
-    plot1.createScatterPlot();
-    plot2.createScatterPlot();
-    plot3.createScatterPlot();
+    plots.forEach(plot => plot.createScatterPlot());
   };
 
   // Universal function to create control handler with debouncing
@@ -1031,7 +1029,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  if (widthControl && heightControl && scatterplotWrappers[0] && scatterplotArias[0]) {
+  // Only set up controls if they exist on the page
+  if (widthControl && heightControl && allScatterplotWrappers.length > 0 && allScatterplotArias.length > 0) {
 
     // Handler for width
     const widthHandler = createDebouncedControlHandler({
@@ -1041,7 +1040,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const min = parseFloat(input.min) || 100;
         const finalValue = Math.max(min, val);
         input.value = finalValue;
-        scatterplotWrappers.forEach((wrapper) => {
+        allScatterplotWrappers.forEach((wrapper) => {
           if (wrapper) wrapper.style.width = `${finalValue}px`;
         });
       },
@@ -1059,7 +1058,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const min = parseFloat(input.min) || 100;
         const finalValue = Math.max(min, val);
         input.value = finalValue;
-        scatterplotArias.forEach((aria) => {
+        allScatterplotArias.forEach((aria) => {
           if (aria) aria.style.height = `${finalValue}px`;
         });
       },
@@ -1127,10 +1126,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Initialize default values
-    scatterplotWrappers.forEach((wrapper) => {
+    allScatterplotWrappers.forEach((wrapper) => {
       if (wrapper) wrapper.style.width = "1140px";
     });
-    scatterplotArias.forEach((aria) => {
+    allScatterplotArias.forEach((aria) => {
+      if (aria) aria.style.height = "400px";
+    });
+  } else {
+    // Initialize default values even without controls
+    allScatterplotWrappers.forEach((wrapper) => {
+      if (wrapper) wrapper.style.width = "1140px";
+    });
+    allScatterplotArias.forEach((aria) => {
       if (aria) aria.style.height = "400px";
     });
   }
@@ -1140,9 +1147,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      plot1.createScatterPlot();
-      plot2.createScatterPlot();
-      plot3.createScatterPlot();
+      plots.forEach(plot => plot.createScatterPlot());
     }, 100);
   });
 });

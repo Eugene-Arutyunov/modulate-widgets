@@ -107,3 +107,8 @@ const scatterPlotConfig3 = {
   },
   useVisualOffset: false,
 };
+
+// Explicitly expose to window for compatibility
+if (typeof window !== 'undefined') {
+  window.scatterPlotConfig3 = scatterPlotConfig3;
+}
