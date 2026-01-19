@@ -53,10 +53,8 @@ function isValueInLabels(value, labels, epsilon = 0.0001) {
 // Функции для работы с типами точек и классами вендоров
 const OUTLINED_VENDORS = [
   "OpenAI",
-  "Gemini",
   "Google",
   "Whispeak",
-  "Gladia",
   "Resemble AI",
   "Deep Learning & Media System Laboratory",
   "DF Arena ML Researchers",
@@ -66,7 +64,6 @@ const OUTLINED_VENDORS = [
 ];
 
 const GRAY_BORDER_VENDORS = [
-  "Gladia",
   "Resemble AI",
   "Deep Learning & Media System Laboratory",
   "DF Arena ML Researchers",
@@ -877,7 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
   plot3.createScatterPlot();
 
   // Создаем легенду вендоров для конкретного графика
-  function createVendorsLegend(containerSelector, config) {
+  function createVendorsLegend(containerSelector, config, customOrder) {
     const vendorsContainer = document.querySelector(containerSelector);
     if (!vendorsContainer || !config || !config.data) return;
 
@@ -887,13 +884,26 @@ document.addEventListener("DOMContentLoaded", () => {
       vendorsSet.add(item.vendor);
     });
 
-    // Сортируем вендоры: сначала Modulate, потом остальные по алфавиту
+    // Сортируем вендоры: используем customOrder если предоставлен, иначе по умолчанию
     const vendorsArray = Array.from(vendorsSet);
-    const vendors = vendorsArray.sort((a, b) => {
-      if (a === "Modulate") return -1;
-      if (b === "Modulate") return 1;
-      return a.localeCompare(b);
-    });
+    let vendors;
+    if (customOrder && Array.isArray(customOrder)) {
+      // Используем кастомный порядок
+      vendors = customOrder.filter(vendor => vendorsSet.has(vendor));
+      // Добавляем любые вендоры, которые не были в списке customOrder
+      vendorsArray.forEach(vendor => {
+        if (!vendors.includes(vendor)) {
+          vendors.push(vendor);
+        }
+      });
+    } else {
+      // Сортируем вендоры: сначала Modulate, потом остальные по алфавиту
+      vendors = vendorsArray.sort((a, b) => {
+        if (a === "Modulate") return -1;
+        if (b === "Modulate") return 1;
+        return a.localeCompare(b);
+      });
+    }
 
     // Создаем элементы для каждого вендора
     vendors.forEach((vendor) => {
@@ -924,8 +934,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Создаем легенды для каждого графика
-  createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1);
-  createVendorsLegend("#scatterplot-2 .vendors", scatterPlotConfig2);
+  // Scatter plot 1: Modulate, xAI, Google, DeepSeek, OpenAI
+  createVendorsLegend("#scatterplot-1 .vendors", scatterPlotConfig1, [
+    "Modulate", "xAI", "Google", "DeepSeek", "OpenAI"
+  ]);
+  // Scatter plot 2: Modulate, NVIDIA, Mistral, Google, AssemblyAI, Deepgram, Gladia, Speechmatics, ElevenLabs, OpenAI, Microsoft, Amazon
+  createVendorsLegend("#scatterplot-2 .vendors", scatterPlotConfig2, [
+    "Modulate", "NVIDIA", "Mistral", "Google", "AssemblyAI", "Deepgram", "Gladia", "Speechmatics", "ElevenLabs", "OpenAI", "Microsoft", "Amazon"
+  ]);
   createVendorsLegend("#scatterplot-3 .vendors", scatterPlotConfig3);
 
   // Управление размером всех графиков

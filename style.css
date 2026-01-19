@@ -33,11 +33,12 @@
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
-  --vendor-nvidia-RGB: 90, 200, 150; /* NVIDIA green */
+  --vendor-nvidia-RGB: 140, 180, 120; /* NVIDIA green - warmer, more grassy */
   --vendor-mistral-RGB: 225, 100, 150; /* Mistral red */
   --vendor-assemblyai-RGB: 120, 190, 250; /* AssemblyAI light blue */
-  --vendor-deepgram-RGB: 6, 214, 160; /* Deepgram cyan */
-  --vendor-elevenlabs-RGB: 196, 125, 229; /* ElevenLabs purple */
+  --vendor-deepgram-RGB: 0, 200, 220; /* Deepgram - cooler, turquoise/blue */
+  --vendor-elevenlabs-RGB: 150, 200, 255; /* ElevenLabs - blue */
+  --vendor-gladia-RGB: 210, 190, 255; /* Gladia purple */
   --vendor-microsoft-RGB: 75, 164, 234; /* Microsoft Azure blue */
   --vendor-amazon-RGB: 255, 153, 100; /* Amazon AWS orange */
   --vendor-speechmatics-RGB: 40, 90, 110; /* Speechmatics */
@@ -58,6 +59,25 @@ body {
 
   color: rgba(var(--ids__text-RGB), 1);
   background-color: rgba(var(--ids__background-RGB), 1);
+}
+
+& a {
+  color: rgb(var(--ids__text-link-RGB));
+  text-decoration: underline;
+  will-change: color;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: none;
+  text-decoration-color: rgba(var(--ids__text-link-RGB), 0.2);
+  transition: color 0.5s ease, text-decoration 0.5s ease,
+    -webkit-text-decoration 0.5s ease;
+
+  &:hover {
+    color: rgb(var(--ids__text-hover-RGB));
+    text-decoration-color: rgba(var(--ids__text-hover-RGB), 0.2);
+    transition: color 0s ease, text-decoration 0s ease,
+      -webkit-text-decoration 0s ease;
+  }
 }
 
 .container {
@@ -392,7 +412,7 @@ body {
 }
 
 .vendor-gladia {
-  --brand-color: var(--vendor-gray-border-RGB);
+  --brand-color: var(--vendor-gladia-RGB);
 }
 
 .vendor-microsoft {
@@ -625,9 +645,9 @@ body {
 .vendors {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-  padding: 20px 0;
+  gap: 15px;
+  
+  padding: 20px 40px;
   align-items: center;
   justify-content: center;
 }

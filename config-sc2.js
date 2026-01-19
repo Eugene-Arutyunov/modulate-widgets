@@ -38,7 +38,7 @@ const scatterPlotConfig2 = {
   data: [
     {
       vendor: "Modulate",
-      model: "velma-2",
+      model: "velma-2-transcribe",
       score: 14.90, // WER
       cost: "$0.1300",
     },
@@ -78,7 +78,7 @@ const scatterPlotConfig2 = {
       score: 24.70,
       cost: "$2.5000",
     },
-    
+
     {
       vendor: "OpenAI",
       model: "whisper-large-v3",

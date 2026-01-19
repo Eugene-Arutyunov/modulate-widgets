@@ -68,7 +68,7 @@ const scatterPlotConfig1 = {
       speed: 4.099,
     },
     {
-      vendor: "Grok",
+      vendor: "xAI",
       model: "grok-4.1-fast-non-reasoning",
       modelType: "Fast",
       score: 2.25,
@@ -76,7 +76,7 @@ const scatterPlotConfig1 = {
       speed: 3.385,
     },
     {
-      vendor: "Grok",
+      vendor: "xAI",
       model: "grok-4.1-fast-reasoning",
       modelType: "Fast",
       score: 3.39,
@@ -84,7 +84,7 @@ const scatterPlotConfig1 = {
       speed: 10.577,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-2-flash-lite",
       modelType: "",
       score: 2.43,
@@ -101,7 +101,7 @@ const scatterPlotConfig1 = {
       speed: 49.037,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-2-flash",
       modelType: "",
       score: 3.28,
@@ -117,7 +117,7 @@ const scatterPlotConfig1 = {
       speed: 29.065,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-3-flash-min",
       modelType: "",
       score: 3.52,
@@ -144,7 +144,7 @@ const scatterPlotConfig1 = {
       visualOffset: -0.1,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-3-flash-med",
       modelType: "",
       score: 3.89,
@@ -161,7 +161,7 @@ const scatterPlotConfig1 = {
       speed: 2.775,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-2.5-pro",
       modelType: "",
       score: 4.26,
@@ -170,7 +170,7 @@ const scatterPlotConfig1 = {
       visualOffset: -0.1,
     },
     {
-      vendor: "Gemini",
+      vendor: "Google",
       model: "gemini-3-pro",
       modelType: "",
       score: 4.28,
@@ -179,7 +179,7 @@ const scatterPlotConfig1 = {
       visualOffset: 0.08,
     },
     {
-      vendor: "Grok",
+      vendor: "xAI",
       model: "grok-3",
       modelType: "",
       score: 3.76,
@@ -188,7 +188,23 @@ const scatterPlotConfig1 = {
       visualOffset: -0.35,
     },
     {
-      vendor: "Grok",
+      vendor: "Deepgram",
+      model: "nova-3-intelligence",
+      modelType: "",
+      score: 2.778,
+      cost: "$0.4382",
+      visualOffset: -0.15,
+    },
+    {
+      vendor: "ElevenLabs",
+      model: "scribe-v2",
+      modelType: "",
+      score: 2.45,
+      cost: "$0.4414",
+      visualOffset: -0.1,
+    },
+    {
+      vendor: "xAI",
       model: "grok-4-heavy",
       modelType: "",
       score: 4.36,
