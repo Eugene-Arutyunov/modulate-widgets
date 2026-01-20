@@ -61,7 +61,7 @@ body {
   background-color: rgba(var(--ids__background-RGB), 1);
 }
 
-& a {
+.scatterplot-wrapper a {
   color: rgb(var(--ids__text-link-RGB));
   text-decoration: underline;
   will-change: color;
