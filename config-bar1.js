@@ -28,7 +28,7 @@ const barChartConfig1 = {
       parametersNumber: 3000,
     },
     {
-      vendor: "Deep Learning & Media System Laboratory",
+      vendor: "Deep Learning",
       model: "dlmsl-speaksure-v0.1",
       score: 0.9380,
       parametersNumber: 658,
@@ -40,7 +40,7 @@ const barChartConfig1 = {
       parametersNumber: 98,
     },
     {
-      vendor: "DF Arena ML Researchers",
+      vendor: "DF Arena",
       model: "df-arena-1b-v1",
       score: 0.8860,
       parametersNumber: 1000,
@@ -58,13 +58,13 @@ const barChartConfig1 = {
       parametersNumber: 584,
     },
     {
-      vendor: "DF Arena ML Researchers",
+      vendor: "DF Arena",
       model: "df-arena-100m-v1",
       score: 0.8370,
       parametersNumber: 100,
     },
     {
-      vendor: "Singapore Agency for Science, Technology & Research",
+      vendor: "Singapore Tech",
       model: "molex",
       score: 0.8360,
       parametersNumber: 376,
@@ -76,7 +76,7 @@ const barChartConfig1 = {
       parametersNumber: 2112,
     },
     {
-      vendor: "DF Arena ML Researchers",
+      vendor: "DF Arena",
       model: "df-arena-100m-v0",
       score: 0.8000,
       parametersNumber: 100,
