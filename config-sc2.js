@@ -40,7 +40,7 @@ const scatterPlotConfig2 = {
       vendor: "Modulate",
       model: "velma-2-transcribe",
       score: 14.90, // WER
-      cost: "$0.1300",
+      cost: "$0.05",
     },
     {
       vendor: "NVIDIA",

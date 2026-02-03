@@ -119,6 +119,35 @@
         <div class="vendors"></div>
       </div>
 
+      <!-- Scatterplot 2 Modified: Transcription (with modified velma-2-transcribe cost) -->
+      <div class="scatterplot-wrapper" id="scatterplot-4">
+        <div class="scatterplot-title">
+          Transcription Benchmark — Complex Real World Conversations (Modified)
+        </div>
+        <div class="scatterplot-subtitle">
+          Tests Word Error Rate on real-world, complex conversations (<a href="https://www.slideshare.net/slideshow/speech-recognition-dataset-spotlight-ami-meeting-corpus/275204629?utm_source=chatgpt.com#1" target="_blank">AMI</a> Meeting Corpus dataset) — velma-2-transcribe cost: $0.42
+        </div>
+        <div class="scatterplot-container">
+          <div class="scatterplot-aria">
+            <div class="scatterplot-background-highlight">
+              <div class="scatterplot-background-highlight-ellipse"></div>
+              <div class="scatterplot-background-highlight-label">
+                Lowest word error lowest cost
+              </div>
+            </div>
+            <div class="scatterplot-axis-label-x">
+              Cost per 1000 minutes of audio
+            </div>
+            <div class="scatterplot-axis-label-y">
+              Word Error Rate
+            </div>
+          </div>
+        </div>
+
+        <div class="paddind-spacer"></div>
+        <div class="vendors"></div>
+      </div>
+
       <!-- Bar Chart 1: Synthetic Voice Detection (Bar Chart) -->
       <div class="bar-chart-wrapper" id="bar-chart-1">
         <div class="scatterplot-title">
@@ -160,6 +189,25 @@
     </div>
     <script src="config-sc1.js"></script>
     <script src="config-sc2.js"></script>
+    <script>
+      // Create modified version of scatterPlotConfig2 with velma-2-transcribe cost changed from $0.05 to $0.42
+      if (typeof window !== 'undefined' && window.scatterPlotConfig2) {
+        // Deep clone the config
+        const modifiedConfig = JSON.parse(JSON.stringify(window.scatterPlotConfig2));
+        
+        // Find and modify velma-2-transcribe cost
+        const model = modifiedConfig.data.find(
+          item => item.vendor === "Modulate" && item.model === "velma-2-transcribe"
+        );
+        if (model) {
+          model.cost = "$0.42";
+          console.log("Created modified config: velma-2-transcribe cost changed to $0.42");
+        }
+        
+        // Expose as scatterPlotConfig4 for scatterplot-4
+        window.scatterPlotConfig4 = modifiedConfig;
+      }
+    </script>
     <script src="config-sc3.js"></script>
     <script src="config-bar1.js"></script>
     <script src="script.js"></script>
