@@ -358,7 +358,8 @@ body {
         top: -60%;
       }
 
-      #scatterplot-2 .scatterplot-container .scatterplot-aria & {
+      #scatterplot-2 .scatterplot-container .scatterplot-aria &,
+      #scatterplot-4 .scatterplot-container .scatterplot-aria & {
         width: 65%;
         left: -45%;
         top: auto;
@@ -391,7 +392,8 @@ body {
         width: 6.25em;
       }
 
-      #scatterplot-2 .scatterplot-container .scatterplot-aria & {
+      #scatterplot-2 .scatterplot-container .scatterplot-aria &,
+      #scatterplot-4 .scatterplot-container .scatterplot-aria & {
         width: 15.625em;
         bottom: 19%;
         left: 5%;
