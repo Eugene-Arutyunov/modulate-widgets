@@ -51,14 +51,14 @@ const scatterPlotConfig1 = {
       speed: 3.163,
       default: true,
     },
-    {
-      vendor: "Modulate",
-      model: "velma-1",
-      modelType: "Regular",
-      score: 4.85,
-      cost: "$0.024440",
-      speed: 2.176,
-    },
+    // {
+    //   vendor: "Modulate",
+    //   model: "velma-1",
+    //   modelType: "Regular",
+    //   score: 4.85,
+    //   cost: "$0.024440",
+    //   speed: 2.176,
+    // },
     {
       vendor: "OpenAI",
       model: "gpt-4o-mini",
