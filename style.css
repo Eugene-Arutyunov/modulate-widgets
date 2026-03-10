@@ -15,7 +15,8 @@
   /* BACKGROUND */
   --ids__background-RGB: 255, 255, 255;
   --ids__bg-surface-RGB: 242, 242, 246;
-  --ids__bg-surface-light-RGB: 249, 249, 251; /* Twice as light as surface for use without transparency */
+  --ids__bg-surface-light-RGB:
+    249, 249, 251; /* Twice as light as surface for use without transparency */
   --ids__bg-accent-RGB: 20, 20, 50;
   --ids__bg-hover-RGB: var(--ids__text-hover-RGB);
   --ids__bg-mark-RGB: 255, 200, 29;
@@ -28,7 +29,8 @@
 
   /* Vendor colors */
   --vendor-modulate-RGB: 99, 102, 241; /* Indigo/Violet */
-  --vendor-modulate-gradient-2-RGB: 200, 102, 255; /* Red/Error (for gradient left to right) */
+  --vendor-modulate-gradient-2-RGB:
+    200, 102, 255; /* Red/Error (for gradient left to right) */
   --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
   --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
@@ -43,7 +45,8 @@
   --vendor-amazon-RGB: 255, 153, 100; /* Amazon AWS orange */
   --vendor-speechmatics-RGB: 40, 90, 110; /* Speechmatics */
   --vendor-whispeak-RGB: 135, 58, 226; /* Whispeak */
-  --vendor-gray-border-RGB: 100, 100, 100; /* Dark gray border for vendors without official colors */
+  --vendor-gray-border-RGB:
+    100, 100, 100; /* Dark gray border for vendors without official colors */
 
   /* Highlight zone colors */
   --highlight-zone-green-RGB: 0, 255, 0; /* Green for highlight zone */
@@ -61,7 +64,8 @@ body {
   background-color: rgba(var(--ids__background-RGB), 1);
 }
 
-.scatterplot-wrapper a, .bar-chart-wrapper a {
+.scatterplot-wrapper a,
+.bar-chart-wrapper a {
   color: rgb(var(--ids__text-link-RGB));
   text-decoration: underline;
   will-change: color;
@@ -69,13 +73,17 @@ body {
   text-underline-offset: 0.2em;
   text-decoration-skip-ink: none;
   text-decoration-color: rgba(var(--ids__text-link-RGB), 0.2);
-  transition: color 0.5s ease, text-decoration 0.5s ease,
+  transition:
+    color 0.5s ease,
+    text-decoration 0.5s ease,
     -webkit-text-decoration 0.5s ease;
 
   &:hover {
     color: rgb(var(--ids__text-hover-RGB));
     text-decoration-color: rgba(var(--ids__text-hover-RGB), 0.2);
-    transition: color 0s ease, text-decoration 0s ease,
+    transition:
+      color 0s ease,
+      text-decoration 0s ease,
       -webkit-text-decoration 0s ease;
   }
 }
@@ -84,7 +92,6 @@ body {
   width: 1140px;
   margin: 60px auto;
 }
-
 
 .controls {
   position: sticky;
@@ -161,7 +168,7 @@ body {
     font-size: 1em;
 
     color: rgba(var(--ids__text-RGB), 0.7);
-    
+
     opacity: 0.8;
 
     text-align: center;
@@ -320,6 +327,57 @@ body {
   max-width: 10em;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Horizontal bar chart (only X axis labeled) */
+.horizontal-bar-chart-tick-x {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0.75em;
+  border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.horizontal-bar-chart-grid-line-x {
+  position: absolute;
+  width: 0;
+  border-left: 1px solid rgba(var(--ids__text-RGB), 0.08);
+  pointer-events: none;
+}
+
+.horizontal-bar-chart-axis-label-x {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: var(--scatterplot-axis-font-size, 0.8125em);
+  font-weight: 600;
+  color: rgba(var(--ids__text-RGB), 0.8);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.horizontal-bar-chart-bar {
+  min-width: 4em;
+  background-color: rgb(210, 210, 210);
+}
+
+.horizontal-bar-chart-bar.modulate {
+  background-color: rgb(150, 255, 150);
+}
+
+.horizontal-bar-chart-cost-label {
+  position: absolute;
+  font-size: 1em;
+  font-weight: 500;
+  color: rgba(var(--ids__text-RGB), 0.9);
+  margin-left: 0.35em;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+#bar-chart-3.bar-chart-wrapper .bar-chart-container {
+  padding-bottom: 2.5em;
 }
 
 .scatterplot-container {
@@ -808,7 +866,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 0.625em 0.9375em;
-  
+
   padding: 1.25em 2.5em;
   align-items: center;
   justify-content: center;

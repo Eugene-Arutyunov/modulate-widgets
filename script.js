@@ -1106,6 +1106,164 @@ class BarChart {
   }
 }
 
+// Horizontal bar chart: only X axis labeled (e.g. Cost per hour), categorical rows
+class HorizontalBarChart {
+  constructor(containerElement, config) {
+    this.container = containerElement;
+    this.config = config;
+    this.barsData = [];
+    this.axisScale = null;
+  }
+
+  buildAxisScale() {
+    const config = this.config;
+    const totalBars = config.data.length;
+    const plotHeightPercent = 85; // reserve 15% for X axis at bottom
+    const rowHeightPercent = plotHeightPercent / totalBars;
+
+    return {
+      valueToX(value) {
+        const normalized = (value - config.axisX.min) / (config.axisX.max - config.axisX.min);
+        return Math.min(100, normalized * 100);
+      },
+      indexToBottom(index) {
+        return (totalBars - 1 - index) * rowHeightPercent;
+      },
+      rowHeightPercent: rowHeightPercent - 2,
+      axisTopPercent: 100 - plotHeightPercent,
+    };
+  }
+
+  createGridLines() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+    const xConfig = config.axisX.gridLines;
+
+    const xValues = [];
+    const decimals = xConfig.step.toString().split(".")[1]?.length || 0;
+    for (let val = config.axisX.min; val <= config.axisX.max; val += xConfig.step) {
+      const rounded = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
+      xValues.push(rounded);
+    }
+    if (xConfig.labels && xConfig.labels.length > 0) {
+      xConfig.labels.forEach((label) => {
+        if (label >= config.axisX.min && label <= config.axisX.max) {
+          const exists = xValues.some((v) => Math.abs(v - label) < 0.0001);
+          if (!exists) xValues.push(label);
+        }
+      });
+      xValues.sort((a, b) => a - b);
+    }
+
+    xValues.forEach((value) => {
+      if (value < config.axisX.min || value > config.axisX.max) return;
+      const x = scale.valueToX(value);
+
+      const tick = document.createElement("div");
+      tick.className = "horizontal-bar-chart-tick-x";
+      tick.style.left = `${x}%`;
+      tick.style.bottom = "0";
+      container.appendChild(tick);
+
+      const gridLine = document.createElement("div");
+      gridLine.className = "horizontal-bar-chart-grid-line-x";
+      gridLine.style.left = `${x}%`;
+      gridLine.style.bottom = "0";
+      gridLine.style.top = `${scale.axisTopPercent}%`;
+      container.appendChild(gridLine);
+
+      const shouldAddLabel = xConfig.labels?.length
+        ? isValueInLabels(value, xConfig.labels)
+        : true;
+      if (shouldAddLabel) {
+        const label = document.createElement("div");
+        label.className = "horizontal-bar-chart-axis-label-x";
+        label.style.left = `${x}%`;
+        label.style.bottom = "-2em";
+        const formatted = config.axisX.formatCurrency
+          ? "$" + value.toFixed(config.axisX.staticDecimals ?? 2)
+          : value.toFixed(config.axisX.staticDecimals ?? 2) + (config.axisX.unit || "");
+        label.textContent = formatted;
+        container.appendChild(label);
+      }
+    });
+  }
+
+  createBars() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+    const totalBars = config.data.length;
+
+    config.data.forEach((model, index) => {
+      const cost = model.costPerHour;
+      const xWidth = scale.valueToX(cost);
+      const bottom = scale.axisTopPercent + scale.indexToBottom(index);
+      const height = scale.rowHeightPercent;
+
+      const bar = document.createElement("div");
+      bar.className = "bar-chart-bar horizontal-bar-chart-bar";
+      if (model.vendor === "Modulate") {
+        bar.classList.add("modulate");
+      }
+
+      bar.style.left = "0";
+      bar.style.width = `${xWidth}%`;
+      bar.style.bottom = `${bottom}%`;
+      bar.style.height = `${height}%`;
+      bar.dataset.vendor = model.vendor;
+      bar.dataset.model = model.model;
+      bar.dataset.costPerHour = String(cost);
+
+      const barLabelContainer = document.createElement("div");
+      barLabelContainer.className = "bar-chart-bar-label-container";
+
+      const modelLabel = document.createElement("div");
+      modelLabel.className = "bar-chart-bar-model-label";
+      modelLabel.textContent = model.model;
+      barLabelContainer.appendChild(modelLabel);
+
+      const vendorLabel = document.createElement("div");
+      vendorLabel.className = "bar-chart-bar-vendor-label";
+      vendorLabel.textContent = model.vendor;
+      barLabelContainer.appendChild(vendorLabel);
+
+      bar.appendChild(barLabelContainer);
+
+      const costLabel = document.createElement("div");
+      costLabel.className = "bar-chart-score-label horizontal-bar-chart-cost-label";
+      costLabel.textContent = "$" + cost.toFixed(config.axisX.staticDecimals ?? 2);
+      costLabel.style.left = `${xWidth}%`;
+      costLabel.style.bottom = `${bottom + height}%`;
+      costLabel.style.transform = "translate(-50%, 100%)";
+      container.appendChild(costLabel);
+
+      container.appendChild(bar);
+      this.barsData.push({ element: bar, model });
+    });
+  }
+
+  createBarChart() {
+    const container = this.container;
+    if (!container || !this.config?.data) return;
+
+    const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+    const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
+
+    container.innerHTML = "";
+    this.barsData = [];
+
+    if (axisLabelXClone) {
+      container.appendChild(axisLabelXClone);
+    }
+
+    this.axisScale = this.buildAxisScale();
+    this.createGridLines();
+    this.createBars();
+  }
+}
+
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded, starting chart initialization");
@@ -1418,6 +1576,12 @@ document.addEventListener("DOMContentLoaded", () => {
     barChart2 = new BarChart(barChart2Container, window.barChartConfig2);
     barChart2.createBarChart();
   }
+  let barChart3 = null;
+  const barChart3Container = document.querySelector('#bar-chart-3 .bar-chart-aria');
+  if (barChart3Container && window.barChartConfig3) {
+    barChart3 = new HorizontalBarChart(barChart3Container, window.barChartConfig3);
+    barChart3.createBarChart();
+  }
 
   // Redraw on window resize
   let resizeTimeout;
@@ -1430,6 +1594,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (barChart2) {
         barChart2.createBarChart();
+      }
+      if (barChart3) {
+        barChart3.createBarChart();
       }
     }, 100);
   });
