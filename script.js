@@ -1405,12 +1405,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initialize bar chart
+  // Initialize bar charts
   let barChart1 = null;
+  let barChart2 = null;
   const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
   if (barChart1Container && window.barChartConfig1) {
     barChart1 = new BarChart(barChart1Container, window.barChartConfig1);
     barChart1.createBarChart();
+  }
+  const barChart2Container = document.querySelector('#bar-chart-2 .bar-chart-aria');
+  if (barChart2Container && window.barChartConfig2) {
+    barChart2 = new BarChart(barChart2Container, window.barChartConfig2);
+    barChart2.createBarChart();
   }
 
   // Redraw on window resize
@@ -1421,6 +1427,9 @@ document.addEventListener("DOMContentLoaded", () => {
       plots.forEach(plot => plot.createScatterPlot());
       if (barChart1) {
         barChart1.createBarChart();
+      }
+      if (barChart2) {
+        barChart2.createBarChart();
       }
     }, 100);
   });

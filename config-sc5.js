@@ -1,6 +1,6 @@
 const scatterPlotConfig5 = {
   axisX: {
-    leftZone: { min: 0, max: 4 },
+    leftZone: { min: 0, max: 3 },
     rightZone: { min: 4, max: 17 },
     break: {
       leftSectionEnd: 63,
