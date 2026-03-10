@@ -359,7 +359,8 @@ body {
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria &,
-      #scatterplot-4 .scatterplot-container .scatterplot-aria & {
+      #scatterplot-4 .scatterplot-container .scatterplot-aria &,
+      #scatterplot-5 .scatterplot-container .scatterplot-aria & {
         width: 65%;
         left: -45%;
         top: auto;
@@ -393,7 +394,8 @@ body {
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria &,
-      #scatterplot-4 .scatterplot-container .scatterplot-aria & {
+      #scatterplot-4 .scatterplot-container .scatterplot-aria &,
+      #scatterplot-5 .scatterplot-container .scatterplot-aria & {
         width: 15.625em;
         bottom: 19%;
         left: 5%;
@@ -544,6 +546,10 @@ body {
 }
 
 .vendor-mistral {
+  --brand-color: var(--vendor-mistral-RGB);
+}
+
+.vendor-mistral-ai {
   --brand-color: var(--vendor-mistral-RGB);
 }
 
