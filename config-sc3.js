@@ -37,7 +37,7 @@ const scatterPlotConfig3 = {
     {
       vendor: "Modulate",
       model: "velma-2",
-      score: 0.9610, // F1-Score
+      score: 0.98897, // F1-Score (98.897%)
       parametersNumber: 316,
     },
     {
