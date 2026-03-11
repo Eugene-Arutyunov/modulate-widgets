@@ -517,11 +517,17 @@ body {
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria &,
-      #scatterplot-4 .scatterplot-container .scatterplot-aria &,
-      #scatterplot-5 .scatterplot-container .scatterplot-aria & {
+      #scatterplot-4 .scatterplot-container .scatterplot-aria & {
         width: 15.625em;
         bottom: 22%;
         left: 5%;
+        top: auto;
+      }
+
+      #scatterplot-5 .scatterplot-container .scatterplot-aria & {
+        width: 10em;
+        bottom: 23%;
+        left: 7%;
         top: auto;
       }
 

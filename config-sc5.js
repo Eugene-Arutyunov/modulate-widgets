@@ -91,7 +91,7 @@ const scatterPlotConfig5 = {
     },
   ],
   backgroundHighlight: {
-    text: "Lowest word error rate lowest cost",
+    text: "Lowest WER, lowest cost",
     position: "bottom-left",
   },
   useVisualOffset: true,
