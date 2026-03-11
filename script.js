@@ -1001,8 +1001,10 @@ class BarChart {
       const bar = document.createElement("div");
       bar.className = "bar-chart-bar";
 
-      // Color: green for Modulate, gray for others
-      if (model.vendor === "Modulate") {
+      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+      if (config.colorModelNameByVendor) {
+        bar.classList.add(vendorClass);
+      } else if (model.vendor === "Modulate") {
         bar.classList.add("modulate");
       }
 
@@ -1024,7 +1026,6 @@ class BarChart {
       const barLabelContainer = document.createElement("div");
       barLabelContainer.className = "bar-chart-bar-label-container";
 
-      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
       if (config.vendorLegendBelow && !config.colorModelNameByVendor) {
         const vendorDot = document.createElement("div");
         const pointType = getPointType(model.vendor);

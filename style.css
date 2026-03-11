@@ -239,6 +239,20 @@ body {
   color: rgba(var(--brand-color), 1);
 }
 
+#bar-chart-2 .bar-chart-bar[class*="vendor-"] {
+  background: none;
+  border-top: 2px solid rgba(var(--brand-color), 1);
+}
+
+#bar-chart-2 .bar-chart-bar.vendor-modulate {
+  background: linear-gradient(
+    to bottom,
+    rgb(150, 255, 150) 80%,
+    rgba(150, 255, 150, 0) 100%
+  );
+  border-top: 2px solid rgba(var(--vendor-modulate-RGB), 1);
+}
+
 .bar-chart-bar-label-with-dot {
   flex-direction: row;
   align-items: center;
