@@ -3,7 +3,7 @@
 const barChartConfig2 = {
   axisY: {
     min: 7,
-    max: 13,
+    max: 12,
     gridLines: {
       step: 1,
       labels: [8, 9, 10, 11, 12],
@@ -32,6 +32,7 @@ const barChartConfig2 = {
     { vendor: "Deepgram", model: "nova-2", score: 12.0 },
     { vendor: "Deepgram", model: "nova-3", score: 12.0 },
   ],
+  vendorLegendBelow: true,
 };
 
 if (typeof window !== "undefined") {

@@ -1,21 +1,21 @@
 const scatterPlotConfig5 = {
   axisX: {
-    leftZone: { min: 0, max: 3 },
-    rightZone: { min: 4, max: 17 },
+    leftZone: { min: 0, max: 7 },
+    rightZone: { min: 8, max: 16 },
     break: {
-      leftSectionEnd: 63,
-      rightSectionStart: 70,
+      leftSectionEnd: 72,
+      rightSectionStart: 78,
     },
     gridLines: {
       left: {
         step: 1,
-        max: 3,
-        labels: [1, 2, 3],
+        max: 7,
+        labels: [0, 1, 2, 3, 4, 5, 6, 7],
       },
       right: {
         step: 2,
         max: 16,
-        labels: [4, 8, 12, 16],
+        labels: [8, 10, 12, 14, 16],
       },
     },
     staticDecimals: 0,
@@ -23,7 +23,7 @@ const scatterPlotConfig5 = {
   },
   axisY: {
     min: 7,
-    max: 13,
+    max: 12,
     inverted: false,
     unit: "&hairsp;%",
     gridLines: {

@@ -231,6 +231,32 @@ body {
   }
 }
 
+#bar-chart-2 .bar-chart-aria {
+  height: 14em;
+}
+
+.bar-chart-bar-label-with-dot {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.375em;
+}
+
+.bar-chart-bar-vendor-dot {
+  position: static;
+  transform: none;
+  width: 0.625em;
+  height: 0.625em;
+  flex-shrink: 0;
+}
+
+.bar-chart-bar-vendor-dot.outlined {
+  --point-border: 1px solid rgba(var(--brand-color), 1);
+}
+
+.bar-chart-bar-vendor-dot.outlined.vendor-gray-border {
+  --point-border: 1px solid rgba(var(--vendor-gray-border-RGB), 1);
+}
+
 .bar-chart-bar {
   position: absolute;
   display: flex;

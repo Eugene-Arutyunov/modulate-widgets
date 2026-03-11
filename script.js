@@ -1015,19 +1015,36 @@ class BarChart {
       bar.dataset.model = model.model;
       bar.dataset.score = model.score;
 
-      // Create label inside bar (model first, then vendor)
+      // Create label inside bar (model first, then vendor; or dot + model when vendorLegendBelow)
       const barLabelContainer = document.createElement("div");
       barLabelContainer.className = "bar-chart-bar-label-container";
+
+      if (config.vendorLegendBelow) {
+        const vendorDot = document.createElement("div");
+        const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+        const pointType = getPointType(model.vendor);
+        vendorDot.className = `scatterplot-point bar-chart-bar-vendor-dot ${vendorClass} ${pointType}`;
+        if (model.vendor === "Modulate") {
+          vendorDot.classList.add("vendor-modulate-gradient");
+        }
+        if (needsGrayBorder(model.vendor)) {
+          vendorDot.classList.add("vendor-gray-border");
+        }
+        barLabelContainer.classList.add("bar-chart-bar-label-with-dot");
+        barLabelContainer.appendChild(vendorDot);
+      }
 
       const modelLabel = document.createElement("div");
       modelLabel.className = "bar-chart-bar-model-label";
       modelLabel.textContent = model.model;
       barLabelContainer.appendChild(modelLabel);
 
-      const vendorLabel = document.createElement("div");
-      vendorLabel.className = "bar-chart-bar-vendor-label";
-      vendorLabel.textContent = model.vendor;
-      barLabelContainer.appendChild(vendorLabel);
+      if (!config.vendorLegendBelow) {
+        const vendorLabel = document.createElement("div");
+        vendorLabel.className = "bar-chart-bar-vendor-label";
+        vendorLabel.textContent = model.vendor;
+        barLabelContainer.appendChild(vendorLabel);
+      }
 
       bar.appendChild(barLabelContainer);
 
@@ -1371,6 +1388,9 @@ document.addEventListener("DOMContentLoaded", () => {
   plotConfigs.forEach(({ id, config }) => {
     createVendorsLegend(`#${id} .vendors`, config);
   });
+  if (window.barChartConfig2) {
+    createVendorsLegend("#bar-chart-2 .vendors", window.barChartConfig2);
+  }
 
   // Control size of all charts
   const widthControl = document.getElementById("width-control");
