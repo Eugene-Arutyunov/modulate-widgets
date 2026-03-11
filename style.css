@@ -402,8 +402,29 @@ body {
   z-index: 5;
 }
 
+#bar-chart-3 .horizontal-bar-chart-company-label {
+  font-weight: 700;
+  font-size: var(--scatterplot-label-font-size, 0.875em);
+  color: rgba(var(--ids__text-RGB), 1);
+}
+
+#bar-chart-3 .horizontal-bar-chart-model-sublabel {
+  font-weight: 400;
+  font-size: 0.75em;
+  color: rgba(var(--ids__text-RGB), 0.5);
+  margin-top: 0.2em;
+}
+
+#bar-chart-3 .bar-chart-aria {
+  height: 12.5em;
+}
+
 #bar-chart-3.bar-chart-wrapper .bar-chart-container {
-  padding-bottom: 2.5em;
+  padding-bottom: 0.5em;
+}
+
+#bar-chart-3 .bar-chart-aria.horizontal-bar-chart-no-axis::before {
+  display: none;
 }
 
 .scatterplot-container {

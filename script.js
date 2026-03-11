@@ -1135,8 +1135,14 @@ class HorizontalBarChart {
   buildAxisScale() {
     const config = this.config;
     const totalBars = config.data.length;
-    const plotHeightPercent = 85; // reserve 15% for X axis at bottom
-    const rowHeightPercent = plotHeightPercent / totalBars;
+    const gap = 0.5; // minimal gap between bars (fixed)
+    const fullSlotHeight = config.axisX.hideAxis ? 100 / totalBars : 85 / totalBars;
+    // When hideAxis: bars full height in slot (2x); else half height
+    const barHeightPercent = config.axisX.hideAxis
+      ? (fullSlotHeight - gap)
+      : (fullSlotHeight - gap) * 0.5;
+    const slotHeightPercent = barHeightPercent + gap;
+    const plotHeightPercent = slotHeightPercent * totalBars;
 
     return {
       valueToX(value) {
@@ -1144,16 +1150,18 @@ class HorizontalBarChart {
         return Math.min(100, normalized * 100);
       },
       indexToBottom(index) {
-        return (totalBars - 1 - index) * rowHeightPercent;
+        return (totalBars - 1 - index) * slotHeightPercent + gap / 2;
       },
-      rowHeightPercent: rowHeightPercent - 2,
-      axisTopPercent: 100 - plotHeightPercent,
+      rowHeightPercent: barHeightPercent,
+      axisTopPercent: config.axisX.hideAxis ? 100 - plotHeightPercent : 15,
     };
   }
 
   createGridLines() {
-    const container = this.container;
     const config = this.config;
+    if (config.axisX.hideAxis) return;
+
+    const container = this.container;
     const scale = this.axisScale;
     const xConfig = config.axisX.gridLines;
 
@@ -1236,15 +1244,15 @@ class HorizontalBarChart {
       const barLabelContainer = document.createElement("div");
       barLabelContainer.className = "bar-chart-bar-label-container";
 
-      const modelLabel = document.createElement("div");
-      modelLabel.className = "bar-chart-bar-model-label";
-      modelLabel.textContent = model.model;
-      barLabelContainer.appendChild(modelLabel);
-
       const vendorLabel = document.createElement("div");
-      vendorLabel.className = "bar-chart-bar-vendor-label";
+      vendorLabel.className = "bar-chart-bar-vendor-label horizontal-bar-chart-company-label";
       vendorLabel.textContent = model.vendor;
       barLabelContainer.appendChild(vendorLabel);
+
+      const modelLabel = document.createElement("div");
+      modelLabel.className = "bar-chart-bar-model-label horizontal-bar-chart-model-sublabel";
+      modelLabel.textContent = model.model;
+      barLabelContainer.appendChild(modelLabel);
 
       bar.appendChild(barLabelContainer);
 
@@ -1253,7 +1261,7 @@ class HorizontalBarChart {
       costLabel.textContent = "$" + cost.toFixed(config.axisX.staticDecimals ?? 2);
       costLabel.style.left = `${xWidth}%`;
       costLabel.style.bottom = `${bottom + height}%`;
-      costLabel.style.transform = "translate(-50%, 100%)";
+      costLabel.style.transform = "translate(0, 100%)";
       container.appendChild(costLabel);
 
       container.appendChild(bar);
@@ -1265,11 +1273,14 @@ class HorizontalBarChart {
     const container = this.container;
     if (!container || !this.config?.data) return;
 
-    const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+    const axisLabelX = !this.config.axisX.hideAxis ? container.querySelector(".scatterplot-axis-label-x") : null;
     const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
 
     container.innerHTML = "";
     this.barsData = [];
+    if (this.config.axisX.hideAxis) {
+      container.classList.add("horizontal-bar-chart-no-axis");
+    }
 
     if (axisLabelXClone) {
       container.appendChild(axisLabelXClone);

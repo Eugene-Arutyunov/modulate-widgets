@@ -4,6 +4,7 @@ const barChartConfig3 = {
   axisX: {
     min: 0,
     max: 0.45,
+    hideAxis: true,
     gridLines: {
       step: 0.1,
       labels: [0, 0.1, 0.2, 0.3, 0.4],
