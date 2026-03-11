@@ -471,6 +471,10 @@ class ScatterPlot {
 
       xValues.forEach((cost) => {
         if (cost <= config.axisX.max && cost >= config.axisX.min) {
+          // Skip tick, grid line and label for 0 when min is 0 — the shared static zero is used.
+          const skipOrigin = cost === 0 && config.axisX.min === 0;
+          if (skipOrigin) return;
+
           const x = scale.valueToX(cost);
 
           const tick = document.createElement("div");
@@ -483,13 +487,12 @@ class ScatterPlot {
           gridLine.style.left = `${x}%`;
           container.appendChild(gridLine);
 
-          // Add labels only for values from labels (if specified) or for all (if labels is empty)
+          // Add labels only for values from labels (if specified) or for all (if labels is empty).
           const shouldAddLabel = isValueInLabels(cost, xGridConfig.labels);
           if (shouldAddLabel) {
             const costLabel = document.createElement("div");
             costLabel.className = "scatterplot-static-label scatterplot-static-label-cost";
             costLabel.style.left = `${x}%`;
-            // Format depending on value
             const decimals = config.axisX.staticDecimals !== undefined ? config.axisX.staticDecimals : (cost < 1 ? 2 : 0);
             const showUnit = showUnitsOnFirstAndLastX
               ? (cost === xFirstValue || cost === xLastValue)
@@ -501,7 +504,7 @@ class ScatterPlot {
       });
     }
 
-    // Zero (0) on X axis
+    // Zero (0) on X axis — shared static label at origin (tick/grid/label for 0 skipped above when min is 0)
     const zeroLabel = document.createElement("div");
     zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
     zeroLabel.textContent = "0";
@@ -707,10 +710,13 @@ class ScatterPlot {
 
     const scale = this.axisScale;
 
-    // Set CSS variables for horizontal grid lines (if there's a break)
+    // Set CSS variables for X axis line (and horizontal grid when break)
     if (scale.hasBreak) {
       container.style.setProperty('--left-section-end', `${scale.leftSectionEnd}%`);
       container.style.setProperty('--right-section-start', `${scale.rightSectionStart}%`);
+    } else {
+      container.style.setProperty('--left-section-end', '100%');
+      container.style.setProperty('--right-section-width', '0%');
     }
 
     // Draw points
@@ -751,7 +757,7 @@ class ScatterPlot {
       if (needsGrayBorder(model.vendor)) {
         point.classList.add("vendor-gray-border");
       }
-      if (needsModulateGradient(model.vendor, model.model)) {
+      if (model.vendor === "Modulate") {
         point.classList.add("vendor-modulate-gradient");
       }
 
@@ -877,31 +883,30 @@ class BarChart {
     const config = this.config;
     const scale = this.axisScale;
 
-    // Grid lines for Y axis
     const yGridConfig = config.axisY.gridLines;
-    // Generate all values with step interval for drawing lines
     const yValues = [];
-    // Determine number of decimal places for rounding
-    const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
-    for (let val = config.axisY.min + yGridConfig.step; val <= config.axisY.max; val += yGridConfig.step) {
-      // Round value to avoid floating point errors
-      const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
-      yValues.push(roundedVal);
-    }
-
-    // Add values from labels if they didn't fall into the sequence
-    if (yGridConfig.labels.length > 0) {
+    if (yGridConfig.labelsOnly && yGridConfig.labels.length > 0) {
       yGridConfig.labels.forEach(label => {
         if (label >= config.axisY.min && label <= config.axisY.max) {
-          // Check if value already exists in yValues (with tolerance)
-          const exists = yValues.some(val => Math.abs(val - label) < 0.0001);
-          if (!exists) {
-            yValues.push(label);
-          }
+          yValues.push(label);
         }
       });
-      // Sort values
       yValues.sort((a, b) => a - b);
+    } else {
+      const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
+      for (let val = config.axisY.min + yGridConfig.step; val <= config.axisY.max; val += yGridConfig.step) {
+        const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
+        yValues.push(roundedVal);
+      }
+      if (yGridConfig.labels.length > 0) {
+        yGridConfig.labels.forEach(label => {
+          if (label >= config.axisY.min && label <= config.axisY.max) {
+            const exists = yValues.some(val => Math.abs(val - label) < 0.0001);
+            if (!exists) yValues.push(label);
+          }
+        });
+        yValues.sort((a, b) => a - b);
+      }
     }
 
     // Determine the last value that will be displayed with a label for Y axis
@@ -1019,9 +1024,9 @@ class BarChart {
       const barLabelContainer = document.createElement("div");
       barLabelContainer.className = "bar-chart-bar-label-container";
 
-      if (config.vendorLegendBelow) {
+      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+      if (config.vendorLegendBelow && !config.colorModelNameByVendor) {
         const vendorDot = document.createElement("div");
-        const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
         const pointType = getPointType(model.vendor);
         vendorDot.className = `scatterplot-point bar-chart-bar-vendor-dot ${vendorClass} ${pointType}`;
         if (model.vendor === "Modulate") {
@@ -1036,6 +1041,9 @@ class BarChart {
 
       const modelLabel = document.createElement("div");
       modelLabel.className = "bar-chart-bar-model-label";
+      if (config.vendorLegendBelow && config.colorModelNameByVendor) {
+        modelLabel.classList.add(vendorClass);
+      }
       modelLabel.textContent = model.model;
       barLabelContainer.appendChild(modelLabel);
 
@@ -1048,14 +1056,16 @@ class BarChart {
 
       bar.appendChild(barLabelContainer);
 
-      // Create score label above bar (aligned to left edge of bar)
-      const scoreLabel = document.createElement("div");
-      scoreLabel.className = "bar-chart-score-label";
-      const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : 1;
-      scoreLabel.textContent = score.toFixed(decimals);
-      scoreLabel.style.left = `${barLeftPercent}%`;
-      scoreLabel.style.top = `${yTop}%`;
-      container.appendChild(scoreLabel);
+      // Create score label above bar (unless hidden)
+      if (!config.hideScoreLabel) {
+        const scoreLabel = document.createElement("div");
+        scoreLabel.className = "bar-chart-score-label";
+        const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : 1;
+        scoreLabel.textContent = score.toFixed(decimals);
+        scoreLabel.style.left = `${barLeftPercent}%`;
+        scoreLabel.style.top = `${yTop}%`;
+        container.appendChild(scoreLabel);
+      }
 
       container.appendChild(bar);
 
@@ -1357,15 +1367,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const vendorsContainer = document.querySelector(containerSelector);
     if (!vendorsContainer || !config || !config.data) return;
 
-    // Collect unique vendors in order of first appearance in data
-    const vendors = [];
-    const vendorsSet = new Set();
-    config.data.forEach((item) => {
-      if (!vendorsSet.has(item.vendor)) {
-        vendorsSet.add(item.vendor);
-        vendors.push(item.vendor);
-      }
-    });
+    let vendors;
+    if (config.legendOrderByCost) {
+      // Sort by cost ascending: Modulate first, then others by min cost
+      const vendorCosts = new Map();
+      config.data.forEach((item) => {
+        const costVal = parseCost(item.cost ?? item.costPerHour ?? 0);
+        if (!vendorCosts.has(item.vendor) || costVal < vendorCosts.get(item.vendor)) {
+          vendorCosts.set(item.vendor, costVal);
+        }
+      });
+      vendors = Array.from(vendorCosts.entries())
+        .sort((a, b) => {
+          if (a[0] === "Modulate") return -1;
+          if (b[0] === "Modulate") return 1;
+          return a[1] - b[1];
+        })
+        .map(([vendor]) => vendor);
+    } else {
+      // Order of first appearance in data
+      vendors = [];
+      const vendorsSet = new Set();
+      config.data.forEach((item) => {
+        if (!vendorsSet.has(item.vendor)) {
+          vendorsSet.add(item.vendor);
+          vendors.push(item.vendor);
+        }
+      });
+    }
 
     // Create elements for each vendor
     vendors.forEach((vendor) => {

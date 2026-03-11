@@ -37,7 +37,7 @@
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
   --vendor-nvidia-RGB: 133, 183, 55; /* NVIDIA green - warmer, more grassy */
   --vendor-mistral-RGB: 225, 100, 150; /* Mistral red */
-  --vendor-assemblyai-RGB: 120, 190, 250; /* AssemblyAI light blue */
+  --vendor-assemblyai-RGB: 37, 69, 211; /* AssemblyAI #2545d3 */
   --vendor-deepgram-RGB: 0, 200, 220; /* Deepgram - cooler, turquoise/blue */
   --vendor-elevenlabs-RGB: 150, 200, 255; /* ElevenLabs - blue */
   --vendor-gladia-RGB: 210, 190, 255; /* Gladia purple */
@@ -233,6 +233,10 @@ body {
 
 #bar-chart-2 .bar-chart-aria {
   height: 14em;
+}
+
+#bar-chart-2 .bar-chart-bar-model-label[class*="vendor-"] {
+  color: rgba(var(--brand-color), 1);
 }
 
 .bar-chart-bar-label-with-dot {

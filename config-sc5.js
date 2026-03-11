@@ -1,22 +1,10 @@
 const scatterPlotConfig5 = {
   axisX: {
-    leftZone: { min: 0, max: 7 },
-    rightZone: { min: 8, max: 16 },
-    break: {
-      leftSectionEnd: 72,
-      rightSectionStart: 78,
-    },
+    min: 0,
+    max: 7,
     gridLines: {
-      left: {
-        step: 1,
-        max: 7,
-        labels: [0, 1, 2, 3, 4, 5, 6, 7],
-      },
-      right: {
-        step: 2,
-        max: 16,
-        labels: [8, 10, 12, 14, 16],
-      },
+      step: 1,
+      labels: [0, 1, 2, 3, 4, 5, 6, 7],
     },
     staticDecimals: 0,
     hoverDecimals: 2,
@@ -47,12 +35,6 @@ const scatterPlotConfig5 = {
       cost: "$6.67",
     },
     {
-      vendor: "ElevenLabs",
-      model: "scribe-v1",
-      score: 8.50,
-      cost: "$6.67",
-    },
-    {
       vendor: "Google",
       model: "gemini-2.5-pro",
       score: 8.85,
@@ -77,34 +59,16 @@ const scatterPlotConfig5 = {
       cost: "$6.70",
     },
     {
-      vendor: "AssemblyAI",
-      model: "slam-1",
-      score: 9.45,
-      cost: "$4.50",
-    },
-    {
       vendor: "Mistral AI",
       model: "voxtral-mini",
       score: 9.60,
       cost: "$1.00",
     },
     {
-      vendor: "Gladia",
-      model: "solaria-1",
-      score: 9.75,
-      cost: "$8.33",
-    },
-    {
       vendor: "NVIDIA",
       model: "parakeet-mnt-1.1b",
       score: 9.85,
       cost: "$1.91",
-    },
-    {
-      vendor: "OpenAI",
-      model: "gpt-4o-mini-transcribe",
-      score: 9.95,
-      cost: "$16.00",
     },
     {
       vendor: "Google",
@@ -126,12 +90,6 @@ const scatterPlotConfig5 = {
     },
     {
       vendor: "Deepgram",
-      model: "nova-2",
-      score: 11.95,
-      cost: "$4.30",
-    },
-    {
-      vendor: "Deepgram",
       model: "nova-3",
       score: 11.95,
       cost: "$4.30",
@@ -143,6 +101,7 @@ const scatterPlotConfig5 = {
     position: "bottom-left",
   },
   useVisualOffset: true,
+  legendOrderByCost: true,
 };
 
 // Explicitly expose to window for compatibility
