@@ -1,10 +1,10 @@
 const scatterPlotConfig5 = {
   axisX: {
     min: 0,
-    max: 7,
+    max: 9,
     gridLines: {
       step: 1,
-      labels: [0, 1, 2, 3, 4, 5, 6, 7],
+      labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     },
     staticDecimals: 0,
     hoverDecimals: 2,
@@ -41,12 +41,6 @@ const scatterPlotConfig5 = {
       cost: "$4.80",
     },
     {
-      vendor: "NVIDIA",
-      model: "canary-qwen-2.5b",
-      score: 8.85,
-      cost: "$0.74",
-    },
-    {
       vendor: "AssemblyAI",
       model: "universal",
       score: 9.35,
@@ -59,16 +53,16 @@ const scatterPlotConfig5 = {
       cost: "$6.70",
     },
     {
-      vendor: "Mistral AI",
-      model: "voxtral-mini",
-      score: 9.60,
-      cost: "$1.00",
+      vendor: "Gladia",
+      model: "solaria-1",
+      score: 9.75,
+      cost: "$8.33",
     },
     {
-      vendor: "NVIDIA",
-      model: "parakeet-mnt-1.1b",
+      vendor: "OpenAI",
+      model: "gpt-4o-transcribe",
       score: 9.85,
-      cost: "$1.91",
+      cost: "$6.00",
     },
     {
       vendor: "Google",
