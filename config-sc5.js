@@ -57,18 +57,21 @@ const scatterPlotConfig5 = {
       model: "solaria-1",
       score: 9.75,
       cost: "$8.33",
+      visualOffset: -0.1,
     },
     {
       vendor: "OpenAI",
       model: "gpt-4o-transcribe",
       score: 9.85,
       cost: "$6.00",
+      visualOffset: 0.1,
     },
     {
       vendor: "Google",
       model: "chirp-2",
       score: 9.95,
       cost: "$4.00",
+      visualOffset: -0.1,
     },
     {
       vendor: "Speechmatics",
@@ -81,6 +84,7 @@ const scatterPlotConfig5 = {
       model: "whisper-large-v3",
       score: 10.60,
       cost: "$4.23",
+      visualOffset: 0.1,
     },
     {
       vendor: "Deepgram",
