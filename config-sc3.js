@@ -109,7 +109,6 @@ const scatterPlotConfig3 = {
   ],
   backgroundHighlight: {
     text: "LEADING DEEPFAKE DETECTION",
-    position: "top-left",
   },
   useVisualOffset: false,
 };

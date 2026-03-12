@@ -36,7 +36,7 @@ html {
   --vendor-modulate-gradient-2-RGB:
     200, 102, 255; /* Red/Error (for gradient left to right) */
   --vendor-openai-RGB: 0, 0, 0; /* OpenAI black */
-  --vendor-grok-RGB: 0, 0, 0; /* Black/Dark */
+  --vendor-xai-RGB: 0, 0, 0; /* xAI black */
   --vendor-gemini-RGB: 0, 130, 244; /* Google blue */
   --vendor-deepseek-RGB: 0, 130, 244; /* Blue */
   --vendor-nvidia-RGB: 133, 183, 55; /* NVIDIA green - warmer, more grassy */
@@ -192,39 +192,7 @@ body {
   border-color: rgba(var(--ids__text-hover-RGB), 0.5);
 }
 
-.scatterplot-wrapper {
-  font-size: 16px;
-  margin: 2.8125em 0 2.5em;
-  background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
-  border: 1px solid rgba(var(--ids__UI-border-RGB), 0.5);
-  border-radius: 0.5em;
-  padding: 1.25em 5em 0.625em 5em;
-
-  & .scatterplot-title {
-    font-size: 1.5em;
-    font-weight: 600;
-    margin: 0 0 0.4167em 0;
-    opacity: 0.8;
-
-    text-align: center;
-  }
-  & .scatterplot-subtitle {
-    width: 80%;
-    margin: 0 auto 1.5625em;
-    font-size: 1em;
-
-    color: rgba(var(--ids__text-RGB), 0.7);
-
-    opacity: 0.8;
-
-    text-align: center;
-  }
-
-  & .paddind-spacer {
-    height: 3.75em;
-  }
-}
-
+.scatterplot-wrapper,
 .bar-chart-wrapper {
   font-size: 16px;
   margin: 2.8125em 0 2.5em;
@@ -250,7 +218,7 @@ body {
     text-align: center;
   }
 
-  & .paddind-spacer {
+  & .padding-spacer {
     height: 3.75em;
   }
 }
@@ -400,23 +368,6 @@ body {
   padding: 0.1em 0.3em;
   margin-top: 0.5em;
   white-space: nowrap;
-}
-
-.bar-chart-x-label {
-  position: absolute;
-  bottom: -2.3077em;
-  transform: translateX(-50%);
-  font-size: var(--scatterplot-axis-font-size, 0.8125em);
-  font-weight: 600;
-  color: rgba(var(--ids__text-RGB), 0.8);
-  pointer-events: none;
-  background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
-  z-index: 10;
-  padding: 0 0.1538em;
-  white-space: nowrap;
-  max-width: 10em;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Horizontal bar chart (only X axis labeled) */
@@ -613,7 +564,6 @@ body {
     font-weight: 600;
     color: rgba(var(--ids__text-RGB), 0.8);
     pointer-events: none;
-    /* border: 1px solid rgba(var(--ids__text-RGB), 1); */
     background-color: rgba(var(--ids__bg-surface-light-RGB), 1);
     z-index: 10;
     padding: 0 0.1538em;
@@ -704,8 +654,8 @@ body {
   --brand-color: var(--vendor-openai-RGB);
 }
 
-.vendor-grok {
-  --brand-color: var(--vendor-grok-RGB);
+.vendor-xai {
+  --brand-color: var(--vendor-xai-RGB);
 }
 
 .vendor-gemini {

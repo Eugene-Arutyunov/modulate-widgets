@@ -1,4 +1,6 @@
-const scatterPlotConfig2 = {
+// Variant of scatterPlotConfig2 with velma-2-transcribe cost changed from $0.05 to $0.42
+// Used in scatterplot-4 to show the AMI transcription benchmark at standard pricing
+const scatterPlotConfig4 = {
   axisX: {
     leftZone: { min: 0, max: 5 },
     rightZone: { min: 5, max: 25 },
@@ -6,17 +8,16 @@ const scatterPlotConfig2 = {
       leftSectionEnd: 63,
       rightSectionStart: 70,
     },
-    // Grid line frequency settings for X axis (without break)
     gridLines: {
       left: {
-        step: 1, // step between lines
-        max: 4, // draw up to this value
-        labels: [], // auto-generated
+        step: 1,
+        max: 4,
+        labels: [],
       },
       right: {
-        step: 1, // step between lines
-        max: 25, // draw up to this value
-        labels: [5, 10, 15, 20, 25], // auto-generated
+        step: 1,
+        max: 25,
+        labels: [5, 10, 15, 20, 25],
       },
     },
     staticDecimals: 0,
@@ -25,12 +26,11 @@ const scatterPlotConfig2 = {
   axisY: {
     min: 0,
     max: 40,
-    inverted: false, // normal scale (zero at bottom, larger value higher)
-    unit: "&hairsp;%", // unit of measurement for labels
-    // Grid line frequency settings for Y axis
+    inverted: false,
+    unit: "&hairsp;%",
     gridLines: {
-      step: 5, // step between lines
-      labels: [10, 20, 30, 40], // auto-generated
+      step: 5,
+      labels: [10, 20, 30, 40],
     },
     staticDecimals: 0,
     hoverDecimals: 1,
@@ -39,8 +39,8 @@ const scatterPlotConfig2 = {
     {
       vendor: "Modulate",
       model: "velma-2-transcribe",
-      score: 14.90, // WER
-      cost: "$0.05",
+      score: 14.90,
+      cost: "$0.42",
     },
     {
       vendor: "NVIDIA",
@@ -110,7 +110,6 @@ const scatterPlotConfig2 = {
       score: 24.20,
       cost: "$24.0000",
     },
-    // Additional models for vendors that appear multiple times
     {
       vendor: "NVIDIA",
       model: "parakeet-tdt-v3",
@@ -143,7 +142,6 @@ const scatterPlotConfig2 = {
   useVisualOffset: true,
 };
 
-// Explicitly expose to window for compatibility
-if (typeof window !== 'undefined') {
-  window.scatterPlotConfig2 = scatterPlotConfig2;
+if (typeof window !== "undefined") {
+  window.scatterPlotConfig4 = scatterPlotConfig4;
 }

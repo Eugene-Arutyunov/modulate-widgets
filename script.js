@@ -781,9 +781,6 @@ class ScatterPlot {
       point.dataset.score = model.score;
       const isCurrency = shouldFormatAsCurrency(config);
       point.dataset.cost = typeof costValue === 'string' ? costValue : (isCurrency ? "$" + cost.toFixed(2) : cost.toFixed(2));
-      if (model.speed !== undefined) {
-        point.dataset.speed = model.speed;
-      }
 
       // Create model name label
       const modelLabel = document.createElement("div");
@@ -864,8 +861,6 @@ class BarChart {
   constructor(containerElement, config) {
     this.container = containerElement;
     this.config = config;
-    this.barsData = [];
-    this.activeBar = null;
     this.axisScale = null;
   }
 
@@ -1093,20 +1088,7 @@ class BarChart {
       }
 
       container.appendChild(bar);
-
-      // Save bar data
-      this.barsData.push({
-        element: bar,
-        model: model,
-        xPercent: x,
-        yPercent: yTop,
-      });
     });
-  }
-
-  // Create X axis labels (vendor and model names) - removed, now inside bars
-  createXAxisLabels() {
-    // Labels are now created inside bars in createBars()
   }
 
   // Create bar chart
@@ -1137,10 +1119,8 @@ class BarChart {
     const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
     const axisLabelYClone = axisLabelY ? axisLabelY.cloneNode(true) : null;
 
-    // Clear container and data
+    // Clear container
     container.innerHTML = "";
-    this.barsData = [];
-    this.activeBar = null;
 
     // Restore axis labels
     if (axisLabelXClone) {
@@ -1163,7 +1143,6 @@ class HorizontalBarChart {
   constructor(containerElement, config) {
     this.container = containerElement;
     this.config = config;
-    this.barsData = [];
     this.axisScale = null;
   }
 
@@ -1300,7 +1279,6 @@ class HorizontalBarChart {
       container.appendChild(costLabel);
 
       container.appendChild(bar);
-      this.barsData.push({ element: bar, model });
     });
   }
 
@@ -1312,7 +1290,6 @@ class HorizontalBarChart {
     const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
 
     container.innerHTML = "";
-    this.barsData = [];
     if (this.config.axisX.hideAxis) {
       container.classList.add("horizontal-bar-chart-no-axis");
     }

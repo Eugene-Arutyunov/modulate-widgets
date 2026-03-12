@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -98,15 +98,13 @@
             <div class="scatterplot-aria">
               <div class="scatterplot-background-highlight">
                 <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label">
-                  Highest accuracy lowest cost
-                </div>
+                <div class="scatterplot-background-highlight-label"></div>
               </div>
               <div class="scatterplot-axis-label-x">Inference cost</div>
               <div class="scatterplot-axis-label-y">Accuracy score</div>
             </div>
           </div>
-          <div class="paddind-spacer"></div>
+          <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
       </section>
@@ -129,9 +127,7 @@
             <div class="scatterplot-aria">
               <div class="scatterplot-background-highlight">
                 <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label">
-                  Lowest word error lowest cost
-                </div>
+                <div class="scatterplot-background-highlight-label"></div>
               </div>
               <div class="scatterplot-axis-label-x">
                 Cost per 1000 minutes of audio
@@ -140,7 +136,7 @@
             </div>
           </div>
 
-          <div class="paddind-spacer"></div>
+          <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
 
@@ -160,9 +156,7 @@
             <div class="scatterplot-aria">
               <div class="scatterplot-background-highlight">
                 <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label">
-                  Lowest word error lowest cost
-                </div>
+                <div class="scatterplot-background-highlight-label"></div>
               </div>
               <div class="scatterplot-axis-label-x">
                 Cost per 1000 minutes of audio
@@ -171,7 +165,7 @@
             </div>
           </div>
 
-          <div class="paddind-spacer"></div>
+          <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
       </section>
@@ -197,8 +191,7 @@
               <div class="scatterplot-axis-label-y">Average F1 score</div>
             </div>
           </div>
-          <div class="paddind-spacer"></div>
-          <div class="vendors"></div>
+          <div class="padding-spacer"></div>
         </div>
       </section>
 
@@ -216,9 +209,7 @@
             <div class="scatterplot-aria">
               <div class="scatterplot-background-highlight">
                 <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label">
-                  Lowest WER
-                </div>
+                <div class="scatterplot-background-highlight-label"></div>
               </div>
               <div class="scatterplot-axis-label-x">
                 Cost per 1000 minutes of audio
@@ -226,7 +217,7 @@
               <div class="scatterplot-axis-label-y">Avg. Word Error Rate</div>
             </div>
           </div>
-          <div class="paddind-spacer"></div>
+          <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
       </section>
@@ -261,8 +252,6 @@
           <div class="bar-chart-container">
             <div class="bar-chart-aria"></div>
           </div>
-          <div class="paddind-spacer"></div>
-          <div class="vendors"></div>
         </div>
       </section>
 
@@ -276,9 +265,7 @@
             <div class="scatterplot-aria">
               <div class="scatterplot-background-highlight">
                 <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label">
-                  Leading deepfake detection
-                </div>
+                <div class="scatterplot-background-highlight-label"></div>
               </div>
               <div class="scatterplot-axis-label-x">
                 Number of parameters (M)
@@ -286,38 +273,15 @@
               <div class="scatterplot-axis-label-y">Average F1 score</div>
             </div>
           </div>
-          <div class="paddind-spacer"></div>
+          <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
       </section>
     </div>
     <script src="config-sc1.js"></script>
     <script src="config-sc2.js"></script>
+    <script src="config-sc4.js"></script>
     <script src="config-sc5.js"></script>
-    <script>
-      // Create modified version of scatterPlotConfig2 with velma-2-transcribe cost changed from $0.05 to $0.42
-      if (typeof window !== "undefined" && window.scatterPlotConfig2) {
-        // Deep clone the config
-        const modifiedConfig = JSON.parse(
-          JSON.stringify(window.scatterPlotConfig2),
-        );
-
-        // Find and modify velma-2-transcribe cost
-        const model = modifiedConfig.data.find(
-          (item) =>
-            item.vendor === "Modulate" && item.model === "velma-2-transcribe",
-        );
-        if (model) {
-          model.cost = "$0.42";
-          console.log(
-            "Created modified config: velma-2-transcribe cost changed to $0.42",
-          );
-        }
-
-        // Expose as scatterPlotConfig4 for scatterplot-4
-        window.scatterPlotConfig4 = modifiedConfig;
-      }
-    </script>
     <script src="config-sc3.js"></script>
     <script src="config-bar1.js"></script>
     <script src="config-bar2.js"></script>

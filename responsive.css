@@ -10,19 +10,22 @@
 }
 
 @media (max-width: 992px) {
-  .container .scatterplot-wrapper {
+  .container .scatterplot-wrapper,
+  .container .bar-chart-wrapper {
     font-size: 14px;
   }
 }
 
 @media (max-width: 768px) {
-  .container .scatterplot-wrapper {
+  .container .scatterplot-wrapper,
+  .container .bar-chart-wrapper {
     font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .container .scatterplot-wrapper {
+  .container .scatterplot-wrapper,
+  .container .bar-chart-wrapper {
     font-size: 10px;
   }
 }

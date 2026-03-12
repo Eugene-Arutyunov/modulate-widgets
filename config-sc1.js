@@ -40,7 +40,6 @@ const scatterPlotConfig1 = {
       modelType: "Fast",
       score: 4.38,
       cost: "$0.000930",
-      speed: 1.737,
     },
     {
       vendor: "Modulate",
@@ -48,8 +47,6 @@ const scatterPlotConfig1 = {
       modelType: "Regular",
       score: 4.95,
       cost: "$0.003750",
-      speed: 3.163,
-      default: true,
     },
     // {
     //   vendor: "Modulate",
@@ -57,7 +54,6 @@ const scatterPlotConfig1 = {
     //   modelType: "Regular",
     //   score: 4.85,
     //   cost: "$0.024440",
-    //   speed: 2.176,
     // },
     {
       vendor: "OpenAI",
@@ -65,7 +61,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 1.61,
       cost: "$0.031380",
-      speed: 4.099,
     },
     {
       vendor: "xAI",
@@ -73,7 +68,6 @@ const scatterPlotConfig1 = {
       modelType: "Fast",
       score: 2.25,
       cost: "$0.036410",
-      speed: 3.385,
     },
     {
       vendor: "xAI",
@@ -81,7 +75,6 @@ const scatterPlotConfig1 = {
       modelType: "Fast",
       score: 3.39,
       cost: "$0.037320",
-      speed: 10.577,
     },
     {
       vendor: "Google",
@@ -89,7 +82,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 2.43,
       cost: "$0.050290",
-      speed: 1.455,
       visualOffset: 0.1,
     },
     {
@@ -98,7 +90,6 @@ const scatterPlotConfig1 = {
       modelType: "Regular",
       score: 3.722,
       cost: "$0.054760",
-      speed: 49.037,
     },
     {
       vendor: "Google",
@@ -106,7 +97,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.28,
       cost: "$0.056060",
-      speed: 1.781,
     },
     {
       vendor: "DeepSeek",
@@ -114,7 +104,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.94,
       cost: "$0.062040",
-      speed: 29.065,
     },
     {
       vendor: "Google",
@@ -122,7 +111,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.52,
       cost: "$0.090620",
-      speed: 1.997,
       visualOffset: -0.35,
     },
     {
@@ -131,16 +119,14 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 4.08,
       cost: "$0.091990",
-      speed: 45.543,
       visualOffset: -0.2,
     },
     {
       vendor: "OpenAI",
-      model: "  ",
+      model: "  ", // intentionally blank — model name TBD
       modelType: "",
       score: 3.03,
       cost: "$0.104280",
-      speed: 17.157,
       visualOffset: -0.1,
     },
     {
@@ -149,7 +135,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.89,
       cost: "$0.118550",
-      speed: 29.531,
       visualOffset: -0.25,
     },
     {
@@ -158,7 +143,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 1.49,
       cost: "$0.173850",
-      speed: 2.775,
     },
     {
       vendor: "Google",
@@ -166,7 +150,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 4.26,
       cost: "$0.283000",
-      speed: 21.246,
       visualOffset: -0.1,
     },
     {
@@ -175,7 +158,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 4.28,
       cost: "$0.397580",
-      speed: 39.984,
       visualOffset: 0.08,
     },
     {
@@ -184,7 +166,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.76,
       cost: "$0.398780",
-      speed: 6.064,
       visualOffset: -0.35,
     },
     {
@@ -209,7 +190,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 4.36,
       cost: "$0.444790",
-      speed: 37.16,
       visualOffset: 0.25,
     },
     {
@@ -218,7 +198,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3,
       cost: "$0.559410",
-      speed: 4.351,
       visualOffset: -0.1,
     },
     {
@@ -227,7 +206,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 0.92,
       cost: "$0.631840",
-      speed: 8.641,
     },
     {
       vendor: "OpenAI",
@@ -235,7 +213,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.73,
       cost: "$1.483230",
-      speed: 62.011,
     },
     {
       vendor: "OpenAI",
@@ -243,7 +220,6 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.93,
       cost: "$1.498401",
-      speed: 10.964,
     },
   ],
   backgroundHighlight: {
