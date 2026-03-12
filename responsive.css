@@ -15,14 +15,3 @@
     font-size: 14px;
   }
 }
-
-@media (max-width: 768px) {
-  .page-responsive .container {
-    width: 480px;
-  }
-
-  .page-responsive .container .scatterplot-wrapper,
-  .page-responsive .container .bar-chart-wrapper {
-    font-size: 15px;
-  }
-}
