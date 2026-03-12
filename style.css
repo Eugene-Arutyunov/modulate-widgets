@@ -613,7 +613,7 @@ body {
   pointer-events: none;
   transform: translate(
     calc(var(--scatterplot-point-size, 0.875em) / 2 - 0.0714em),
-    calc(-50% - 0.0714em)
+    calc(-0.5lh - 0.1429em - 0.0714em)
   );
   white-space: nowrap;
   z-index: 1;
@@ -625,6 +625,7 @@ body {
 
   @media (max-width: 768px) {
     max-width: 9.5em;
+    min-width: 5em;
     font-size: 0.7em;
     white-space: normal;
     overflow-wrap: break-word;
@@ -644,7 +645,7 @@ body {
 .scatterplot-point-label-left {
   transform: translate(
     calc(-100% - var(--scatterplot-point-size, 0.875em) / 2 - 0px),
-    calc(-50% - 0.0714em)
+    calc(-0.5lh - 0.1429em - 0.0714em)
   );
   text-align: right;
 }
