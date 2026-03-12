@@ -250,6 +250,10 @@ body {
     height: 25em;
     position: relative;
     border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
+    @media (max-width: 768px) {
+      margin-left: 2em;
+      width: calc(100% - 2em);
+    }
 
     /* X axis border */
     &::before {
@@ -265,7 +269,20 @@ body {
 }
 
 #bar-chart-2 .bar-chart-aria {
-  height: 14em;
+  height: 17em;
+
+  @media (max-width: 768px) {
+    height: 35em;
+  }
+}
+
+@media (max-width: 768px) {
+  #bar-chart-2 .bar-chart-bar-model-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: right;
+    width: auto;
+  }
 }
 
 #bar-chart-2 .bar-chart-bar-model-label[class*="vendor-"] {
@@ -338,6 +355,10 @@ body {
   align-items: flex-start;
   padding: 0;
   margin: 0;
+
+  @media (max-width: 768px) {
+    align-items: center;
+  }
 }
 
 .bar-chart-bar-model-label {
