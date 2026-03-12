@@ -102,6 +102,18 @@ function normalizeVendorName(vendor) {
     .replace(/^-|-$/g, "");
 }
 
+// Map vendor names to CSS class names where they differ from normalizeVendorName (e.g. scatterplot-3)
+const VENDOR_CSS_CLASS_MAP = {
+  "Deep Learning & Media System Laboratory": "vendor-deep-learning-media-system-laboratory",
+  "DF Arena ML Researchers": "vendor-df-arena-ml-researchers-no-company",
+  "Singapore Agency for Science, Technology & Research": "vendor-singapore-agency-science-technology-research",
+};
+
+function getVendorClass(vendor) {
+  if (VENDOR_CSS_CLASS_MAP[vendor]) return VENDOR_CSS_CLASS_MAP[vendor];
+  return `vendor-${normalizeVendorName(vendor)}`;
+}
+
 // Class for creating scatter plot
 class ScatterPlot {
   constructor(containerElement, config) {
@@ -750,7 +762,7 @@ class ScatterPlot {
       }
 
       const point = document.createElement("div");
-      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+      const vendorClass = getVendorClass(model.vendor);
       const pointType = getPointType(model.vendor);
       point.className = `scatterplot-point ${vendorClass} ${pointType}`;
 
@@ -1006,7 +1018,7 @@ class BarChart {
       const bar = document.createElement("div");
       bar.className = "bar-chart-bar";
 
-      const vendorClass = `vendor-${normalizeVendorName(model.vendor)}`;
+      const vendorClass = getVendorClass(model.vendor);
       if (config.colorModelNameByVendor) {
         bar.classList.add(vendorClass);
       } else if (model.vendor === "Modulate") {
@@ -1415,7 +1427,7 @@ document.addEventListener("DOMContentLoaded", () => {
       vendorItem.className = "vendor-item";
 
       const point = document.createElement("div");
-      const vendorClass = `vendor-${normalizeVendorName(vendor)}`;
+      const vendorClass = getVendorClass(vendor);
       const pointType = getPointType(vendor);
       point.className = `scatterplot-point ${vendorClass} ${pointType}`;
 
