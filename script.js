@@ -954,8 +954,13 @@ class BarChart {
             : (config.axisY.staticDecimals !== undefined
               ? config.axisY.staticDecimals
               : (yGridConfig.step.toString().split('.')[1]?.length || 0));
-          const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
           const unit = config.axisY.unit || "";
+          const isPercent = unit.includes("%");
+          const scoresInDecimal = config.axisY.scoresInDecimal === true;
+          const displayValue = isPercent && scoresInDecimal ? score * 100 : score;
+          const formattedValue = isPercent && scoresInDecimal
+            ? (decimals === 0 ? Math.round(displayValue).toString() : displayValue.toFixed(decimals))
+            : (decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals));
           const showUnit = showUnitsOnFirstAndLastY
             ? (score === yFirstValue || score === yLastValue)
             : (score === yLastValue);
@@ -1062,7 +1067,14 @@ class BarChart {
         const scoreLabel = document.createElement("div");
         scoreLabel.className = "bar-chart-score-label";
         const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : 1;
-        scoreLabel.textContent = score.toFixed(decimals);
+        const unit = config.axisY.unit || "";
+        const isPercent = unit.includes("%");
+        const scoresInDecimal = config.axisY.scoresInDecimal === true;
+        scoreLabel.textContent = isPercent && scoresInDecimal
+          ? (score * 100).toFixed(decimals) + "%"
+          : isPercent
+            ? score.toFixed(decimals) + "%"
+            : score.toFixed(decimals) + (unit ? " " + unit : "");
         scoreLabel.style.left = `${barLeftPercent}%`;
         scoreLabel.style.top = `${yTop}%`;
         container.appendChild(scoreLabel);

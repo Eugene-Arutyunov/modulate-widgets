@@ -41,64 +41,70 @@ const scatterPlotConfig3 = {
       parametersNumber: 316,
     },
     {
-      vendor: "Resemble AI",
-      model: "resemble-detect-3b",
-      score: 0.9490,
-      parametersNumber: 3000,
+      vendor: "Hiya",
+      model: "authenticity-verific",
+      score: 0.97880, // 97.880%
+      parametersNumber: 1000,
     },
     {
-      vendor: "Deep Learning & Media System Laboratory",
-      model: "dlmsl-speaksure-v0.1",
-      score: 0.9380,
-      parametersNumber: 658,
+      vendor: "Resemble AI",
+      model: "resemble-detect-3b",
+      score: 0.97430, // 97.430%
+      parametersNumber: 3000,
     },
     {
       vendor: "Whispeak",
       model: "whispeak",
-      score: 0.9250,
+      score: 0.96947, // 96.947%
       parametersNumber: 98,
+    },
+    {
+      vendor: "Deep Learning & Media System Laboratory",
+      model: "dlmsl-speaksure-v0.1",
+      score: 0.96043, // 96.043%
+      parametersNumber: 658,
+    },
+    {
+      vendor: "DF Arena ML Researchers",
+      model: "df-arena-500m-v1",
+      score: 0.94190, // 94.190%
+      parametersNumber: 500,
     },
     {
       vendor: "DF Arena ML Researchers",
       model: "df-arena-1b-v1",
-      score: 0.8860,
+      score: 0.94079, // 94.079%
       parametersNumber: 1000,
-    },
-    {
-      vendor: "Momenta",
-      model: "momenta",
-      score: 0.8740,
-      parametersNumber: 350,
     },
     {
       vendor: "Syntra",
       model: "syntra-detector",
-      score: 0.8700,
+      score: 0.93893, // 93.893%
       parametersNumber: 584,
+    },
+    {
+      vendor: "Momenta",
+      model: "momenta",
+      score: 0.92947, // 92.947%
+      parametersNumber: 350,
+    },
+    {
+      vendor: "DF Arena ML Researchers",
+      model: "df-raptor",
+      score: 0.92080, // 92.080%
+      parametersNumber: 100,
     },
     {
       vendor: "Singapore Agency for Science, Technology & Research",
       model: "molex",
-      score: 0.8360,
+      score: 0.90483, // 90.483%
       parametersNumber: 376,
-    },
-    {
-      vendor: "DF Arena ML Researchers",
-      model: "df-arena-100m-v1",
-      score: 0.8370,
-      parametersNumber: 100,
     },
     {
       vendor: "Resemble AI",
       model: "resemble-detect",
-      score: 0.8250,
+      score: 0.89170, // 89.170%
       parametersNumber: 2112,
-    },
-    {
-      vendor: "DF Arena ML Researchers",
-      model: "df-arena-100m-v0",
-      score: 0.8000,
-      parametersNumber: 100,
     },
   ],
   backgroundHighlight: {

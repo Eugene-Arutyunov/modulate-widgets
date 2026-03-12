@@ -45,6 +45,7 @@
   --vendor-amazon-RGB: 255, 153, 100; /* Amazon AWS orange */
   --vendor-speechmatics-RGB: 40, 90, 110; /* Speechmatics */
   --vendor-whispeak-RGB: 135, 58, 226; /* Whispeak */
+  --vendor-hiya-RGB: 80, 120, 180; /* Hiya */
   --vendor-gray-border-RGB:
     100, 100, 100; /* Dark gray border for vendors without official colors */
 
@@ -739,6 +740,14 @@ body {
 }
 
 .vendor-singapore-agency-science-technology-research {
+  --brand-color: var(--vendor-gray-border-RGB);
+}
+
+.vendor-hiya {
+  --brand-color: var(--vendor-hiya-RGB);
+}
+
+.vendor-df-arena {
   --brand-color: var(--vendor-gray-border-RGB);
 }
 
