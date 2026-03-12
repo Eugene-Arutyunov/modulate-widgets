@@ -205,6 +205,12 @@ body {
   border-radius: 0.5em;
   padding: 1.25em 5em 0.625em 5em;
 
+  @media (max-width: 768px) {
+    font-size: 15px;
+    padding: 1.25em 1em 0.625em 1em;
+    overflow: hidden;
+  }
+
   & .scatterplot-title {
     font-size: 1.5em;
     font-weight: 600;
@@ -233,12 +239,6 @@ body {
 
   & .padding-spacer {
     height: 3.75em;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 15px;
-    padding: 1.25em 2.5em 0.625em;
-    overflow: hidden;
   }
 }
 
@@ -470,6 +470,12 @@ body {
     position: relative;
     border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
 
+    @media (max-width: 768px) {
+      margin-left: 2em;
+      width: calc(100% - 2em);
+      height: 20em;
+    }
+
     & .scatterplot-background-highlight {
       position: absolute;
       left: 0;
@@ -618,10 +624,12 @@ body {
   transition: opacity 0.2s ease;
 
   @media (max-width: 768px) {
-    max-width: 8em;
+    max-width: 9.5em;
+    font-size: 0.7em;
     white-space: normal;
     overflow-wrap: break-word;
     hyphens: auto;
+    padding: 0.1429em 0.2857em 0.1429em 0.5em;
   }
 }
 
@@ -802,6 +810,7 @@ body {
   @media (max-width: 768px) {
     width: 100%;
     text-align: center;
+    bottom: -3.5em;
   }
 }
 
@@ -819,7 +828,7 @@ body {
   white-space: nowrap;
 
   @media (max-width: 768px) {
-    left: -2.3em;
+    left: -2.8em;
   }
 }
 
@@ -931,16 +940,29 @@ body {
 .scatterplot-static-label-zero {
   left: -1.7692em;
   bottom: -2.3077em;
+
+  @media (max-width: 768px) {
+    bottom: -1.6em;
+    left: -1.2em;
+  }
 }
 
 .scatterplot-static-label-cost {
   bottom: -2.3077em;
   transform: translateX(-50%);
+
+  @media (max-width: 768px) {
+    bottom: -1.6em;
+  }
 }
 
 .scatterplot-static-label-score {
   transform: translateY(-50%) translateX(calc(-100% - 1.0769em));
   text-align: right;
+
+  @media (max-width: 768px) {
+    transform: translateY(-50%) translateX(calc(-100% - 0.6em));
+  }
 }
 
 .scatterplot-axis-break {
@@ -990,6 +1012,10 @@ body {
   padding: 1.25em 2.5em;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 1em 0;
+  }
 }
 
 .vendor-item {

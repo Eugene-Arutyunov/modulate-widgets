@@ -1610,19 +1610,26 @@ document.addEventListener("DOMContentLoaded", () => {
       axisFontSizeControl.addEventListener("change", axisFontSizeHandler.onChange);
     }
 
+    const isResponsivePage = document.body.classList.contains("page-responsive");
+
     // Initialize default values
     allScatterplotWrappers.forEach((wrapper) => {
       if (wrapper) wrapper.style.width = "1140px";
     });
-    allScatterplotArias.forEach((aria) => {
-      if (aria) aria.style.height = "400px";
-    });
+    if (!isResponsivePage) {
+      allScatterplotArias.forEach((aria) => {
+        if (aria) aria.style.height = "400px";
+      });
+    }
   } else {
+    const isResponsivePage = document.body.classList.contains("page-responsive");
     // Without controls, don't set fixed pixel widths - let CSS handle it
     // Only set height for aria containers
-    allScatterplotArias.forEach((aria) => {
-      if (aria) aria.style.height = "400px";
-    });
+    if (!isResponsivePage) {
+      allScatterplotArias.forEach((aria) => {
+        if (aria) aria.style.height = "400px";
+      });
+    }
   }
 
   // Initialize bar charts
