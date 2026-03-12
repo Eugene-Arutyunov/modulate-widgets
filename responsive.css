@@ -4,28 +4,25 @@
 }
 
 @media (max-width: 1139px) {
-  .container {
+  .page-responsive .container {
     width: 100%;
   }
 }
 
 @media (max-width: 992px) {
-  .container .scatterplot-wrapper,
-  .container .bar-chart-wrapper {
+  .page-responsive .container .scatterplot-wrapper,
+  .page-responsive .container .bar-chart-wrapper {
     font-size: 14px;
   }
 }
 
 @media (max-width: 768px) {
-  .container .scatterplot-wrapper,
-  .container .bar-chart-wrapper {
-    font-size: 12px;
+  .page-responsive .container {
+    width: 480px;
   }
-}
 
-@media (max-width: 480px) {
-  .container .scatterplot-wrapper,
-  .container .bar-chart-wrapper {
-    font-size: 10px;
+  .page-responsive .container .scatterplot-wrapper,
+  .page-responsive .container .bar-chart-wrapper {
+    font-size: 15px;
   }
 }
