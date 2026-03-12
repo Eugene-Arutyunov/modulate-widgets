@@ -2,7 +2,7 @@
 // Data sorted by score ascending (lowest WER = best first)
 const barChartConfig2 = {
   axisY: {
-    min: 6,
+    min: 5.5,
     max: 13,
     gridLines: {
       step: 1,
