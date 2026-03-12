@@ -1,7 +1,11 @@
+/* On responsive page, nav is in flow at top (not fixed) */
+.page-responsive .chart-nav {
+  position: static;
+}
+
 @media (max-width: 1139px) {
   .container {
     width: 100%;
-    
   }
 }
 

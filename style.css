@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root,
 .light-mode {
   /* TEXT */
@@ -92,6 +96,47 @@ body {
 .container {
   width: 1140px;
   margin: 60px auto;
+}
+
+.chart-nav {
+  position: fixed;
+  top: 0.4em;
+  left: 0.4em;
+  z-index: 200;
+}
+
+.chart-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-nav a {
+  font-size: 0.8em;
+  color: rgba(var(--ids__text-link-RGB), 1);
+}
+
+.chart-nav a:hover {
+  color: rgb(var(--ids__text-hover-RGB));
+}
+
+.container > section {
+  margin-top: 2em;
+}
+
+.container > section:first-of-type {
+  margin-top: 0;
+}
+
+.container > section > h5 {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: rgba(var(--ids__text-RGB), 0.75);
+  margin: 1em 0 -1em 0;
+  padding-top: 4em;
 }
 
 .controls {
