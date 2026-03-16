@@ -23,88 +23,70 @@ const scatterPlotConfig3 = {
     hoverDecimals: 0,
   },
   axisY: {
-    min: 0.75,
-    max: 1.0,
-    // Grid line frequency settings for Y axis
+    min: 90,
+    max: 100,
+    unit: "&hairsp;%",
     gridLines: {
-      step: 0.025, // step between lines
-      labels: [0.8, 0.9, 1.0],
+      step: 2.5,
+      labels: [92.5, 95, 97.5, 100],
     },
     staticDecimals: 1,
-    hoverDecimals: 1,
+    hoverDecimals: 2,
   },
   data: [
     {
       vendor: "Modulate",
       model: "velma-2",
-      score: 0.98897, // F1-Score (98.897%)
+      score: 98.897,
       parametersNumber: 316,
     },
     {
       vendor: "Hiya",
       model: "authenticity-verific",
-      score: 0.97880, // 97.880%
+      score: 97.880,
       parametersNumber: 1000,
     },
     {
       vendor: "Resemble AI",
       model: "resemble-detect-3b",
-      score: 0.97430, // 97.430%
+      score: 97.430,
       parametersNumber: 3000,
     },
     {
       vendor: "Whispeak",
       model: "whispeak",
-      score: 0.96947, // 96.947%
+      score: 96.947,
       parametersNumber: 98,
     },
     {
       vendor: "Deep Learning & Media System Laboratory",
       model: "dlmsl-speaksure-v0.1",
-      score: 0.96043, // 96.043%
+      score: 96.043,
       parametersNumber: 658,
     },
     {
       vendor: "DF Arena ML Researchers",
       model: "df-arena-500m-v1",
-      score: 0.94190, // 94.190%
+      score: 94.190,
       parametersNumber: 500,
     },
     {
       vendor: "DF Arena ML Researchers",
       model: "df-arena-1b-v1",
-      score: 0.94079, // 94.079%
+      score: 94.079,
       parametersNumber: 1000,
     },
     {
       vendor: "Syntra",
       model: "syntra-detector",
-      score: 0.93893, // 93.893%
+      score: 93.893,
       parametersNumber: 584,
     },
     {
       vendor: "Momenta",
       model: "momenta",
-      score: 0.92947, // 92.947%
+      score: 92.947,
       parametersNumber: 350,
-    },
-    {
-      vendor: "DF Arena ML Researchers",
-      model: "df-raptor",
-      score: 0.92080, // 92.080%
-      parametersNumber: 100,
-    },
-    {
-      vendor: "Singapore Agency for Science, Technology & Research",
-      model: "molex",
-      score: 0.90483, // 90.483%
-      parametersNumber: 376,
-    },
-    {
-      vendor: "Resemble AI",
-      model: "resemble-detect",
-      score: 0.89170, // 89.170%
-      parametersNumber: 2112,
     },
   ],
   backgroundHighlight: {

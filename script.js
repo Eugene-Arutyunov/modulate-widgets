@@ -333,6 +333,22 @@ class ScatterPlot {
         ? config.axisX.showUnitsOnFirstAndLast
         : isCurrency; // Default: currency - first and last, otherwise only last
 
+      // When Y axis doesn't start at 0, render tick+label for x=0 explicitly
+      // (the loop starts at leftZone.min + step, so 0 is never included)
+      if (config.axisX.leftZone.min === 0 && config.axisY.min !== 0) {
+        const x0 = scale.valueToX(0);
+        const tick0 = document.createElement("div");
+        tick0.className = "scatterplot-tick-x";
+        tick0.style.left = `${x0}%`;
+        container.appendChild(tick0);
+
+        const label0 = document.createElement("div");
+        label0.className = "scatterplot-static-label scatterplot-static-label-cost";
+        label0.style.left = `${x0}%`;
+        label0.textContent = "0";
+        container.appendChild(label0);
+      }
+
       leftValues.forEach((cost) => {
         if (cost <= leftConfig.max && cost >= config.axisX.leftZone.min) {
           const x = scale.valueToX(cost);
@@ -483,8 +499,8 @@ class ScatterPlot {
 
       xValues.forEach((cost) => {
         if (cost <= config.axisX.max && cost >= config.axisX.min) {
-          // Skip tick, grid line and label for 0 when min is 0 — the shared static zero is used.
-          const skipOrigin = cost === 0 && config.axisX.min === 0;
+          // Skip tick, grid line and label for 0 when both axes start at 0 — the shared static zero is used.
+          const skipOrigin = cost === 0 && config.axisX.min === 0 && config.axisY.min === 0;
           if (skipOrigin) return;
 
           const x = scale.valueToX(cost);
@@ -516,11 +532,14 @@ class ScatterPlot {
       });
     }
 
-    // Zero (0) on X axis — shared static label at origin (tick/grid/label for 0 skipped above when min is 0)
-    const zeroLabel = document.createElement("div");
-    zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
-    zeroLabel.textContent = "0";
-    container.appendChild(zeroLabel);
+    // Zero (0) on X axis — shared static label at origin, only when Y axis also starts at 0.
+    // When axisY.min !== 0, the "0" is instead rendered as a normal X-axis tick+label above.
+    if (config.axisY.min === 0) {
+      const zeroLabel = document.createElement("div");
+      zeroLabel.className = "scatterplot-static-label scatterplot-static-label-zero";
+      zeroLabel.textContent = "0";
+      container.appendChild(zeroLabel);
+    }
   }
 
   // Find nearest point to cursor
