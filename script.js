@@ -532,6 +532,14 @@ class ScatterPlot {
       });
     }
 
+    // When Y axis doesn't start at 0, replace border-left with a gradient div
+    if (config.axisY.min !== 0) {
+      container.classList.add("scatterplot-aria--y-fades");
+      const yAxisLine = document.createElement("div");
+      yAxisLine.className = "scatterplot-y-axis-line";
+      container.appendChild(yAxisLine);
+    }
+
     // Zero (0) on X axis — shared static label at origin, only when Y axis also starts at 0.
     // When axisY.min !== 0, the "0" is instead rendered as a normal X-axis tick+label above.
     if (config.axisY.min === 0) {
@@ -995,6 +1003,14 @@ class BarChart {
         }
       }
     });
+
+    // When Y axis doesn't start at 0, replace border-left with a gradient div
+    if (config.axisY.min !== 0) {
+      container.classList.add("scatterplot-aria--y-fades");
+      const yAxisLine = document.createElement("div");
+      yAxisLine.className = "scatterplot-y-axis-line";
+      container.appendChild(yAxisLine);
+    }
   }
 
   // Create bars for the chart

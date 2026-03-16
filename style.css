@@ -931,6 +931,26 @@ body {
   }
 }
 
+.scatterplot-container .scatterplot-aria--y-fades,
+.bar-chart-container .scatterplot-aria--y-fades {
+  border-left: none;
+}
+
+.scatterplot-y-axis-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--ids__text-RGB), 0.5) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
 .scatterplot-tick-x,
 .scatterplot-tick-y {
   position: absolute;

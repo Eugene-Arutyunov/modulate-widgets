@@ -27,10 +27,10 @@ const scatterPlotConfig3 = {
     max: 100,
     unit: "&hairsp;%",
     gridLines: {
-      step: 2.5,
-      labels: [92.5, 95, 97.5, 100],
+      step: 2,
+      labels: [92, 94, 96, 98, 100],
     },
-    staticDecimals: 1,
+    staticDecimals: 0,
     hoverDecimals: 2,
   },
   data: [
