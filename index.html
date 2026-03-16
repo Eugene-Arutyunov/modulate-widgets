@@ -249,8 +249,43 @@
           <div class="scatterplot-subtitle">
             Cost per audio hour transcribed
           </div>
-          <div class="bar-chart-container">
-            <div class="bar-chart-aria"></div>
+          <div class="cost-compare-chart">
+            <div class="cost-compare-row">
+              <span class="cost-compare-vendor cost-compare-vendor--modulate"
+                >Modulate</span
+              >
+              <div class="cost-compare-track">
+                <div
+                  class="cost-compare-bar cost-compare-bar--modulate"
+                  style="width: 6.67%"></div>
+                <span class="cost-compare-cost">$0.03</span>
+              </div>
+              <span class="cost-compare-model">modulate-velma-2</span>
+            </div>
+            <div class="cost-compare-row">
+              <span class="cost-compare-vendor">AssemblyAI</span>
+              <div class="cost-compare-track">
+                <div class="cost-compare-bar" style="width: 33.33%"></div>
+                <span class="cost-compare-cost">$0.15</span>
+              </div>
+              <span class="cost-compare-model">universal</span>
+            </div>
+            <div class="cost-compare-row">
+              <span class="cost-compare-vendor">Deepgram</span>
+              <div class="cost-compare-track">
+                <div class="cost-compare-bar" style="width: 57.33%"></div>
+                <span class="cost-compare-cost">$0.26</span>
+              </div>
+              <span class="cost-compare-model">nova-2</span>
+            </div>
+            <div class="cost-compare-row">
+              <span class="cost-compare-vendor">ElevenLabs</span>
+              <div class="cost-compare-track">
+                <div class="cost-compare-bar" style="width: 88.89%"></div>
+                <span class="cost-compare-cost">$0.40</span>
+              </div>
+              <span class="cost-compare-model">scribe-v2</span>
+            </div>
           </div>
         </div>
       </section>
@@ -285,7 +320,6 @@
     <script src="config-sc3.js"></script>
     <script src="config-bar1.js"></script>
     <script src="config-bar2.js"></script>
-    <script src="config-bar3.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
