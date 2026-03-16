@@ -95,7 +95,7 @@ const scatterPlotConfig5 = {
     },
   ],
   backgroundHighlight: {
-    text: "Lowest WER, lowest cost",
+    text: "Lowest WER lowest cost",
   },
   useVisualOffset: true,
   legendOrderByCost: true,
