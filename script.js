@@ -1518,6 +1518,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize bar charts
   let barChart1 = null;
   let barChart2 = null;
+  let barChart4 = null;
   const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
   if (barChart1Container && window.barChartConfig1) {
     barChart1 = new BarChart(barChart1Container, window.barChartConfig1);
@@ -1527,6 +1528,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (barChart2Container && window.barChartConfig2) {
     barChart2 = new BarChart(barChart2Container, window.barChartConfig2);
     barChart2.createBarChart();
+  }
+  const barChart4Container = document.querySelector('#bar-chart-4 .bar-chart-aria');
+  if (barChart4Container && window.barChartConfig1) {
+    barChart4 = new BarChart(barChart4Container, window.barChartConfig1);
+    barChart4.createBarChart();
   }
   // Redraw on window resize
   let resizeTimeout;
@@ -1539,6 +1545,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (barChart2) {
         barChart2.createBarChart();
+      }
+      if (barChart4) {
+        barChart4.createBarChart();
       }
     }, 100);
   });

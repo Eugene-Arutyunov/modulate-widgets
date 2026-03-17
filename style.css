@@ -244,6 +244,10 @@ body {
   & .padding-spacer {
     height: 3.75em;
   }
+
+  & .title-spacer {
+    height: 2em;
+  }
 }
 
 .bar-chart-container {
