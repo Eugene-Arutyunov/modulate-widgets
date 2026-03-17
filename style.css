@@ -356,6 +356,15 @@ body {
   }
 }
 
+.bar-chart-aria--solid-bars .bar-chart-bar {
+  background-image: none;
+  background-color: rgb(210, 210, 210);
+
+  &.modulate {
+    background-color: rgb(150, 255, 150);
+  }
+}
+
 .bar-chart-bar-label-container {
   width: 100%;
   display: flex;
@@ -953,6 +962,17 @@ body {
   );
   pointer-events: none;
   z-index: 10;
+}
+
+.grouped-bar-chart-group-label {
+  position: absolute;
+  bottom: -2.5em;
+  transform: translateX(-50%);
+  font-size: 1em;
+  font-weight: 600;
+  color: rgba(var(--ids__text-RGB), 0.5);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .scatterplot-tick-x,

@@ -27,6 +27,8 @@
           <li><a href="#wer-bars">wer-bars</a></li>
           <li><a href="#cost-compare">cost-compare</a></li>
           <li><a href="#deepfake-scatter">deepfake-scatter</a></li>
+          <li><a href="#wer-grouped">wer-grouped</a></li>
+          <li><a href="#cost-grouped">cost-grouped</a></li>
         </ul>
       </nav>
 
@@ -326,6 +328,42 @@
           <div class="vendors"></div>
         </div>
       </section>
+
+      <section id="wer-grouped">
+        <h5>#wer-grouped</h5>
+        <div class="bar-chart-wrapper" id="grouped-bar-1">
+          <div class="scatterplot-title">
+            Transcription Accuracy (Word Error Rate)
+          </div>
+          <div class="scatterplot-subtitle">
+            Word Error Rate across benchmark datasets — lower is better
+          </div>
+          <div class="bar-chart-container">
+            <div class="bar-chart-aria">
+              <div class="scatterplot-axis-label-x"></div>
+              <div class="scatterplot-axis-label-y">Word Error Rate</div>
+            </div>
+          </div>
+          <div class="padding-spacer"></div>
+        </div>
+      </section>
+
+      <section id="cost-grouped">
+        <h5>#cost-grouped</h5>
+        <div class="bar-chart-wrapper" id="grouped-bar-2">
+          <div class="scatterplot-title">Transcription Cost ($/hr)</div>
+          <div class="scatterplot-subtitle">
+            Cost per hour of audio transcribed
+          </div>
+          <div class="bar-chart-container">
+            <div class="bar-chart-aria">
+              <div class="scatterplot-axis-label-x"></div>
+              <div class="scatterplot-axis-label-y">Cost per hour ($)</div>
+            </div>
+          </div>
+          <div class="padding-spacer"></div>
+        </div>
+      </section>
     </div>
     <script src="config-sc1.js"></script>
     <script src="config-sc2.js"></script>
@@ -334,6 +372,8 @@
     <script src="config-sc3.js"></script>
     <script src="config-bar1.js"></script>
     <script src="config-bar2.js"></script>
+    <script src="config-grouped-bar1.js"></script>
+    <script src="config-grouped-bar2.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

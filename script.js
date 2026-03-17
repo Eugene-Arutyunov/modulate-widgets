@@ -1010,6 +1010,8 @@ class BarChart {
       const yAxisLine = document.createElement("div");
       yAxisLine.className = "scatterplot-y-axis-line";
       container.appendChild(yAxisLine);
+    } else {
+      container.classList.add("bar-chart-aria--solid-bars");
     }
   }
 
@@ -1183,6 +1185,261 @@ class BarChart {
     this.createGridLines();
 
     // Create bars (includes labels inside bars and score labels above)
+    this.createBars();
+  }
+}
+
+class GroupedBarChart {
+  constructor(containerElement, config) {
+    this.container = containerElement;
+    this.config = config;
+    this.axisScale = null;
+  }
+
+  buildAxisScale() {
+    const config = this.config;
+    return {
+      hasBreak: false,
+      valueToY(value) {
+        const normalized = (value - config.axisY.min) / (config.axisY.max - config.axisY.min);
+        return (1 - normalized) * 100;
+      },
+    };
+  }
+
+  createGridLines() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+
+    const yGridConfig = config.axisY.gridLines;
+    const yValues = [];
+    if (yGridConfig.labelsOnly && yGridConfig.labels.length > 0) {
+      yGridConfig.labels.forEach(label => {
+        if (label >= config.axisY.min && label <= config.axisY.max) {
+          yValues.push(label);
+        }
+      });
+      yValues.sort((a, b) => a - b);
+    } else {
+      const decimals = yGridConfig.step.toString().split('.')[1]?.length || 0;
+      for (let val = config.axisY.min + yGridConfig.step; val <= config.axisY.max; val += yGridConfig.step) {
+        const roundedVal = Math.round(val * Math.pow(10, decimals)) / Math.pow(10, decimals);
+        yValues.push(roundedVal);
+      }
+      if (yGridConfig.labels.length > 0) {
+        yGridConfig.labels.forEach(label => {
+          if (label >= config.axisY.min && label <= config.axisY.max) {
+            const exists = yValues.some(val => Math.abs(val - label) < 0.0001);
+            if (!exists) yValues.push(label);
+          }
+        });
+        yValues.sort((a, b) => a - b);
+      }
+    }
+
+    const yLabelValues = yGridConfig.labels.length > 0
+      ? yValues.filter(val => isValueInLabels(val, yGridConfig.labels))
+      : yValues.filter(val => val <= config.axisY.max && val >= config.axisY.min);
+
+    const yLastValue = yLabelValues.length > 0 ? yLabelValues[yLabelValues.length - 1] : null;
+    const yFirstValue = yLabelValues.length > 0 ? yLabelValues[0] : null;
+    const unit = config.axisY.unit || "";
+    const isPercent = unit.includes("%");
+    const showUnitsOnFirstAndLastY = config.axisY.showUnitsOnFirstAndLast !== undefined
+      ? config.axisY.showUnitsOnFirstAndLast
+      : !isPercent;
+
+    yValues.forEach((score) => {
+      if (score <= config.axisY.max && score >= config.axisY.min) {
+        const y = scale.valueToY(score);
+
+        const tick = document.createElement("div");
+        tick.className = "scatterplot-tick-y";
+        tick.style.top = `${y}%`;
+        container.appendChild(tick);
+
+        const gridLine = document.createElement("div");
+        gridLine.className = "scatterplot-grid-line-y";
+        gridLine.style.top = `${y}%`;
+        gridLine.style.width = "100%";
+        gridLine.style.left = "0";
+        container.appendChild(gridLine);
+
+        const shouldAddLabel = isValueInLabels(score, yGridConfig.labels);
+        if (shouldAddLabel) {
+          const scoreLabel = document.createElement("div");
+          scoreLabel.className = "scatterplot-static-label scatterplot-static-label-score";
+          scoreLabel.style.top = `${y}%`;
+          const decimals = config.axisY.labelDecimals !== undefined
+            ? config.axisY.labelDecimals
+            : (config.axisY.staticDecimals !== undefined
+              ? config.axisY.staticDecimals
+              : (yGridConfig.step.toString().split('.')[1]?.length || 0));
+          const formattedValue = decimals === 0 ? Math.round(score).toString() : score.toFixed(decimals);
+          const showUnit = showUnitsOnFirstAndLastY
+            ? (score === yFirstValue || score === yLastValue)
+            : (score === yLastValue);
+          scoreLabel.innerHTML = formattedValue + (showUnit ? unit : "");
+          container.appendChild(scoreLabel);
+        }
+      }
+    });
+
+    if (config.axisY.min !== 0) {
+      container.classList.add("scatterplot-aria--y-fades");
+      const yAxisLine = document.createElement("div");
+      yAxisLine.className = "scatterplot-y-axis-line";
+      container.appendChild(yAxisLine);
+    } else {
+      container.classList.add("bar-chart-aria--solid-bars");
+    }
+  }
+
+  createBars() {
+    const container = this.container;
+    const config = this.config;
+    const scale = this.axisScale;
+    const groups = config.groups;
+
+    if (!groups || groups.length === 0) {
+      console.warn("No groups to display");
+      return;
+    }
+
+    const groupGap = config.groupGap !== undefined ? config.groupGap : 1;
+    const edgePadding = groupGap * (2 / 3);
+    const totalBars = groups.reduce((sum, g) => sum + g.data.length, 0);
+    const totalSlots = totalBars + (groups.length - 1) * groupGap + 2 * edgePadding;
+
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width || container.offsetWidth || 1000;
+    const slotWidthPixels = containerWidth / totalSlots;
+    const gapPixels = 1;
+    const barWidthPixels = slotWidthPixels - gapPixels;
+    const barWidthPercent = (barWidthPixels / containerWidth) * 100;
+
+    const yBottom = scale.valueToY(config.axisY.min);
+
+    let slotOffset = edgePadding;
+
+    groups.forEach((group) => {
+      group.data.forEach((model, barIndex) => {
+        const slotIndex = slotOffset + barIndex;
+        const barLeftPixels = slotIndex * slotWidthPixels;
+        const barLeftPercent = (barLeftPixels / containerWidth) * 100;
+
+        const score = model.score;
+        const yTop = scale.valueToY(score);
+
+        if (isNaN(yTop) || isNaN(yBottom)) {
+          console.warn("Invalid coordinates for grouped bar:", { model, yTop, yBottom });
+          return;
+        }
+
+        const bar = document.createElement("div");
+        bar.className = "bar-chart-bar";
+
+        const vendorClass = getVendorClass(model.vendor);
+        if (model.vendor === "Modulate") {
+          bar.classList.add("modulate");
+        }
+
+        bar.style.left = `${barLeftPercent}%`;
+        bar.style.width = `${barWidthPercent}%`;
+        bar.style.bottom = `${100 - yBottom}%`;
+        bar.style.height = `${yBottom - yTop}%`;
+        bar.dataset.vendor = model.vendor;
+        bar.dataset.model = model.model;
+        bar.dataset.score = model.score;
+
+        const barLabelContainer = document.createElement("div");
+        barLabelContainer.className = "bar-chart-bar-label-container";
+
+        if (config.vendorNameFirst) {
+          const vendorLabel = document.createElement("div");
+          vendorLabel.className = "bar-chart-bar-model-label";
+          vendorLabel.textContent = model.vendor;
+          barLabelContainer.appendChild(vendorLabel);
+
+          const modelLabel = document.createElement("div");
+          modelLabel.className = "bar-chart-bar-vendor-label";
+          modelLabel.textContent = model.model;
+          barLabelContainer.appendChild(modelLabel);
+        } else {
+          const modelLabel = document.createElement("div");
+          modelLabel.className = "bar-chart-bar-model-label";
+          modelLabel.textContent = model.model;
+          barLabelContainer.appendChild(modelLabel);
+
+          const vendorLabel = document.createElement("div");
+          vendorLabel.className = "bar-chart-bar-vendor-label";
+          vendorLabel.textContent = model.vendor;
+          barLabelContainer.appendChild(vendorLabel);
+        }
+
+        bar.appendChild(barLabelContainer);
+
+        if (!config.hideScoreLabel) {
+          const scoreLabel = document.createElement("div");
+          scoreLabel.className = "bar-chart-score-label";
+          const decimals = config.axisY.staticDecimals !== undefined ? config.axisY.staticDecimals : 2;
+          const unit = config.axisY.unit || "";
+          const isPercent = unit.includes("%");
+          scoreLabel.textContent = isPercent
+            ? score.toFixed(decimals) + "%"
+            : unit + score.toFixed(decimals);
+          scoreLabel.style.left = `${barLeftPercent + barWidthPercent / 2}%`;
+          scoreLabel.style.top = `${yTop}%`;
+          scoreLabel.style.transform = "translateX(-50%) translateY(-140%)";
+          container.appendChild(scoreLabel);
+        }
+
+        container.appendChild(bar);
+      });
+
+      // Group label centered under the group
+      const groupCenterX = (slotOffset + group.data.length / 2) / totalSlots * 100;
+      const groupLabel = document.createElement("div");
+      groupLabel.className = "grouped-bar-chart-group-label";
+      groupLabel.style.left = `${groupCenterX}%`;
+      groupLabel.textContent = group.label;
+      container.appendChild(groupLabel);
+
+      slotOffset += group.data.length + groupGap;
+    });
+  }
+
+  createGroupedBarChart() {
+    const container = this.container;
+    if (!container) {
+      console.error("Container not found for creating grouped bar chart");
+      return;
+    }
+
+    const config = this.config;
+    if (!config || !config.groups) {
+      console.error("Configuration or groups missing:", config);
+      return;
+    }
+
+    this.axisScale = this.buildAxisScale();
+    if (!this.axisScale) {
+      console.error("Failed to build axis scale");
+      return;
+    }
+
+    const axisLabelX = container.querySelector(".scatterplot-axis-label-x");
+    const axisLabelY = container.querySelector(".scatterplot-axis-label-y");
+    const axisLabelXClone = axisLabelX ? axisLabelX.cloneNode(true) : null;
+    const axisLabelYClone = axisLabelY ? axisLabelY.cloneNode(true) : null;
+
+    container.innerHTML = "";
+
+    if (axisLabelXClone) container.appendChild(axisLabelXClone);
+    if (axisLabelYClone) container.appendChild(axisLabelYClone);
+
+    this.createGridLines();
     this.createBars();
   }
 }
@@ -1519,6 +1776,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let barChart1 = null;
   let barChart2 = null;
   let barChart4 = null;
+  let groupedBarChart1 = null;
+  let groupedBarChart2 = null;
   const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
   if (barChart1Container && window.barChartConfig1) {
     barChart1 = new BarChart(barChart1Container, window.barChartConfig1);
@@ -1534,6 +1793,16 @@ document.addEventListener("DOMContentLoaded", () => {
     barChart4 = new BarChart(barChart4Container, window.barChartConfig1);
     barChart4.createBarChart();
   }
+  const groupedBar1Container = document.querySelector('#grouped-bar-1 .bar-chart-aria');
+  if (groupedBar1Container && window.groupedBarConfig1) {
+    groupedBarChart1 = new GroupedBarChart(groupedBar1Container, window.groupedBarConfig1);
+    groupedBarChart1.createGroupedBarChart();
+  }
+  const groupedBar2Container = document.querySelector('#grouped-bar-2 .bar-chart-aria');
+  if (groupedBar2Container && window.groupedBarConfig2) {
+    groupedBarChart2 = new GroupedBarChart(groupedBar2Container, window.groupedBarConfig2);
+    groupedBarChart2.createGroupedBarChart();
+  }
   // Redraw on window resize
   let resizeTimeout;
   window.addEventListener("resize", () => {
@@ -1548,6 +1817,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (barChart4) {
         barChart4.createBarChart();
+      }
+      if (groupedBarChart1) {
+        groupedBarChart1.createGroupedBarChart();
+      }
+      if (groupedBarChart2) {
+        groupedBarChart2.createGroupedBarChart();
       }
     }, 100);
   });
