@@ -1087,19 +1087,33 @@ class BarChart {
         barLabelContainer.appendChild(vendorDot);
       }
 
-      const modelLabel = document.createElement("div");
-      modelLabel.className = "bar-chart-bar-model-label";
-      if (config.vendorLegendBelow && config.colorModelNameByVendor) {
-        modelLabel.classList.add(vendorClass);
-      }
-      modelLabel.textContent = model.model;
-      barLabelContainer.appendChild(modelLabel);
-
-      if (!config.vendorLegendBelow) {
+      if (config.vendorNameFirst) {
+        // Vendor (company) name first — bold, primary size
         const vendorLabel = document.createElement("div");
-        vendorLabel.className = "bar-chart-bar-vendor-label";
+        vendorLabel.className = "bar-chart-bar-model-label";
         vendorLabel.textContent = model.vendor;
         barLabelContainer.appendChild(vendorLabel);
+
+        // Model name below — smaller, unbolded
+        const modelLabel = document.createElement("div");
+        modelLabel.className = "bar-chart-bar-vendor-label";
+        modelLabel.textContent = model.model;
+        barLabelContainer.appendChild(modelLabel);
+      } else {
+        const modelLabel = document.createElement("div");
+        modelLabel.className = "bar-chart-bar-model-label";
+        if (config.vendorLegendBelow && config.colorModelNameByVendor) {
+          modelLabel.classList.add(vendorClass);
+        }
+        modelLabel.textContent = model.model;
+        barLabelContainer.appendChild(modelLabel);
+
+        if (!config.vendorLegendBelow) {
+          const vendorLabel = document.createElement("div");
+          vendorLabel.className = "bar-chart-bar-vendor-label";
+          vendorLabel.textContent = model.vendor;
+          barLabelContainer.appendChild(vendorLabel);
+        }
       }
 
       bar.appendChild(barLabelContainer);
