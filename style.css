@@ -365,6 +365,26 @@ body {
   }
 }
 
+#bar-chart-1 .bar-chart-bar,
+#bar-chart-4 .bar-chart-bar {
+  background-image: none;
+  background-color: rgb(210, 210, 210);
+
+  &.modulate {
+    background-color: rgb(150, 255, 150);
+  }
+}
+
+#bar-chart-1 .scatterplot-aria--y-fades,
+#bar-chart-4 .scatterplot-aria--y-fades {
+  border-left: 1px solid rgba(var(--ids__text-RGB), 0.5);
+}
+
+#bar-chart-1 .scatterplot-y-axis-line,
+#bar-chart-4 .scatterplot-y-axis-line {
+  display: none;
+}
+
 .bar-chart-bar-label-container {
   width: 100%;
   display: flex;
@@ -402,7 +422,7 @@ body {
   word-break: break-word;
   line-height: 1.2;
   width: 100%;
-  margin-top: 0.3em;
+  margin-top: 0.1em;
   overflow-wrap: break-word;
   white-space: normal;
   padding: 0;

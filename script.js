@@ -1778,9 +1778,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let barChart4 = null;
   let groupedBarChart1 = null;
   let groupedBarChart2 = null;
+  const getBarConfig1 = () =>
+    window.innerWidth > 768 && window.barChartConfig1Desktop
+      ? window.barChartConfig1Desktop
+      : window.barChartConfig1;
   const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
   if (barChart1Container && window.barChartConfig1) {
-    barChart1 = new BarChart(barChart1Container, window.barChartConfig1);
+    barChart1 = new BarChart(barChart1Container, getBarConfig1());
     barChart1.createBarChart();
   }
   const barChart2Container = document.querySelector('#bar-chart-2 .bar-chart-aria');
@@ -1790,7 +1794,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   const barChart4Container = document.querySelector('#bar-chart-4 .bar-chart-aria');
   if (barChart4Container && window.barChartConfig1) {
-    barChart4 = new BarChart(barChart4Container, window.barChartConfig1);
+    barChart4 = new BarChart(barChart4Container, getBarConfig1());
     barChart4.createBarChart();
   }
   const groupedBar1Container = document.querySelector('#grouped-bar-1 .bar-chart-aria');
@@ -1810,12 +1814,14 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeTimeout = setTimeout(() => {
       plots.forEach(plot => plot.createScatterPlot());
       if (barChart1) {
+        barChart1.config = getBarConfig1();
         barChart1.createBarChart();
       }
       if (barChart2) {
         barChart2.createBarChart();
       }
       if (barChart4) {
+        barChart4.config = getBarConfig1();
         barChart4.createBarChart();
       }
       if (groupedBarChart1) {
