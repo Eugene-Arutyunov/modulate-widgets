@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "Geist Mono";
+  src: url("fonts/GeistMono[wght].ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1187,6 +1195,125 @@ body {
   font-size: 0.875em;
   color: rgba(var(--ids__text-RGB), 1);
   white-space: nowrap;
+}
+
+/* ── df-accuracy-table ───────────────────────────────────────────── */
+
+.bar-chart-wrapper.df-table-wrapper {
+  overflow-x: auto;
+  padding-left: 2.25em;
+  padding-right: 2.25em;
+
+  @media (max-width: 768px) {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+
+.bar-chart-wrapper.df-table-wrapper #df-table-1 {
+  margin-top: 1.25em;
+}
+
+.df-accuracy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Geist Mono", ui-monospace, monospace;
+  font-size: 0.9375em;
+  color: rgba(var(--ids__text-RGB), 0.9);
+  border: 1px solid rgba(var(--ids__text-RGB), 0.08);
+}
+
+.df-accuracy-table thead tr {
+  background: rgba(var(--ids__bg-surface-light-RGB), 1);
+}
+
+.df-accuracy-table th {
+  padding: 0.85em 0.65em;
+  font-weight: 700;
+  font-size: 1em;
+  text-align: left;
+  white-space: nowrap;
+  color: rgba(var(--ids__text-RGB), 0.7);
+  border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.12);
+  border-left: 1px solid rgba(var(--ids__text-RGB), 0.08);
+}
+
+.df-accuracy-table th:first-child {
+  border-left: none;
+}
+
+.df-accuracy-table td {
+  padding: 0.8em 0.65em;
+  border-bottom: 1px solid rgba(var(--ids__text-RGB), 0.08);
+  border-left: 1px solid rgba(var(--ids__text-RGB), 0.08);
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.df-accuracy-table td:first-child {
+  border-left: none;
+}
+
+.df-accuracy-table td.col-numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.df-accuracy-table td.col-system {
+  min-width: 14em;
+}
+
+/* After light header: dark, light, dark, … */
+.df-accuracy-table tbody tr:nth-child(odd) {
+  background: rgba(var(--ids__text-RGB), 0.035);
+}
+
+.df-accuracy-table tbody tr:nth-child(even) {
+  background: rgba(var(--ids__bg-surface-light-RGB), 1);
+}
+
+.df-table-system-name {
+  color: rgb(var(--ids__text-link-RGB));
+  text-decoration: none;
+  cursor: default;
+}
+
+.df-table-medal {
+  margin-right: 0.35em;
+  font-style: normal;
+}
+
+.df-accuracy-table .value-modulate {
+  color: rgb(22, 163, 74);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .df-accuracy-table {
+    table-layout: fixed;
+    font-size: 0.8125em;
+  }
+
+  .df-accuracy-table th,
+  .df-accuracy-table td {
+    white-space: normal;
+    vertical-align: top;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    padding: 0.5em 0.45em;
+  }
+
+  .df-accuracy-table th {
+    white-space: normal;
+  }
+
+  .df-accuracy-table td.col-system {
+    min-width: 0;
+  }
+
+  .df-table-medal {
+    vertical-align: top;
+  }
 }
 
 .archive-section {
