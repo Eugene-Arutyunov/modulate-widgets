@@ -635,13 +635,6 @@ body {
         top: auto;
         bottom: -50%;
       }
-
-      #scatterplot-3 .scatterplot-container .scatterplot-aria & {
-        width: 50%;
-        height: 100%;
-        left: 18%;
-        top: -60%;
-      }
     }
 
     & .scatterplot-background-highlight-label {
@@ -675,12 +668,6 @@ body {
         bottom: 23%;
         left: 7%;
         top: auto;
-      }
-
-      #scatterplot-3 .scatterplot-container .scatterplot-aria & {
-        left: 35%;
-        top: 18%;
-        width: 15.625em;
       }
     }
 

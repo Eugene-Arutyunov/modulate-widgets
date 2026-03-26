@@ -1,4 +1,3 @@
-// Bar chart configuration based on scatterPlotConfig3 data
 // Data sorted by score in descending order (Modulate with highest score first)
 const barChartConfig1 = {
   axisY: {
