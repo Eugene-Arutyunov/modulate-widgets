@@ -20,12 +20,8 @@
           <li>
             <a href="#conv-scatter">conv-scatter</a>
           </li>
-          <li>
-            <a href="#transcript-scatter">transcript-scatter</a>
-          </li>
           <li><a href="#df-accuracy-bar">df-accuracy-bar</a></li>
-          <li><a href="#wer-price">wer-price</a></li>
-          <li><a href="#wer-bars">wer-bars</a></li>
+          <li><a href="#STT-scatter">STT-scatter</a></li>
           <li><a href="#cost-compare">cost-compare</a></li>
           <li><a href="#deepfake-scatter">deepfake-scatter</a></li>
           <li><a href="#wer-grouped">wer-grouped</a></li>
@@ -61,19 +57,15 @@
         </div>
       </section>
 
-      <section id="transcript-scatter">
-        <h5>#transcript-scatter</h5>
-        <div class="scatterplot-wrapper" id="scatterplot-2">
+      <section id="STT-scatter">
+        <h5>#STT-scatter</h5>
+        <div class="scatterplot-wrapper" id="scatterplot-5">
           <div class="scatterplot-title">
-            Transcription Benchmark —
-            <nobr>Complex Real World Conversations</nobr>
+            Transcription Benchmark (Accuracy vs. Price)
           </div>
           <div class="scatterplot-subtitle">
-            Tests Word Error Rate on real-world, complex conversations (<a
-              href="https://www.slideshare.net/slideshow/speech-recognition-dataset-spotlight-ami-meeting-corpus/275204629?utm_source=chatgpt.com#1"
-              target="_blank"
-              >AMI</a
-            > Meeting Corpus dataset)
+            Average Word Error Rate (WER) across Earnings-22 and VoxPopuli
+            datasets
           </div>
           <div class="scatterplot-container">
             <div class="scatterplot-aria">
@@ -84,39 +76,9 @@
               <div class="scatterplot-axis-label-x">
                 Cost per 1000 minutes of audio
               </div>
-              <div class="scatterplot-axis-label-y">Word Error Rate</div>
+              <div class="scatterplot-axis-label-y">Avg. Word Error Rate</div>
             </div>
           </div>
-
-          <div class="padding-spacer"></div>
-          <div class="vendors"></div>
-        </div>
-
-        <div class="scatterplot-wrapper" id="scatterplot-4">
-          <div class="scatterplot-title">
-            Transcription Benchmark — Complex Real World Conversations
-          </div>
-          <div class="scatterplot-subtitle">
-            Tests Word Error Rate on real-world, complex conversations (<a
-              href="https://www.slideshare.net/slideshow/speech-recognition-dataset-spotlight-ami-meeting-corpus/275204629?utm_source=chatgpt.com#1"
-              target="_blank"
-              >AMI</a
-            >
-            Meeting Corpus dataset)
-          </div>
-          <div class="scatterplot-container">
-            <div class="scatterplot-aria">
-              <div class="scatterplot-background-highlight">
-                <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label"></div>
-              </div>
-              <div class="scatterplot-axis-label-x">
-                Cost per 1000 minutes of audio
-              </div>
-              <div class="scatterplot-axis-label-y">Word Error Rate</div>
-            </div>
-          </div>
-
           <div class="padding-spacer"></div>
           <div class="vendors"></div>
         </div>
@@ -126,7 +88,7 @@
         <h5>#df-accuracy-bar</h5>
         <div class="bar-chart-wrapper" id="bar-chart-1">
           <div class="scatterplot-title">
-            🤗 Huggingface’s Speech Deepfake Detection Leaderboard
+            🤗 Huggingface's Speech Deepfake Detection Leaderboard
           </div>
           <div class="scatterplot-subtitle">
             Measures the accuracy of detecting and recalling real vs.
@@ -154,51 +116,6 @@
             </div>
           </div>
           <div class="padding-spacer"></div>
-        </div>
-      </section>
-
-      <section id="wer-price">
-        <h5>#wer-price</h5>
-        <div class="scatterplot-wrapper" id="scatterplot-5">
-          <div class="scatterplot-title">
-            Transcription Benchmark (Accuracy vs. Price)
-          </div>
-          <div class="scatterplot-subtitle">
-            Average Word Error Rate (WER) across Earnings-22 and VoxPopuli
-            datasets
-          </div>
-          <div class="scatterplot-container">
-            <div class="scatterplot-aria">
-              <div class="scatterplot-background-highlight">
-                <div class="scatterplot-background-highlight-ellipse"></div>
-                <div class="scatterplot-background-highlight-label"></div>
-              </div>
-              <div class="scatterplot-axis-label-x">
-                Cost per 1000 minutes of audio
-              </div>
-              <div class="scatterplot-axis-label-y">Avg. Word Error Rate</div>
-            </div>
-          </div>
-          <div class="padding-spacer"></div>
-          <div class="vendors"></div>
-        </div>
-      </section>
-
-      <section id="wer-bars">
-        <h5>#wer-bars</h5>
-        <div class="bar-chart-wrapper" id="bar-chart-2">
-          <div class="scatterplot-title">Transcription Accuracy Benchmark</div>
-          <div class="scatterplot-subtitle">
-            Average Word Error Rate (WER) across Earnings-22 and VoxPopuli
-            datasets
-          </div>
-          <div class="bar-chart-container">
-            <div class="bar-chart-aria">
-              <div class="scatterplot-axis-label-x"></div>
-              <div class="scatterplot-axis-label-y">Avg. Word Error Rate</div>
-            </div>
-          </div>
-          <div class="vendors"></div>
         </div>
       </section>
 
@@ -315,6 +232,90 @@
           <div class="padding-spacer"></div>
         </div>
       </section>
+
+      <div class="archive-section">
+        <h4>Archive</h4>
+
+        <section id="transcript-scatter">
+          <h5>#transcript-scatter</h5>
+          <div class="scatterplot-wrapper" id="scatterplot-2">
+            <div class="scatterplot-title">
+              Transcription Benchmark —
+              <nobr>Complex Real World Conversations</nobr>
+            </div>
+            <div class="scatterplot-subtitle">
+              Tests Word Error Rate on real-world, complex conversations (<a
+                href="https://www.slideshare.net/slideshow/speech-recognition-dataset-spotlight-ami-meeting-corpus/275204629?utm_source=chatgpt.com#1"
+                target="_blank"
+                >AMI</a
+              >
+              Meeting Corpus dataset)
+            </div>
+            <div class="scatterplot-container">
+              <div class="scatterplot-aria">
+                <div class="scatterplot-background-highlight">
+                  <div class="scatterplot-background-highlight-ellipse"></div>
+                  <div class="scatterplot-background-highlight-label"></div>
+                </div>
+                <div class="scatterplot-axis-label-x">
+                  Cost per 1000 minutes of audio
+                </div>
+                <div class="scatterplot-axis-label-y">Word Error Rate</div>
+              </div>
+            </div>
+            <div class="padding-spacer"></div>
+            <div class="vendors"></div>
+          </div>
+
+          <div class="scatterplot-wrapper" id="scatterplot-4">
+            <div class="scatterplot-title">
+              Transcription Benchmark — Complex Real World Conversations
+            </div>
+            <div class="scatterplot-subtitle">
+              Tests Word Error Rate on real-world, complex conversations (<a
+                href="https://www.slideshare.net/slideshow/speech-recognition-dataset-spotlight-ami-meeting-corpus/275204629?utm_source=chatgpt.com#1"
+                target="_blank"
+                >AMI</a
+              >
+              Meeting Corpus dataset)
+            </div>
+            <div class="scatterplot-container">
+              <div class="scatterplot-aria">
+                <div class="scatterplot-background-highlight">
+                  <div class="scatterplot-background-highlight-ellipse"></div>
+                  <div class="scatterplot-background-highlight-label"></div>
+                </div>
+                <div class="scatterplot-axis-label-x">
+                  Cost per 1000 minutes of audio
+                </div>
+                <div class="scatterplot-axis-label-y">Word Error Rate</div>
+              </div>
+            </div>
+            <div class="padding-spacer"></div>
+            <div class="vendors"></div>
+          </div>
+        </section>
+
+        <section id="wer-bars">
+          <h5>#wer-bars</h5>
+          <div class="bar-chart-wrapper" id="bar-chart-2">
+            <div class="scatterplot-title">
+              Transcription Accuracy Benchmark
+            </div>
+            <div class="scatterplot-subtitle">
+              Average Word Error Rate (WER) across Earnings-22 and VoxPopuli
+              datasets
+            </div>
+            <div class="bar-chart-container">
+              <div class="bar-chart-aria">
+                <div class="scatterplot-axis-label-x"></div>
+                <div class="scatterplot-axis-label-y">Avg. Word Error Rate</div>
+              </div>
+            </div>
+            <div class="vendors"></div>
+          </div>
+        </section>
+      </div>
     </div>
     <script src="config-sc1.js"></script>
     <script src="config-sc2.js"></script>
