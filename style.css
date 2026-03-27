@@ -599,7 +599,7 @@ body {
 }
 
 #bar-chart-voice .cost-voice-chart .cost-compare-row {
-  grid-template-columns: 14em 1fr;
+  grid-template-columns: minmax(18em, max-content) 1fr;
 }
 
 #bar-chart-voice .cost-voice-chart .cost-compare-vendor {
@@ -686,13 +686,13 @@ body {
 }
 
 .cost-voice-range-segment--solid {
-  width: calc(28.8 / 144.57 * 100%);
+  width: calc(15 / 150 * 100%);
   background-color: var(--cost-compare-bar-other);
   border-radius: 0.25em 0 0 0.25em;
 }
 
 .cost-voice-range-segment--hatch {
-  width: calc((144.57 - 28.8) / 144.57 * 100%);
+  width: calc((150 - 15) / 150 * 100%);
   border-radius: 0 0.25em 0.25em 0;
   background-color: rgba(229, 62, 62, 0.12);
   background-image: repeating-linear-gradient(
