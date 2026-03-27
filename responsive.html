@@ -205,9 +205,6 @@
           <div class="scatterplot-title">
             Transcription API Cost Comparison among STT Leaders
           </div>
-          <div class="scatterplot-subtitle">
-            Cost per audio hour transcribed
-          </div>
           <div class="cost-compare-chart">
             <div class="cost-compare-row">
               <span class="cost-compare-vendor cost-compare-vendor--modulate"
@@ -217,7 +214,7 @@
                 <div
                   class="cost-compare-bar cost-compare-bar--modulate"
                   style="width: 6.67%"></div>
-                <span class="cost-compare-cost">$0.03</span>
+                <span class="cost-compare-cost">$0.03 / hr</span>
               </div>
               <span class="cost-compare-model">modulate-velma-2</span>
             </div>
@@ -225,7 +222,7 @@
               <span class="cost-compare-vendor">AssemblyAI</span>
               <div class="cost-compare-track">
                 <div class="cost-compare-bar" style="width: 33.33%"></div>
-                <span class="cost-compare-cost">$0.15</span>
+                <span class="cost-compare-cost">$0.15 / hr</span>
               </div>
               <span class="cost-compare-model">universal</span>
             </div>
@@ -233,7 +230,7 @@
               <span class="cost-compare-vendor">Deepgram</span>
               <div class="cost-compare-track">
                 <div class="cost-compare-bar" style="width: 57.33%"></div>
-                <span class="cost-compare-cost">$0.26</span>
+                <span class="cost-compare-cost">$0.26 / hr</span>
               </div>
               <span class="cost-compare-model">nova-2</span>
             </div>
@@ -241,7 +238,7 @@
               <span class="cost-compare-vendor">ElevenLabs</span>
               <div class="cost-compare-track">
                 <div class="cost-compare-bar" style="width: 88.89%"></div>
-                <span class="cost-compare-cost">$0.40</span>
+                <span class="cost-compare-cost">$0.40 / hr</span>
               </div>
               <span class="cost-compare-model">scribe-v2</span>
             </div>
@@ -252,9 +249,8 @@
       <section id="cost-compare-voice">
         <h5>#cost-compare-voice</h5>
         <div class="bar-chart-wrapper" id="bar-chart-voice">
-          <div class="scatterplot-title">Voice API cost comparison</div>
-          <div class="scatterplot-subtitle">
-            Cost per hour of generated speech (USD)
+          <div class="scatterplot-title">
+            Deepfake Detection Cost Comparison
           </div>
           <div class="cost-compare-chart cost-voice-chart">
             <div class="cost-compare-row">
@@ -297,10 +293,7 @@
                   <div class="cost-voice-bar-area">
                     <div
                       class="cost-voice-stack"
-                      style="
-                        --voice-fill: calc(15 / 150 * 100%);
-                        --voice-range-total: 100%;
-                      ">
+                      style="--voice-range-total: calc(120 / 150 * 100%)">
                       <div class="cost-voice-range" aria-hidden="true">
                         <div
                           class="cost-voice-range-segment cost-voice-range-segment--solid"></div>
@@ -308,7 +301,7 @@
                           class="cost-voice-range-segment cost-voice-range-segment--hatch"></div>
                       </div>
                       <span class="cost-voice-cost"
-                        >$15&thinsp;&mdash;&thinsp;$150 / hr</span
+                        >$30&thinsp;&mdash;&thinsp;$120 / hr</span
                       >
                     </div>
                   </div>

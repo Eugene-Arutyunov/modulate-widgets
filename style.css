@@ -664,6 +664,10 @@ body {
   pointer-events: none;
 }
 
+#bar-chart-voice .cost-voice-stack:has(.cost-voice-range) .cost-voice-cost {
+  left: var(--voice-range-total);
+}
+
 @media (max-width: 768px) {
   #bar-chart-voice.bar-chart-wrapper {
     overflow: visible;
@@ -686,13 +690,13 @@ body {
 }
 
 .cost-voice-range-segment--solid {
-  width: calc(15 / 150 * 100%);
+  width: calc(30 / 120 * 100%);
   background-color: var(--cost-compare-bar-other);
   border-radius: 0.25em 0 0 0.25em;
 }
 
 .cost-voice-range-segment--hatch {
-  width: calc((150 - 15) / 150 * 100%);
+  width: calc((120 - 30) / 120 * 100%);
   border-radius: 0 0.25em 0.25em 0;
   background-color: rgba(229, 62, 62, 0.12);
   background-image: repeating-linear-gradient(
