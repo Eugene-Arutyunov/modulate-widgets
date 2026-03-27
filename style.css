@@ -631,6 +631,16 @@ body {
   position: relative;
   width: 100%;
   height: 1.75em;
+  /*
+   * Width at ref max = old linear (144/150). For rate/refMax = t, width ∝ t^k with k<1.
+   * vs linear (t): ratio is t^(k-1) → grows as t→0, so small rates gain more than large ones.
+   */
+  --voice-ref-max: 144;
+  --voice-axis-max: 150;
+  --voice-fill: calc(
+    (var(--voice-ref-max) / var(--voice-axis-max) * 100%) *
+      pow(calc(var(--voice-rate) / var(--voice-ref-max)), 0.58)
+  );
 }
 
 #bar-chart-voice .cost-voice-stack .cost-compare-bar {
@@ -641,7 +651,7 @@ body {
 }
 
 #bar-chart-voice .cost-voice-stack .cost-voice-range {
-  width: var(--voice-range-total);
+  width: var(--voice-fill);
   height: 100%;
   min-width: 0;
   box-sizing: border-box;
@@ -662,10 +672,6 @@ body {
   color: rgba(var(--ids__text-RGB), 0.9);
   white-space: nowrap;
   pointer-events: none;
-}
-
-#bar-chart-voice .cost-voice-stack:has(.cost-voice-range) .cost-voice-cost {
-  left: var(--voice-range-total);
 }
 
 @media (max-width: 768px) {
@@ -690,13 +696,11 @@ body {
 }
 
 .cost-voice-range-segment--solid {
-  width: calc(30 / 120 * 100%);
   background-color: var(--cost-compare-bar-other);
   border-radius: 0.25em 0 0 0.25em;
 }
 
 .cost-voice-range-segment--hatch {
-  width: calc((120 - 30) / 120 * 100%);
   border-radius: 0 0.25em 0.25em 0;
   background-color: rgba(229, 62, 62, 0.12);
   background-image: repeating-linear-gradient(
@@ -706,6 +710,25 @@ body {
     transparent 2px,
     transparent 5px
   );
+}
+
+/* Range bar: solid = same nonlinear width as a lone bar at --voice-range-low; hatch fills to --voice-rate */
+#bar-chart-voice
+  .cost-voice-stack:has(.cost-voice-range)
+  .cost-voice-range-segment--solid {
+  flex-shrink: 0;
+  width: calc(
+    pow(calc(var(--voice-range-low) / var(--voice-ref-max)), 0.58) /
+      pow(calc(var(--voice-rate) / var(--voice-ref-max)), 0.58) * 100%
+  );
+}
+
+#bar-chart-voice
+  .cost-voice-stack:has(.cost-voice-range)
+  .cost-voice-range-segment--hatch {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: auto;
 }
 
 .scatterplot-container {
