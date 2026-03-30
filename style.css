@@ -1431,13 +1431,17 @@ body {
   min-width: 14em;
 }
 
-/* After light header: dark, light, dark, … */
-.df-accuracy-table tbody tr:nth-child(odd) {
+/* One tbody per model: mobile title row + data row; zebra by tbody */
+.df-accuracy-table tbody:nth-of-type(odd) tr.df-table-data-row {
   background: rgba(var(--ids__text-RGB), 0.035);
 }
 
-.df-accuracy-table tbody tr:nth-child(even) {
+.df-accuracy-table tbody:nth-of-type(even) tr.df-table-data-row {
   background: rgba(var(--ids__bg-surface-light-RGB), 1);
+}
+
+.df-accuracy-table tr.df-table-mobile-title {
+  display: none;
 }
 
 .df-table-system-name {
@@ -1457,8 +1461,9 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* auto: column widths follow content; fixed was splitting ~evenly and squashing dates */
   .df-accuracy-table {
-    table-layout: fixed;
+    table-layout: auto;
     font-size: 0.8125em;
   }
 
@@ -1468,19 +1473,58 @@ body {
     vertical-align: top;
     overflow-wrap: break-word;
     word-break: break-word;
-    padding: 0.5em 0.45em;
+    padding: 0.5em 0.65em 0.5em 0.45em;
   }
 
   .df-accuracy-table th {
     white-space: normal;
   }
 
+  .df-accuracy-table thead th:nth-child(2),
+  .df-accuracy-table tr.df-table-data-row td:nth-child(2) {
+    white-space: nowrap;
+  }
+
+  .df-accuracy-table tr.df-table-data-row td.col-numeric {
+    white-space: nowrap;
+  }
+
   .df-accuracy-table td.col-system {
     min-width: 0;
   }
 
+  /* Hide System column: header + first cell per row (placeholder + col-system) */
+  .df-accuracy-table thead th:first-child,
+  .df-accuracy-table tbody tr td:first-child {
+    display: none;
+  }
+
+  .df-accuracy-table thead th:nth-child(2),
+  .df-accuracy-table tbody tr td:nth-child(2) {
+    border-left: none;
+  }
+
   .df-table-medal {
     vertical-align: top;
+  }
+
+  .df-accuracy-table tr.df-table-mobile-title {
+    display: table-row;
+  }
+
+  .df-accuracy-table tbody:nth-of-type(odd) tr.df-table-mobile-title {
+    background: rgba(var(--ids__text-RGB), 0.035);
+  }
+
+  .df-accuracy-table tbody:nth-of-type(even) tr.df-table-mobile-title {
+    background: rgba(var(--ids__bg-surface-light-RGB), 1);
+  }
+
+  .df-accuracy-table td.df-table-mobile-title-cell {
+    font-weight: 600;
+
+    padding-top: 1rem;
+    padding-bottom: 0.35em;
   }
 }
 
