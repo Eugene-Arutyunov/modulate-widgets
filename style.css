@@ -608,7 +608,7 @@ body {
 }
 
 .bar-chart-voice .cost-compare-bar {
-  min-width: 0.1em;
+  min-width: 0.2em;
 }
 
 .bar-chart-voice .cost-voice-track {
@@ -632,29 +632,22 @@ body {
   position: relative;
   width: 100%;
   height: 1.75em;
-  /*
-   * Width at ref max = old linear (144/150). For rate/refMax = t, width ∝ t^k with k<1.
-   * vs linear (t): ratio is t^(k-1) → grows as t→0, so small rates gain more than large ones.
-   */
-  --voice-ref-max: 144;
+  /* Linear scale: bar width ∝ rate / axis max (same units as --voice-rate inline styles). */
   --voice-axis-max: 150;
-  --voice-fill: calc(
-    (var(--voice-ref-max) / var(--voice-axis-max) * 100%) *
-      pow(calc(var(--voice-rate) / var(--voice-ref-max)), 0.58)
-  );
+  --voice-fill: calc(var(--voice-rate) / var(--voice-axis-max) * 100%);
 }
 
 .bar-chart-voice .cost-voice-stack .cost-compare-bar {
   width: var(--voice-fill);
   height: 100%;
-  min-width: 0.1em;
+  min-width: 0.2em;
   box-sizing: border-box;
 }
 
 .bar-chart-voice .cost-voice-stack .cost-voice-range {
   width: var(--voice-fill);
   height: 100%;
-  min-width: 0;
+  min-width: 0.2em;
   box-sizing: border-box;
 }
 
@@ -742,15 +735,12 @@ body {
   );
 }
 
-/* Range bar: solid = same nonlinear width as a lone bar at --voice-range-low; hatch fills to --voice-rate */
+/* Range bar: solid = linear fraction from 0 to --voice-range-low; hatch = low → --voice-rate */
 .bar-chart-voice
   .cost-voice-stack:has(.cost-voice-range)
   .cost-voice-range-segment--solid {
   flex-shrink: 0;
-  width: calc(
-    pow(calc(var(--voice-range-low) / var(--voice-ref-max)), 0.58) /
-      pow(calc(var(--voice-rate) / var(--voice-ref-max)), 0.58) * 100%
-  );
+  width: calc(var(--voice-range-low) / var(--voice-rate) * 100%);
 }
 
 .bar-chart-voice
