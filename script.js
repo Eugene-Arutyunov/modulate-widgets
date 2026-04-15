@@ -1581,16 +1581,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const pointSizeControl = document.getElementById("point-size-control");
   const axisFontSizeControl = document.getElementById("axis-font-size-control");
 
-  // Collect all scatterplot wrappers and aria containers dynamically
-  const allScatterplotWrappers = Array.from(scatterplotWrappers);
-  const allScatterplotArias = plotConfigs.map(({ id }) =>
-    document.querySelector(`#${id} .scatterplot-aria`)
-  ).filter(Boolean);
+  // Collect all chart wrappers and aria containers (scatterplot + bar chart)
+  const allChartWrappers = [
+    ...Array.from(scatterplotWrappers),
+    ...Array.from(document.querySelectorAll(".bar-chart-wrapper")),
+  ];
+  const allChartArias = [
+    ...plotConfigs.map(({ id }) => document.querySelector(`#${id} .scatterplot-aria`)).filter(Boolean),
+    ...Array.from(document.querySelectorAll(".bar-chart-wrapper .bar-chart-aria")),
+  ];
   const root = document.documentElement;
+
+  // Bar chart redraw callbacks, populated during init (mirrors `plots`)
+  const barCharts = [];
 
   // Function to redraw all charts
   const redrawAllPlots = () => {
     plots.forEach(plot => plot.createScatterPlot());
+    barCharts.forEach(redraw => redraw());
   };
 
   // Universal function to create control handler with debouncing
@@ -1655,7 +1663,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Only set up controls if they exist on the page
-  if (widthControl && heightControl && allScatterplotWrappers.length > 0 && allScatterplotArias.length > 0) {
+  if (widthControl && heightControl && allChartWrappers.length > 0 && allChartArias.length > 0) {
 
     // Handler for width
     const widthHandler = createDebouncedControlHandler({
@@ -1665,7 +1673,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const min = parseFloat(input.min) || 100;
         const finalValue = Math.max(min, val);
         input.value = finalValue;
-        allScatterplotWrappers.forEach((wrapper) => {
+        allChartWrappers.forEach((wrapper) => {
           if (wrapper) wrapper.style.width = `${finalValue}px`;
         });
       },
@@ -1683,7 +1691,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const min = parseFloat(input.min) || 100;
         const finalValue = Math.max(min, val);
         input.value = finalValue;
-        allScatterplotArias.forEach((aria) => {
+        allChartArias.forEach((aria) => {
           if (aria) aria.style.height = `${finalValue}px`;
         });
       },
@@ -1702,8 +1710,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const min = parseFloat(input.min) || 0.5;
           const max = parseFloat(input.max) || 1.5;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = Math.round(finalValue * 100) / 100;
-          root.style.setProperty("--scatterplot-label-font-size", `${Math.round(finalValue * 100) / 100}em`);
+          input.value = finalValue;
+          root.style.setProperty("--scatterplot-label-font-size", `${finalValue}em`);
         },
         getMinMax: (input) => ({ min: parseFloat(input.min) || 0.5, max: parseFloat(input.max) || 1.5 }),
         redrawCallback: redrawAllPlots,
@@ -1721,8 +1729,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const min = parseFloat(input.min) || 0.25;
           const max = parseFloat(input.max) || 2;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = Math.round(finalValue * 100) / 100;
-          root.style.setProperty("--scatterplot-point-size", `${Math.round(finalValue * 100) / 100}em`);
+          input.value = finalValue;
+          root.style.setProperty("--scatterplot-point-size", `${finalValue}em`);
         },
         getMinMax: (input) => ({ min: parseFloat(input.min) || 0.25, max: parseFloat(input.max) || 2 }),
         redrawCallback: redrawAllPlots,
@@ -1740,8 +1748,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const min = parseFloat(input.min) || 0.5;
           const max = parseFloat(input.max) || 1.5;
           const finalValue = Math.max(min, Math.min(max, val));
-          input.value = Math.round(finalValue * 100) / 100;
-          root.style.setProperty("--scatterplot-axis-font-size", `${Math.round(finalValue * 100) / 100}em`);
+          input.value = finalValue;
+          root.style.setProperty("--scatterplot-axis-font-size", `${finalValue}em`);
         },
         getMinMax: (input) => ({ min: parseFloat(input.min) || 0.5, max: parseFloat(input.max) || 1.5 }),
         redrawCallback: redrawAllPlots,
@@ -1753,11 +1761,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const isResponsivePage = document.body.classList.contains("page-responsive");
 
     // Initialize default values
-    allScatterplotWrappers.forEach((wrapper) => {
+    allChartWrappers.forEach((wrapper) => {
       if (wrapper) wrapper.style.width = "1140px";
     });
     if (!isResponsivePage) {
-      allScatterplotArias.forEach((aria) => {
+      allChartArias.forEach((aria) => {
         if (aria) aria.style.height = "400px";
       });
     }
@@ -1766,70 +1774,51 @@ document.addEventListener("DOMContentLoaded", () => {
     // Without controls, don't set fixed pixel widths - let CSS handle it
     // Only set height for aria containers
     if (!isResponsivePage) {
-      allScatterplotArias.forEach((aria) => {
+      allChartArias.forEach((aria) => {
         if (aria) aria.style.height = "400px";
       });
     }
   }
 
   // Initialize bar charts
-  let barChart1 = null;
-  let barChart2 = null;
-  let barChart4 = null;
-  let groupedBarChart1 = null;
-  let groupedBarChart2 = null;
   const getBarConfig1 = () =>
     window.innerWidth > 768 && window.barChartConfig1Desktop
       ? window.barChartConfig1Desktop
       : window.barChartConfig1;
   const barChart1Container = document.querySelector('#bar-chart-1 .bar-chart-aria');
   if (barChart1Container && window.barChartConfig1) {
-    barChart1 = new BarChart(barChart1Container, getBarConfig1());
-    barChart1.createBarChart();
+    const bc = new BarChart(barChart1Container, getBarConfig1());
+    bc.createBarChart();
+    barCharts.push(() => { bc.config = getBarConfig1(); bc.createBarChart(); });
   }
   const barChart2Container = document.querySelector('#bar-chart-2 .bar-chart-aria');
   if (barChart2Container && window.barChartConfig2) {
-    barChart2 = new BarChart(barChart2Container, window.barChartConfig2);
-    barChart2.createBarChart();
+    const bc = new BarChart(barChart2Container, window.barChartConfig2);
+    bc.createBarChart();
+    barCharts.push(() => bc.createBarChart());
   }
   const barChart4Container = document.querySelector('#bar-chart-4 .bar-chart-aria');
   if (barChart4Container && window.barChartConfig1) {
-    barChart4 = new BarChart(barChart4Container, getBarConfig1());
-    barChart4.createBarChart();
+    const bc = new BarChart(barChart4Container, getBarConfig1());
+    bc.createBarChart();
+    barCharts.push(() => { bc.config = getBarConfig1(); bc.createBarChart(); });
   }
   const groupedBar1Container = document.querySelector('#grouped-bar-1 .bar-chart-aria');
   if (groupedBar1Container && window.groupedBarConfig1) {
-    groupedBarChart1 = new GroupedBarChart(groupedBar1Container, window.groupedBarConfig1);
-    groupedBarChart1.createGroupedBarChart();
+    const bc = new GroupedBarChart(groupedBar1Container, window.groupedBarConfig1);
+    bc.createGroupedBarChart();
+    barCharts.push(() => bc.createGroupedBarChart());
   }
   const groupedBar2Container = document.querySelector('#grouped-bar-2 .bar-chart-aria');
   if (groupedBar2Container && window.groupedBarConfig2) {
-    groupedBarChart2 = new GroupedBarChart(groupedBar2Container, window.groupedBarConfig2);
-    groupedBarChart2.createGroupedBarChart();
+    const bc = new GroupedBarChart(groupedBar2Container, window.groupedBarConfig2);
+    bc.createGroupedBarChart();
+    barCharts.push(() => bc.createGroupedBarChart());
   }
   // Redraw on window resize
   let resizeTimeout;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      plots.forEach(plot => plot.createScatterPlot());
-      if (barChart1) {
-        barChart1.config = getBarConfig1();
-        barChart1.createBarChart();
-      }
-      if (barChart2) {
-        barChart2.createBarChart();
-      }
-      if (barChart4) {
-        barChart4.config = getBarConfig1();
-        barChart4.createBarChart();
-      }
-      if (groupedBarChart1) {
-        groupedBarChart1.createGroupedBarChart();
-      }
-      if (groupedBarChart2) {
-        groupedBarChart2.createGroupedBarChart();
-      }
-    }, 100);
+    resizeTimeout = setTimeout(redrawAllPlots, 100);
   });
 });
