@@ -1662,6 +1662,38 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // Arrow-key stepping with modifiers:
+  //   plain       = step
+  //   Alt         = step / 10
+  //   Shift       = step * 10
+  //   Alt + Shift = step / 100
+  const handleArrowStep = (e) => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    const input = e.target;
+    const step = parseFloat(input.step);
+    if (!step || isNaN(step)) return;
+
+    let delta = step;
+    if (e.altKey && e.shiftKey) delta = step / 100;
+    else if (e.altKey) delta = step / 10;
+    else if (e.shiftKey) delta = step * 10;
+    if (e.key === "ArrowDown") delta = -delta;
+
+    e.preventDefault();
+
+    const current = parseFloat(input.value);
+    const base = isNaN(current) ? (parseFloat(input.min) || 0) : current;
+    let next = base + delta;
+
+    const min = input.min !== "" ? parseFloat(input.min) : -Infinity;
+    const max = input.max !== "" ? parseFloat(input.max) : Infinity;
+    next = Math.max(min, Math.min(max, next));
+    next = parseFloat(next.toFixed(4));
+
+    input.value = next;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
   // Only set up controls if they exist on the page
   if (widthControl && heightControl && allChartWrappers.length > 0 && allChartArias.length > 0) {
 
@@ -1682,6 +1714,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     widthControl.addEventListener("input", widthHandler.onInput);
     widthControl.addEventListener("change", widthHandler.onChange);
+    widthControl.addEventListener("keydown", handleArrowStep);
 
     // Handler for height
     const heightHandler = createDebouncedControlHandler({
@@ -1700,6 +1733,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     heightControl.addEventListener("input", heightHandler.onInput);
     heightControl.addEventListener("change", heightHandler.onChange);
+    heightControl.addEventListener("keydown", handleArrowStep);
 
     // Handler for label font size
     if (labelFontSizeControl) {
@@ -1718,6 +1752,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       labelFontSizeControl.addEventListener("input", labelFontSizeHandler.onInput);
       labelFontSizeControl.addEventListener("change", labelFontSizeHandler.onChange);
+      labelFontSizeControl.addEventListener("keydown", handleArrowStep);
     }
 
     // Handler for point size
@@ -1737,6 +1772,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       pointSizeControl.addEventListener("input", pointSizeHandler.onInput);
       pointSizeControl.addEventListener("change", pointSizeHandler.onChange);
+      pointSizeControl.addEventListener("keydown", handleArrowStep);
     }
 
     // Handler for axis label font size
@@ -1756,6 +1792,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       axisFontSizeControl.addEventListener("input", axisFontSizeHandler.onInput);
       axisFontSizeControl.addEventListener("change", axisFontSizeHandler.onChange);
+      axisFontSizeControl.addEventListener("keydown", handleArrowStep);
     }
 
     const isResponsivePage = document.body.classList.contains("page-responsive");

@@ -401,6 +401,7 @@ body {
   align-items: flex-start;
   padding: 0;
   margin: 0;
+  font-size: var(--scatterplot-label-font-size, 0.875em);
 
   @media (max-width: 768px) {
     align-items: center;
@@ -408,7 +409,7 @@ body {
 }
 
 .bar-chart-bar-model-label {
-  font-size: var(--scatterplot-label-font-size, 0.875em);
+  font-size: 1em;
   font-weight: 600;
   color: rgba(var(--ids__text-RGB), 0.9);
   text-align: left;
@@ -423,7 +424,7 @@ body {
 }
 
 .bar-chart-bar-vendor-label {
-  font-size: 0.75em;
+  font-size: 0.857em;
   font-weight: 400;
   color: rgba(var(--ids__text-RGB), 0.5);
   text-align: left;
@@ -445,7 +446,7 @@ body {
 .bar-chart-score-label {
   position: absolute;
   transform: translateY(-140%);
-  font-size: 1.1em;
+  font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.26);
   font-weight: 400;
   color: rgba(var(--ids__text-RGB), 0.9);
   pointer-events: none;
@@ -546,7 +547,7 @@ body {
 .cost-compare-vendor {
   grid-column: 1;
   grid-row: 1;
-  font-size: 1.25em;
+  font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.43);
   font-weight: 500;
   color: rgba(var(--ids__text-RGB), 0.9);
   line-height: 1.3;
@@ -582,7 +583,7 @@ body {
 }
 
 .cost-compare-cost {
-  font-size: 1.25em;
+  font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.43);
   font-weight: 500;
   color: rgba(var(--ids__text-RGB), 0.9);
   margin-left: 0.4em;
@@ -661,7 +662,7 @@ body {
   top: 50%;
   transform: translateY(-50%);
   margin-left: 0.35em;
-  font-size: 1.25em;
+  font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.43);
   font-weight: 500;
   color: rgba(var(--ids__text-RGB), 0.9);
   white-space: nowrap;
@@ -686,7 +687,7 @@ body {
   }
 
   .bar-chart-voice .cost-voice-chart .cost-compare-vendor {
-    font-size: 1.15em;
+    font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.31);
     grid-column: 1;
     grid-row: 1;
     align-self: start;
@@ -694,7 +695,7 @@ body {
   }
 
   .bar-chart-voice .cost-voice-chart .cost-voice-cost {
-    font-size: 1.15em;
+    font-size: calc(var(--scatterplot-label-font-size, 0.875em) * 1.31);
   }
 
   .bar-chart-voice .cost-voice-chart .cost-compare-track {
