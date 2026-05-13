@@ -1,0 +1,552 @@
+/* Modulate main landing — scoped to .mm-* only */
+
+.mm-page {
+  --mm-text-muted: rgba(75, 75, 95, 0.72);
+  --mm-text-body: rgba(20, 20, 50, 0.88);
+  --mm-gradient-start: #6366f1;
+  --mm-gradient-end: #ec4899;
+
+  /* Цвета тегов алертов ≈ modulate-design-system tokens/colors.css (.light) */
+  --mm-tag-inverted: rgb(242, 242, 246); /* m__text-inverted-color */
+  --mm-tag-error: rgb(255, 53, 84); /* m__ui-error-color */
+  --mm-tag-error-strong: rgb(220, 30, 58); /* m__ui-error-hover-color */
+  --mm-tag-warning: rgb(255, 120, 80); /* m__chart-status-client-error-color */
+  --mm-tag-mark-bg: rgb(255, 200, 29); /* m__bg-mark-color */
+  --mm-tag-mark-fg: rgb(20, 20, 50); /* m__text-accent-color */
+  --mm-tag-info: rgb(40, 95, 235); /* m__text-hover-color */
+
+  padding: 1.5rem 0 0;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--mm-text-body);
+}
+
+/* --- Ширина контента: L = всего .container, M = колонка как у виджета --- */
+
+.mm-section--l {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.mm-section--m {
+  width: 100%;
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2.5rem;
+}
+
+.mm-headline {
+  margin: 0 0 2rem;
+
+  font-size: clamp(1.65rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #0f0f1a;
+}
+
+.mm-subhead {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.05rem, 2.2vw, 3rem);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.mm-subhead--gradient {
+  background: linear-gradient(
+    90deg,
+    var(--mm-gradient-start),
+    var(--mm-gradient-end)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.mm-copy-secondary {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.mm-copy-secondary__muted {
+  color: var(--mm-text-muted);
+}
+
+.mm-copy-secondary__strong {
+  font-weight: 700;
+  color: #0f0f1a;
+}
+
+/* --- Alerts widget --- */
+
+.alerts-widget {
+  --aw-pad: 1.25rem;
+  --aw-bg: #ebebef;
+  --aw-card-bg: #ffffff;
+  --aw-card-bg-read: #f3f3f6;
+  /* было 7.375rem (118px при 1rem=16px); высота строки 60% */
+  --aw-row-h: 6rem;
+  --aw-row-gap: 0.625rem;
+  /* первые (TOTAL − VISIBLE) строк скрыты трансформом списка — см. alerts-feed-animation.js */
+  --aw-visible-rows: 5;
+  /* зона градиента «алерты уходят в фон» у нижнего края viewport */
+  --aw-viewport-fade-height: clamp(3.5rem, 38%, 7.5rem);
+
+  text-align: left;
+  background: var(--aw-bg);
+  border-radius: 0.875rem;
+  padding: var(--aw-pad);
+  box-shadow: 0 0.0625rem 0 rgba(15, 15, 26, 0.06);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: rgba(20, 20, 50, 0.88);
+}
+
+.alerts-widget__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.alerts-widget__title {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #0f0f1a;
+}
+
+.alerts-widget__stats-inline {
+  margin-left: auto;
+  font-weight: 400;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.alerts-widget__live-dot {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #14d787;
+  box-shadow: 0 0 0 0.1875rem rgba(20, 215, 135, 0.35);
+  transition:
+    background-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.mm-alerts-feed[data-mm-alerts-feed-init="pending"] .alerts-widget__viewport {
+  opacity: 0;
+}
+
+.mm-alerts-feed[data-mm-alerts-feed-init="ready"] .alerts-widget__viewport {
+  opacity: 1;
+  transition: opacity 0.14s ease-out;
+}
+
+.alerts-widget__viewport {
+  position: relative;
+  overflow: hidden;
+  height: calc(
+    var(--aw-visible-rows) * var(--aw-row-h) + (var(--aw-visible-rows) - 1) *
+      var(--aw-row-gap)
+  );
+}
+
+/* Затухание списка к фону виджета над футером */
+.alerts-widget__viewport::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--aw-viewport-fade-height);
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--aw-bg) 88%,
+    var(--aw-bg) 100%
+  );
+}
+
+@supports (color: rgb(from red r g b / 50%)) {
+  .alerts-widget__viewport::after {
+    background: linear-gradient(
+      to bottom,
+      rgb(from var(--aw-bg) r g b / 0) 0%,
+      var(--aw-bg) 82%,
+      var(--aw-bg) 100%
+    );
+  }
+}
+
+.alerts-widget__list {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--aw-row-gap);
+  will-change: transform;
+}
+
+.alerts-widget__footer {
+  margin-top: 1.1rem;
+  padding-top: 0.25rem;
+}
+
+.alerts-widget__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.15rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  background: #0f0f1a;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.alerts-widget__cta:hover {
+  background: #252536;
+}
+
+.alerts-widget__cta:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.55);
+  outline-offset: 2px;
+}
+
+/* Rows (fixed height for prepend animation) */
+
+.alerts-widget__alert {
+  height: var(--aw-row-h);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* По умолчанию алерт непрочитанный; для прочитанного — класс .alerts-widget__alert--read */
+
+.alert-behavior__kiki-use--stroke {
+  opacity: 0;
+}
+
+.alerts-widget__alert--read .alert-behavior__kiki-use--fill {
+  opacity: 0;
+}
+
+.alerts-widget__alert--read .alert-behavior__kiki-use--stroke {
+  opacity: 1;
+}
+
+.alerts-widget__alert--read .alert-behavior__kiki {
+  color: rgba(75, 75, 95, 0.52);
+}
+
+.alerts-widget__alert--read .alert-behavior {
+  color: var(--mm-text-muted);
+}
+
+.alerts-widget__alert--read .alerts-widget__desc {
+  color: var(--mm-text-muted);
+}
+
+.alerts-widget__alert--read .alerts-widget__desc .mm-highlight {
+  color: inherit;
+}
+
+.alerts-widget__alert--read .mm-highlight {
+  background: rgba(75, 75, 95, 0.1);
+}
+
+.alerts-widget__alert--read .alerts-widget__category-tag {
+  color: var(--mm-text-muted);
+  background: transparent;
+  border-color: rgba(75, 75, 95, 0.42);
+}
+
+.alerts-widget__alert--read .alerts-widget__pill--monitoring {
+  color: var(--mm-text-muted);
+}
+
+.alerts-widget__alert--read .alerts-widget__live-dot {
+  background: rgba(75, 75, 95, 0.38);
+  box-shadow: none;
+}
+
+.alerts-widget__alert--read .alerts-widget__pill--escalated {
+  color: var(--mm-text-muted);
+}
+
+.alerts-widget__card {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0 0.75rem;
+  height: 100%;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.625rem;
+  background: var(--aw-card-bg);
+  box-shadow:
+    0 0.0625rem 0.125rem rgba(15, 15, 26, 0.06),
+    0 0.25rem 0.875rem rgba(15, 15, 26, 0.06);
+  box-sizing: border-box;
+  transition: background-color 0.22s ease;
+}
+
+.alerts-widget__alert--read .alerts-widget__card {
+  background: var(--aw-card-bg-read);
+}
+
+.alerts-widget__time {
+  flex: 0 0 4.25rem;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(75, 75, 95, 0.48);
+  line-height: 1.55;
+}
+
+.alerts-widget__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mm-svg-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.alert-behavior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.15rem;
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0f0f1a;
+  line-height: 1.55;
+  transition: color 0.22s ease;
+}
+
+.alert-behavior__kiki {
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  color: inherit;
+  transform: translateY(0.2em);
+  transition: color 0.22s ease;
+}
+
+.alert-behavior__kiki-use {
+  transition: opacity 0.22s ease;
+}
+
+.alert-behavior__title {
+  min-width: 0;
+}
+
+.alerts-widget__category-tag {
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  vertical-align: text-bottom;
+  transform: translateY(-0.3em);
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.3rem 0rem;
+  border-radius: 0.3em;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    color 0.22s ease,
+    background-color 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.alerts-widget__category-tag--deepfake {
+  color: var(--mm-tag-inverted);
+  background: var(--mm-tag-error);
+  border-color: var(--mm-tag-error);
+}
+
+.alerts-widget__category-tag--fraud {
+  color: var(--mm-tag-inverted);
+  background: var(--mm-tag-error-strong);
+  border-color: var(--mm-tag-error-strong);
+}
+
+.alerts-widget__category-tag--churn {
+  color: var(--mm-tag-inverted);
+  background: var(--mm-tag-warning);
+  border-color: var(--mm-tag-warning);
+}
+
+.alerts-widget__category-tag--compliance {
+  color: var(--mm-tag-mark-fg);
+  background: var(--mm-tag-mark-bg);
+  border-color: var(--mm-tag-mark-bg);
+}
+
+.alerts-widget__category-tag--coaching {
+  color: var(--mm-tag-inverted);
+  background: var(--mm-tag-info);
+  border-color: var(--mm-tag-info);
+}
+
+.alerts-widget__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--mm-text-muted);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  transition: color 0.22s ease;
+}
+
+.alerts-widget__status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+}
+
+.alerts-widget__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+  transition: color 0.22s ease;
+}
+
+.alerts-widget__pill--escalated {
+  color: var(--mm-tag-error-strong);
+}
+
+.alerts-widget__pill--monitoring {
+  color: #14d787;
+}
+
+.alerts-widget__pill-icon {
+  font-size: 0.85em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.mm-highlight {
+  padding: 0.05rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(15, 15, 26, 0.06);
+  font-weight: 400;
+  color: rgba(20, 20, 50, 0.82);
+  transition:
+    color 0.22s ease,
+    background-color 0.22s ease;
+}
+
+.mm-enterprises {
+  margin: 0;
+}
+
+.mm-bottom-spacer {
+  height: 12.5rem;
+}
+
+@media (max-width: 992px) {
+  .mm-page {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .mm-page {
+    padding-top: 1rem;
+  }
+
+  .alerts-widget {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    /* было 8.25rem (132px); 60% */
+    --aw-row-h: calc(8.25rem * 0.6);
+    --aw-viewport-fade-height: clamp(3rem, 36%, 6rem);
+  }
+
+  .alerts-widget__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alerts-widget__stats-inline {
+    margin-left: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .alerts-widget__desc {
+    -webkit-line-clamp: 3;
+  }
+}
+
+@media (max-width: 520px) {
+  .alerts-widget__card {
+    flex-wrap: wrap;
+    align-items: baseline;
+    row-gap: 0.35rem;
+  }
+
+  .alerts-widget__time {
+    flex: 0 0 3.25rem;
+  }
+
+  .alerts-widget__main {
+    flex: 1 1 calc(100% - 3.25rem - 0.75rem);
+    min-width: 0;
+  }
+
+  .alerts-widget__status {
+    flex-basis: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-behavior__title {
+    word-break: break-word;
+  }
+}

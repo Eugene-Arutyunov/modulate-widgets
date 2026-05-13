@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Velma — Modulate</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="responsive.css" />
+    <link rel="stylesheet" href="modulate-main.css" />
+  </head>
+  <body class="page-responsive">
+    <!-- From modulate-design-system svg-icons-sprite (#behaviors → mm-icon-behaviors) -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+      class="mm-svg-sprite">
+      <symbol id="mm-icon-behaviors" viewBox="0 0 32 32" fill="currentColor">
+        <polygon
+          points="2.868 12.609 11.284 11.58 7.334 3.37 17.822 10.254 27.138 3.151 22.75 16.238 29.146 19.224 21.451 21.488 20.897 29.132 16.033 20.703 2.856 27.395 9.74 16.238 2.868 12.609" />
+      </symbol>
+      <symbol id="mm-icon-behaviors-outline" viewBox="0 0 32 32">
+        <polygon
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.35"
+          stroke-linejoin="round"
+          points="2.868 12.609 11.284 11.58 7.334 3.37 17.822 10.254 27.138 3.151 22.75 16.238 29.146 19.224 21.451 21.488 20.897 29.132 16.033 20.703 2.856 27.395 9.74 16.238 2.868 12.609" />
+      </symbol>
+    </svg>
+    <div class="container">
+      <main class="mm-page">
+        <section class="mm-section mm-section--l" aria-labelledby="mm-headline">
+          <h1 id="mm-headline" class="mm-headline">
+            Your voice data is full of problems you’re not hearing
+          </h1>
+          <p class="mm-subhead mm-subhead--gradient">
+            AI voice intelligence that listens and understands like a human.
+          </p>
+          <p class="mm-copy-secondary">
+            <span class="mm-copy-secondary__muted">
+              Velma watches every live and recorded
+              conversation&thinsp;&mdash;&thinsp;authentication, sales,
+              support&thinsp;&mdash;&thinsp;to surface deepfakes, fraud, churn
+              risk, and policy drift before they become incidents. No extra
+              hardware: plug into your audio pipeline and start scoring calls
+              in minutes.
+            </span>
+            <span class="mm-copy-secondary__strong">
+              You make the rules. Velma learns your business.
+            </span>
+          </p>
+        </section>
+
+        <section
+          class="alerts-widget mm-section mm-section--m mm-alerts-feed"
+          aria-labelledby="alerts-widget-heading"
+          data-mm-alerts-feed
+          data-mm-alerts-feed-init="pending">
+          <header class="alerts-widget__header">
+            <h2 id="alerts-widget-heading" class="alerts-widget__title">
+              Uncover problems
+            </h2>
+            <span
+              class="alerts-widget__stats-inline mm-copy-secondary__muted"
+              aria-label="Alert summary: 143 alerts today, 24 critical, 19 escalated"
+              >143 alerts today · 24 critical · 19 escalated</span
+            >
+          </header>
+
+          <div class="alerts-widget__viewport">
+            <div class="alerts-widget__list mm-alerts-feed-track">
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">Just now</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Synthetic Voice in Auth</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--deepfake"
+                        >Deepfake</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Caller passed voiceprint using cloned audio;
+                      <span class="mm-highlight">wire transfer</span> initiated
+                      for <span class="mm-highlight">$47,500</span>.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--escalated">
+                      <span class="alerts-widget__pill-icon" aria-hidden="true"
+                        >▲</span
+                      >
+                      Escalated
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">5s ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Impersonation Fraud</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--fraud"
+                        >Fraud</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Agent challenged caller; subject referenced internal
+                      ticket IDs matching a leaked dump and demanded expedited
+                      payout.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--escalated">
+                      <span class="alerts-widget__pill-icon" aria-hidden="true"
+                        >▲</span
+                      >
+                      Escalated
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">12s ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Account Closure Signals</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--churn"
+                        >Churn risk</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Repeated frustration cues and competitor mentions on line
+                      with
+                      <span class="mm-highlight">Service Agent 34</span>.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">28s ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Restricted Disclosure</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--compliance"
+                        >Compliance</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Representative quoted unauthorized fee waiver script
+                      outside approved library during callback from
+                      <span class="mm-highlight">Phoenix contact center</span>.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">1 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title">Coaching Moment</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--coaching"
+                        >Coaching</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Talk-over ratio exceeded team baseline; positive
+                      resolution language dropped after minute four of hold
+                      music.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">2 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Issue Not Resolved</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--churn"
+                        >Churn risk</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Customer restated the billing dispute three times;
+                      <span class="mm-highlight">Tier 2 handoff</span> closed
+                      without confirmation or apology language.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">3 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title">Vishing Probe</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--fraud"
+                        >Fraud</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Caller requested SMS OTP read-back and
+                      <span class="mm-highlight">card CVV</span> while pacing
+                      pauses matched to scripted social-engineering flows.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--escalated">
+                      <span class="alerts-widget__pill-icon" aria-hidden="true"
+                        >▲</span
+                      >
+                      Escalated
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">4 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title">Verbal Coercion</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--fraud"
+                        >Fraud</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Dominance-oriented tone and deadline threats tied to
+                      reversing a
+                      <span class="mm-highlight">$12,400 ACH pull</span> unless
+                      the agent stayed on the line.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--escalated">
+                      <span class="alerts-widget__pill-icon" aria-hidden="true"
+                        >▲</span
+                      >
+                      Escalated
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">6 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Return Fraud Pattern</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--fraud"
+                        >Fraud</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Scripted damaged-goods story with defensive cadence and
+                      mismatched serial lookup against
+                      <span class="mm-highlight">SKU registry</span>.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="alerts-widget__alert">
+                <div class="alerts-widget__card">
+                  <span class="alerts-widget__time">8 min ago</span>
+                  <div class="alerts-widget__main">
+                    <h3 class="alert-behavior">
+                      <svg
+                        class="alert-behavior__kiki"
+                        viewBox="0 0 32 32"
+                        aria-hidden="true">
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--fill"
+                          href="#mm-icon-behaviors"></use>
+                        <use
+                          class="alert-behavior__kiki-use alert-behavior__kiki-use--stroke"
+                          href="#mm-icon-behaviors-outline"></use>
+                      </svg>
+                      <span class="alert-behavior__title"
+                        >Order Cancellation</span
+                      ><span
+                        class="alerts-widget__category-tag alerts-widget__category-tag--churn"
+                        >Churn risk</span
+                      >
+                    </h3>
+                    <p class="alerts-widget__desc">
+                      Finality in tone and administrative close-out phrasing;
+                      <span class="mm-highlight">renewal contract</span>
+                      withdrawn mid-call after pricing objection.
+                    </p>
+                  </div>
+                  <div class="alerts-widget__status">
+                    <span
+                      class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">
+                      <span
+                        class="alerts-widget__live-dot"
+                        aria-hidden="true"></span>
+                      Monitoring
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <footer class="alerts-widget__footer">
+            <a class="alerts-widget__cta" href="#">Preview Velma</a>
+          </footer>
+        </section>
+
+        <section class="mm-section mm-section--m">
+          <p class="mm-enterprises mm-copy-secondary">
+            <span class="mm-copy-secondary__muted">
+              Enterprises use Velma to fight fraud, coach agents, and stay
+              compliant—on the same voice intelligence pipeline from lab
+              benchmarks to production queues.
+            </span>
+          </p>
+        </section>
+
+        <div class="mm-bottom-spacer" aria-hidden="true"></div>
+      </main>
+    </div>
+    <script src="alerts-feed-animation.js"></script>
+  </body>
+</html>
