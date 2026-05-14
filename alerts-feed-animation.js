@@ -180,26 +180,40 @@
     status.removeAttribute('aria-hidden');
   }
 
-  function scheduleTopUnreadStatusReveal(article) {
+  /**
+   * Сразу скрыть статус (без таймера). Перед слайдом — чтобы не было вспышки во время движения.
+   */
+  function applyStatusRevealPrep(article) {
     if (!article) return;
     finalizeStatusReveal(article);
-
     var status = article.querySelector(CONFIG.SELECTOR_STATUS);
     if (!status) return;
-
-    if (prefersReducedMotion()) {
-      return;
-    }
-
+    if (prefersReducedMotion()) return;
     status.classList.add('mm-status-reveal', 'mm-status-reveal--prep');
     status.setAttribute('aria-hidden', 'true');
+  }
 
+  /** Запуск отсчёта перед fade-in (после того как статус уже в --prep). */
+  function startStatusRevealDelay(article) {
+    if (!article) return;
+    var status = article.querySelector(CONFIG.SELECTOR_STATUS);
+    if (!status) return;
+    if (prefersReducedMotion()) {
+      finalizeStatusReveal(article);
+      return;
+    }
+    if (article._mmStatusRevealTimer != null) return;
     article._mmStatusRevealTimer = setTimeout(function () {
       article._mmStatusRevealTimer = null;
       status.classList.remove('mm-status-reveal--prep');
       status.classList.add('mm-status-reveal--run');
       status.removeAttribute('aria-hidden');
     }, CONFIG.STATUS_REVEAL_DELAY_MS);
+  }
+
+  function scheduleTopUnreadStatusReveal(article) {
+    applyStatusRevealPrep(article);
+    startStatusRevealDelay(article);
   }
 
   function animateSlide(track, yPx, durationMs, sameFramePrep) {
@@ -270,11 +284,8 @@
 
     syncReadState(articles, topUnreadIndex);
     snapToCurrentTop();
+    scheduleTopUnreadStatusReveal(articles[topUnreadIndex]);
     root.dataset.mmAlertsFeedInit = 'ready';
-
-    requestAnimationFrame(function () {
-      scheduleTopUnreadStatusReveal(articles[topUnreadIndex]);
-    });
 
     var statsRoot = root.querySelector(CONFIG.SELECTOR_STATS_BLOCK);
     var statAlertsEl = statsRoot
@@ -344,6 +355,7 @@
 
         var nextTop = topUnreadIndex - 1;
         var outgoingTopIndex = topUnreadIndex;
+        applyStatusRevealPrep(articles[nextTop]);
         bumpStatsForIncomingAlert(articles[nextTop]);
         var yPx = translateYPxForTopIndex(articles, nextTop);
 
@@ -353,7 +365,7 @@
         });
 
         finalizeStatusReveal(articles[outgoingTopIndex]);
-        scheduleTopUnreadStatusReveal(articles[topUnreadIndex]);
+        startStatusRevealDelay(articles[topUnreadIndex]);
 
         await sleep(motionPostSlideGapMs());
       }
