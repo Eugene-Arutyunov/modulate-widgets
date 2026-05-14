@@ -751,6 +751,7 @@ body {
   width: auto;
 }
 
+/* conv-scatter (#scatterplot-1): green halo only — caption hidden */
 .scatterplot-container {
   margin-top: 1.25em;
 
@@ -787,10 +788,10 @@ body {
       opacity: 1;
 
       #scatterplot-1 .scatterplot-container .scatterplot-aria & {
-        width: 98%;
-        height: 100%;
-        left: -54%;
-        top: -62%;
+        width: 110%;
+        height: 50%;
+        left: -51%;
+        top: -32%;
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria &,
@@ -816,9 +817,7 @@ body {
       z-index: 2;
 
       #scatterplot-1 .scatterplot-container .scatterplot-aria & {
-        left: 8%;
-        top: 11%;
-        width: 6.25em;
+        display: none;
       }
 
       #scatterplot-2 .scatterplot-container .scatterplot-aria &,
