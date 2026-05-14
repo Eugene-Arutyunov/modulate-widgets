@@ -39,8 +39,7 @@
 
 .mm-headline {
   margin: 0 0 2rem;
-
-  font-size: clamp(1.65rem, 5vw, 4.5rem);
+  font-size: clamp(3rem, 3.4vw, 3.5rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -49,7 +48,7 @@
 
 .mm-subhead {
   margin: 0 0 1.25rem;
-  font-size: clamp(1.05rem, 2.2vw, 3rem);
+  font-size: clamp(1.05rem, 1.8vw, 3rem);
   font-weight: 400;
   line-height: 1.35;
 }
@@ -86,9 +85,9 @@
 
 .alerts-widget {
   --aw-pad: 1.25rem;
-  --aw-bg: #ebebef;
-  --aw-card-bg: #ffffff;
-  --aw-card-bg-read: #f3f3f6;
+  --aw-bg: rgb(245, 245, 244);
+  --aw-card-bg: rgb(255, 255, 255);
+  --aw-card-bg-read: rgb(251, 251, 250);
   /* было 7.375rem (118px при 1rem=16px); высота строки 60% */
   --aw-row-h: 6rem;
   --aw-row-gap: 0.625rem;
@@ -281,6 +280,11 @@
   border-color: rgba(75, 75, 95, 0.42);
 }
 
+.alerts-widget__alert--read .alerts-widget__confidence-tag {
+  color: var(--mm-text-muted);
+  border-color: rgba(75, 75, 95, 0.42);
+}
+
 .alerts-widget__alert--read .alerts-widget__pill--monitoring {
   color: var(--mm-text-muted);
 }
@@ -419,6 +423,29 @@
   border-color: var(--mm-tag-info);
 }
 
+.alerts-widget__confidence-tag {
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  display: inline-block;
+  vertical-align: text-bottom;
+  transform: translateY(-0.3em);
+  margin-left: 0.28rem;
+  padding: 0.05rem 0.3rem 0rem;
+  border-radius: 0.3em;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  color: #0f0f1a;
+  background: transparent;
+  border-color: rgba(58, 58, 72, 0.52);
+  transition:
+    color 0.22s ease,
+    border-color 0.22s ease;
+}
+
 .alerts-widget__desc {
   margin: 0;
   font-size: 0.9rem;
@@ -437,6 +464,32 @@
   align-items: flex-end;
   justify-content: flex-start;
   flex: 0 0 auto;
+  position: relative;
+  top: -0.3rem;
+}
+
+/* Отложенное появление статуса у текущего верхнего непрочитанного — alerts-feed-animation.js */
+.alerts-widget__status.mm-status-reveal.mm-status-reveal--prep {
+  opacity: 0;
+  transform: translateY(0.35rem);
+  transition: none;
+}
+
+.alerts-widget__status.mm-status-reveal.mm-status-reveal--run {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.38s ease-out,
+    transform 0.38s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alerts-widget__status.mm-status-reveal.mm-status-reveal--prep,
+  .alerts-widget__status.mm-status-reveal.mm-status-reveal--run {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 .alerts-widget__pill {
@@ -455,7 +508,12 @@
 }
 
 .alerts-widget__pill--escalated {
+  gap: 0.3rem;
   color: var(--mm-tag-error-strong);
+}
+
+.alerts-widget__pill--escalated .alerts-widget__pill-icon {
+  transform: translateY(0.03em);
 }
 
 .alerts-widget__pill--monitoring {

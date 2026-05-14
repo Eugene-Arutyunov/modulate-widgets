@@ -13,6 +13,7 @@
     SELECTOR_TRACK: '.mm-alerts-feed-track',
     SELECTOR_ALERT: '.alerts-widget__alert',
     READ_CLASS: 'alerts-widget__alert--read',
+    SELECTOR_STATUS: '.alerts-widget__status',
 
     /**
      * Сколько строк видно в окне (должно совпадать с --aw-visible-rows в modulate-main.css).
@@ -20,10 +21,10 @@
     VISIBLE_ROW_COUNT: 5,
 
     /**
-     * Пауза «верхний непрочитанный»: случайно между MIN и MAX (около 1.5 с ± 0.5 с), мс.
+     * Пауза «верхний непрочитанный»: случайно между MIN и MAX (около 3 с ± 0.5 с), мс.
      */
-    UNREAD_DWELL_MS_MIN: 1000,
-    UNREAD_DWELL_MS_MAX: 2000,
+    UNREAD_DWELL_MS_MIN: 2500,
+    UNREAD_DWELL_MS_MAX: 3500,
 
     /** Пауза после завершения сдвига до начала следующего интервала непрочитанности, мс */
     POST_SLIDE_GAP_MS: 0,
@@ -50,11 +51,24 @@
     RESPECT_REDUCED_MOTION: true,
 
     /** Диапазон пауз при prefers-reduced-motion, мс */
-    REDUCED_MOTION_UNREAD_DWELL_MS_MIN: 200,
-    REDUCED_MOTION_UNREAD_DWELL_MS_MAX: 400,
+    REDUCED_MOTION_UNREAD_DWELL_MS_MIN: 500,
+    REDUCED_MOTION_UNREAD_DWELL_MS_MAX: 700,
     REDUCED_MOTION_POST_SLIDE_GAP_MS: 0,
     REDUCED_MOTION_BETWEEN_CYCLES_MS: 400,
     REDUCED_MOTION_INITIAL_DELAY_MS: 200,
+
+    /** Строка статистики в шапке (modulate-main.html) */
+    SELECTOR_STATS_BLOCK: '[data-mm-alerts-stats]',
+    SELECTOR_STAT_ALERTS: '[data-mm-stat-alerts]',
+    SELECTOR_STAT_CRITICAL: '[data-mm-stat-critical]',
+    SELECTOR_STAT_ESCALATED: '[data-mm-stat-escalated]',
+    SELECTOR_ESCALATED_STATUS: '.alerts-widget__pill--escalated',
+
+    /** Вероятность +1 к critical при появлении нового алерта в ленте */
+    CRITICAL_BUMP_PROBABILITY: 0.2,
+
+    /** Задержка перед появлением статуса (fade + сдвиг), мс */
+    STATUS_REVEAL_DELAY_MS: 1000,
   });
 
   function prefersReducedMotion() {
@@ -130,6 +144,64 @@
     });
   }
 
+  function parsePositiveInt(text) {
+    var n = parseInt(String(text).replace(/\D/g, ''), 10);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
+
+  function refreshStatsAria(statsRoot, alertsN, criticalN, escalatedN) {
+    if (!statsRoot) return;
+    statsRoot.setAttribute(
+      'aria-label',
+      'Alert summary: ' +
+        alertsN +
+        ' alerts today, ' +
+        criticalN +
+        ' critical, ' +
+        escalatedN +
+        ' escalated'
+    );
+  }
+
+  function finalizeStatusReveal(article) {
+    if (!article) return;
+    var timerId = article._mmStatusRevealTimer;
+    if (timerId != null) {
+      clearTimeout(timerId);
+      article._mmStatusRevealTimer = null;
+    }
+    var status = article.querySelector(CONFIG.SELECTOR_STATUS);
+    if (!status) return;
+    status.classList.remove(
+      'mm-status-reveal',
+      'mm-status-reveal--prep',
+      'mm-status-reveal--run'
+    );
+    status.removeAttribute('aria-hidden');
+  }
+
+  function scheduleTopUnreadStatusReveal(article) {
+    if (!article) return;
+    finalizeStatusReveal(article);
+
+    var status = article.querySelector(CONFIG.SELECTOR_STATUS);
+    if (!status) return;
+
+    if (prefersReducedMotion()) {
+      return;
+    }
+
+    status.classList.add('mm-status-reveal', 'mm-status-reveal--prep');
+    status.setAttribute('aria-hidden', 'true');
+
+    article._mmStatusRevealTimer = setTimeout(function () {
+      article._mmStatusRevealTimer = null;
+      status.classList.remove('mm-status-reveal--prep');
+      status.classList.add('mm-status-reveal--run');
+      status.removeAttribute('aria-hidden');
+    }, CONFIG.STATUS_REVEAL_DELAY_MS);
+  }
+
   function animateSlide(track, yPx, durationMs, sameFramePrep) {
     if (durationMs <= 0) {
       if (sameFramePrep) sameFramePrep();
@@ -200,6 +272,52 @@
     snapToCurrentTop();
     root.dataset.mmAlertsFeedInit = 'ready';
 
+    requestAnimationFrame(function () {
+      scheduleTopUnreadStatusReveal(articles[topUnreadIndex]);
+    });
+
+    var statsRoot = root.querySelector(CONFIG.SELECTOR_STATS_BLOCK);
+    var statAlertsEl = statsRoot
+      ? statsRoot.querySelector(CONFIG.SELECTOR_STAT_ALERTS)
+      : null;
+    var statCriticalEl = statsRoot
+      ? statsRoot.querySelector(CONFIG.SELECTOR_STAT_CRITICAL)
+      : null;
+    var statEscalatedEl = statsRoot
+      ? statsRoot.querySelector(CONFIG.SELECTOR_STAT_ESCALATED)
+      : null;
+
+    var alertsCount =
+      statAlertsEl != null ? parsePositiveInt(statAlertsEl.textContent) : 0;
+    var criticalCount =
+      statCriticalEl != null ? parsePositiveInt(statCriticalEl.textContent) : 0;
+    var escalatedCount =
+      statEscalatedEl != null
+        ? parsePositiveInt(statEscalatedEl.textContent)
+        : 0;
+
+    function bumpStatsForIncomingAlert(incomingArticle) {
+      if (!incomingArticle || !statsRoot) return;
+
+      alertsCount += 1;
+      if (statAlertsEl) statAlertsEl.textContent = String(alertsCount);
+
+      if (
+        incomingArticle.querySelector(CONFIG.SELECTOR_ESCALATED_STATUS) !=
+        null
+      ) {
+        escalatedCount += 1;
+        if (statEscalatedEl) statEscalatedEl.textContent = String(escalatedCount);
+      }
+
+      if (Math.random() < CONFIG.CRITICAL_BUMP_PROBABILITY) {
+        criticalCount += 1;
+        if (statCriticalEl) statCriticalEl.textContent = String(criticalCount);
+      }
+
+      refreshStatsAria(statsRoot, alertsCount, criticalCount, escalatedCount);
+    }
+
     var resizeTimer = null;
     window.addEventListener('resize', function () {
       clearTimeout(resizeTimer);
@@ -225,6 +343,8 @@
         await sleep(randomUnreadDwellMs());
 
         var nextTop = topUnreadIndex - 1;
+        var outgoingTopIndex = topUnreadIndex;
+        bumpStatsForIncomingAlert(articles[nextTop]);
         var yPx = translateYPxForTopIndex(articles, nextTop);
 
         await animateSlideWrapped(yPx, slideMs, function () {
@@ -232,17 +352,23 @@
           topUnreadIndex = nextTop;
         });
 
+        finalizeStatusReveal(articles[outgoingTopIndex]);
+        scheduleTopUnreadStatusReveal(articles[topUnreadIndex]);
+
         await sleep(motionPostSlideGapMs());
       }
 
       await sleep(randomUnreadDwellMs());
 
+      articles.forEach(finalizeStatusReveal);
       topUnreadIndex = firstVisibleIndex;
       syncReadState(articles, topUnreadIndex);
       applyTranslateInstant(
         track,
         translateYPxForTopIndex(articles, firstVisibleIndex)
       );
+
+      scheduleTopUnreadStatusReveal(articles[firstVisibleIndex]);
 
       await sleep(motionBetweenCyclesMs());
     }

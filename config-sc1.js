@@ -1,20 +1,20 @@
 const scatterPlotConfig1 = {
   axisX: {
-    leftZone: { min: 0, max: 0.07 },
+    leftZone: { min: 0, max: 0.08 },
     rightZone: { min: 0.08, max: 1.50 },
     break: {
-      leftSectionEnd: 63,
-      rightSectionStart: 70,
+      leftSectionEnd: 55,
+      rightSectionStart: 60,
     },
     // Grid line frequency settings for X axis
     gridLines: {
       left: {
         step: 0.01, // step between lines
-        max: 0.07, // draw up to this value
+        max: 0.08, // draw up to this value
         labels: [], // auto-generated
       },
       right: {
-        step: 0.1, // step between lines
+        step: 0.05, // step between lines
         max: 1.50, // draw up to this value
         labels: [0.10, 0.50, 1.00, 1.50], // specific values for labels
       },
@@ -39,14 +39,14 @@ const scatterPlotConfig1 = {
       model: "velma-2-fast",
       modelType: "Fast",
       score: 4.38,
-      cost: "$0.000930",
+      cost: "$0.033000",
     },
     {
       vendor: "Modulate",
       model: "velma-2",
       modelType: "Regular",
       score: 4.95,
-      cost: "$0.003750",
+      cost: "$0.055000",
     },
     // {
     //   vendor: "Modulate",
@@ -97,6 +97,7 @@ const scatterPlotConfig1 = {
       modelType: "",
       score: 3.28,
       cost: "$0.056060",
+      visualOffset: -0.1,
     },
     {
       vendor: "DeepSeek",

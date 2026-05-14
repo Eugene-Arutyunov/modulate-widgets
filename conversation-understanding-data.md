@@ -1,0 +1,26 @@
+| Vendor     | Model                       | Model type | Score (Y) | Cost (X)  |
+| ---------- | --------------------------- | ---------- | --------- | --------- |
+| Modulate   | velma-2-fast                | Fast       | 4.38      | $0.033000 |
+| Modulate   | velma-2                     | Regular    | 4.95      | $0.055000 |
+| OpenAI     | gpt-4o-mini                 | —          | 1.61      | $0.031380 |
+| xAI        | grok-4.1-fast-non-reasoning | Fast       | 2.25      | $0.036410 |
+| xAI        | grok-4.1-fast-reasoning     | Fast       | 3.39      | $0.037320 |
+| Google     | gemini-2-flash-lite         | —          | 2.43      | $0.050290 |
+| DeepSeek   | deepseek-v3.1               | Regular    | 3.722     | $0.054760 |
+| Google     | gemini-2-flash              | —          | 3.28      | $0.056060 |
+| DeepSeek   | deepseek-v3.2               | —          | 3.94      | $0.062040 |
+| Google     | gemini-3-flash-min          | —          | 3.52      | $0.090620 |
+| DeepSeek   | deepseek-r1                 | —          | 4.08      | $0.091990 |
+| OpenAI     | (TBD)                       | —          | 3.03      | $0.104280 |
+| Google     | gemini-3-flash-med          | —          | 3.89      | $0.118550 |
+| OpenAI     | gpt-4o                      | —          | 1.49      | $0.173850 |
+| Google     | gemini-2.5-pro              | —          | 4.26      | $0.283000 |
+| Google     | gemini-3-pro                | —          | 4.28      | $0.397580 |
+| xAI        | grok-3                      | —          | 3.76      | $0.398780 |
+| Deepgram   | nova-3-intelligence         | —          | 2.778     | $0.4382   |
+| ElevenLabs | scribe-v2                   | —          | 2.45      | $0.4414   |
+| xAI        | grok-4-heavy                | —          | 4.36      | $0.444790 |
+| OpenAI     | gpt-5-mini                  | —          | 3.00      | $0.559410 |
+| OpenAI     | gpt-4-turbo                 | —          | 0.92      | $0.631840 |
+| OpenAI     | gpt-5.2-pro                 | —          | 3.73      | $1.483230 |
+| OpenAI     | gpt-5.2                     | —          | 3.93      | $1.498401 |
