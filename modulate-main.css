@@ -1067,31 +1067,45 @@
    ============================================================ */
 
 .mm-custom-card {
-  background: #fff;
-  border: 1px solid var(--mm-border);
-  border-radius: 0.75rem;
+  --aw-row-h: 6rem;
+  --aw-row-gap: 0.625rem;
+
+  background: var(--aw-bg, rgb(245, 245, 244));
+  border-radius: 0.875rem;
   padding: 1.5rem;
   text-align: left;
+  box-shadow: 0 0.0625rem 0 rgba(15, 15, 26, 0.06);
 }
 
 .mm-custom-card__title {
-  font-size: var(--mm-fs-xl);
+  font-size: var(--mm-fs-l);
   font-weight: 600;
   margin: 0 0 1rem;
   color: var(--mm-ink);
 }
 
+.mm-custom-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .mm-query-input {
-  background: var(--mm-surface);
+  width: 80%;
+  height: 2.75rem;
+  background: #fff;
   border-radius: 0.5rem;
   padding: 0.75rem 0.875rem;
-  min-height: 2.75rem;
   display: flex;
   align-items: center;
-  margin-bottom: 0.625rem;
+  box-sizing: border-box;
   font-size: var(--mm-fs-m);
   line-height: 1.5;
   color: var(--mm-ink);
+  box-shadow:
+    0 0.0625rem 0.125rem rgba(15, 15, 26, 0.03),
+    0 0.25rem 0.875rem rgba(15, 15, 26, 0.03);
 }
 
 .mm-cursor-blink {
@@ -1101,6 +1115,11 @@
   background: var(--mm-brand-1);
   margin-left: 2px;
   animation: mm-blink 0.8s infinite;
+}
+
+.mm-cursor-blink--typing {
+  animation: none;
+  opacity: 1;
 }
 
 @keyframes mm-blink {
@@ -1117,22 +1136,87 @@
 .mm-custom-result {
   opacity: 0;
   transition: opacity 0.4s ease;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .mm-custom-confirm-box {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 0.875rem;
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  box-sizing: border-box;
   background: var(--mm-success-bg);
   border-radius: 0.5rem;
-  margin-bottom: 0.25rem;
+  font-size: var(--mm-fs-m);
+  box-shadow:
+    0 0.0625rem 0.125rem rgba(15, 15, 26, 0.03),
+    0 0.25rem 0.875rem rgba(15, 15, 26, 0.03);
 }
 
 .mm-custom-confirm-text {
-  font-size: var(--mm-fs-xs);
+  font-size: var(--mm-fs-m);
   color: var(--mm-success-fg);
   font-weight: 500;
+}
+
+.mm-custom-detections {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(3 * var(--aw-row-h) + 2 * var(--aw-row-gap));
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Скелетон — три пустых прямоугольника пока алертов нет */
+.mm-custom-detections[data-empty]::before {
+  content: "";
+  display: block;
+  height: calc(3 * var(--aw-row-h) + 2 * var(--aw-row-gap));
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(15, 15, 26, 0.05) 0,
+    rgba(15, 15, 26, 0.05) var(--aw-row-h),
+    transparent var(--aw-row-h),
+    transparent calc(var(--aw-row-h) + var(--aw-row-gap))
+  );
+  border-radius: 0.5rem;
+}
+
+.mm-custom-detections__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aw-row-gap);
+}
+
+/* Карточки алертов в этом виджете — белый фон (как в alerts-widget) */
+.mm-custom-detections .alerts-widget__alert {
+  background: var(--aw-card-bg, #fff);
+  border-radius: 0.625rem;
+}
+
+.mm-custom-detections::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 45%;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--aw-bg, rgb(245, 245, 244)) 88%,
+    var(--aw-bg, rgb(245, 245, 244)) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.mm-custom-detections[data-visible]::after {
+  opacity: 1;
 }
 
 .mm-upload-note {

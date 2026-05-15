@@ -596,19 +596,25 @@
      ============================================================ */
 
   var MM_CUSTOMS = [
-    { q: 'Detect when an agent skips the identity verification step', confirm: 'Saved: Identity verification skip' },
-    { q: 'Flag calls where a customer mentions a competitor by name',  confirm: 'Saved: Competitive mention' },
-    { q: "Alert me when a caller's tone shifts from calm to aggressive", confirm: 'Saved: Tone escalation alert' },
-    { q: 'Find calls where agents promise unauthorized discounts',      confirm: 'Saved: Unauthorized discount' },
-    { q: 'Detect when elderly callers are being pressured into decisions', confirm: 'Saved: Vulnerable caller pressure' },
+    { q: 'Detect when an agent skips the identity verification step', confirm: 'Saved: Identity verification skip', alertIndices: [0, 2, 4] },
+    { q: 'Flag calls where a customer mentions a competitor by name',  confirm: 'Saved: Competitive mention',         alertIndices: [5, 8, 9] },
+    { q: "Alert me when a caller's tone shifts from calm to aggressive", confirm: 'Saved: Tone escalation alert',   alertIndices: [1, 6, 7] },
+    { q: 'Find calls where agents promise unauthorized discounts',      confirm: 'Saved: Unauthorized discount',     alertIndices: [3, 4, 8] },
+    { q: 'Detect when elderly callers are being pressured into decisions', confirm: 'Saved: Vulnerable caller pressure', alertIndices: [0, 5, 9] },
   ];
 
+  var CUSTOM_PHASE2_HOLD_MS  = 2000;
+  var CUSTOM_PHASE3_HOLD_MS  = 4000;
+  var CUSTOM_PHASE3_STAGGER_MS = 180;
+  var CUSTOM_FADEOUT_MS      = 350;
+
   function initCustomTyping() {
-    var textEl    = document.getElementById('mm-custom-text');
-    var cursorEl  = document.getElementById('mm-custom-cursor');
-    var resultEl  = document.getElementById('mm-custom-result');
-    var confirmEl = document.getElementById('mm-custom-confirm');
-    if (!textEl || !cursorEl || !resultEl || !confirmEl) return;
+    var textEl      = document.getElementById('mm-custom-text');
+    var cursorEl    = document.getElementById('mm-custom-cursor');
+    var resultEl    = document.getElementById('mm-custom-result');
+    var confirmEl   = document.getElementById('mm-custom-confirm');
+    var detectEl    = document.getElementById('mm-custom-detections');
+    if (!textEl || !cursorEl || !resultEl || !confirmEl || !detectEl) return;
 
     var idx = 0;
 
@@ -617,9 +623,14 @@
       textEl.textContent = '';
       resultEl.style.opacity = '0';
       cursorEl.style.display = 'inline-block';
+      cursorEl.classList.add('mm-cursor-blink--typing');
       var iv = setInterval(function () {
         textEl.textContent += str[i++];
-        if (i >= str.length) { clearInterval(iv); setTimeout(cb, 500); }
+        if (i >= str.length) {
+          clearInterval(iv);
+          cursorEl.classList.remove('mm-cursor-blink--typing');
+          setTimeout(cb, 500);
+        }
       }, 35);
     }
 
@@ -629,12 +640,62 @@
       cursorEl.style.display = 'none';
     }
 
+    function showAlerts(alertIndices, cb) {
+      detectEl.innerHTML = '';
+      detectEl.removeAttribute('data-empty');
+
+      var list = document.createElement('div');
+      list.className = 'mm-custom-detections__list';
+
+      alertIndices.forEach(function (i) {
+        var el = buildAlertEl(MM_ALERTS[i], false, 0);
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.3s ease';
+        list.appendChild(el);
+      });
+
+      detectEl.appendChild(list);
+      detectEl.setAttribute('data-visible', '');
+
+      alertIndices.forEach(function (_, pos) {
+        setTimeout(function () {
+          var cards = list.querySelectorAll('.alerts-widget__alert');
+          if (cards[pos]) cards[pos].style.opacity = '1';
+        }, pos * CUSTOM_PHASE3_STAGGER_MS);
+      });
+
+      var totalFadeIn = alertIndices.length * CUSTOM_PHASE3_STAGGER_MS + 300;
+      setTimeout(cb, Math.max(totalFadeIn, CUSTOM_PHASE3_HOLD_MS));
+    }
+
+    function hideAlerts(cb) {
+      detectEl.style.transition = 'opacity ' + (CUSTOM_FADEOUT_MS / 1000) + 's ease';
+      detectEl.style.opacity = '0';
+      setTimeout(function () {
+        detectEl.innerHTML = '';
+        detectEl.setAttribute('data-empty', '');
+        detectEl.removeAttribute('data-visible');
+        detectEl.style.opacity = '';
+        detectEl.style.transition = '';
+        cb();
+      }, CUSTOM_FADEOUT_MS);
+    }
+
     function run() {
       var entry = MM_CUSTOMS[idx % MM_CUSTOMS.length];
       typeText(entry.q, function () {
         showResult(entry);
         idx++;
-        setTimeout(run, 6500);
+        setTimeout(function () {
+          showAlerts(entry.alertIndices, function () {
+            resultEl.style.transition = 'opacity ' + (CUSTOM_FADEOUT_MS / 1000) + 's ease';
+            resultEl.style.opacity = '0';
+            hideAlerts(function () {
+              resultEl.style.transition = '';
+              run();
+            });
+          });
+        }, CUSTOM_PHASE2_HOLD_MS);
       });
     }
 
