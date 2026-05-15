@@ -33,6 +33,21 @@
           stroke-linejoin="round"
           points="2.868 12.609 11.284 11.58 7.334 3.37 17.822 10.254 27.138 3.151 22.75 16.238 29.146 19.224 21.451 21.488 20.897 29.132 16.033 20.703 2.856 27.395 9.74 16.238 2.868 12.609" />
       </symbol>
+      <symbol id="mm-icon-vcmp-check" viewBox="0 0 14 14" fill="none">
+        <path
+          d="M3 7.5L6 10.5L11 4"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </symbol>
+      <symbol id="mm-icon-vcmp-x" viewBox="0 0 14 14" fill="none">
+        <path
+          d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round" />
+      </symbol>
     </svg>
     <div class="container">
       <main class="mm-page">
@@ -58,7 +73,7 @@
           </p>
         </section>
 
-        <div class="mm-space" aria-hidden="true"></div>
+        <div class="mm-space S" aria-hidden="true"></div>
 
         <section
           id="alerts-widget"
@@ -85,13 +100,9 @@
               <!-- rendered by modulate-main.js from MM_ALERTS -->
             </div>
           </div>
-
-          <footer class="alerts-widget__footer">
-            <a class="alerts-widget__cta" href="#">Preview Velma</a>
-          </footer>
         </section>
 
-        <div class="mm-space" aria-hidden="true"></div>
+        <div class="mm-space S" aria-hidden="true"></div>
 
         <section class="mm-section mm-section--m">
           <p class="mm-enterprises mm-copy-secondary">
@@ -181,222 +192,355 @@
             conversations like a human.
           </p>
 
-          <div class="mm-comparison-grid">
-            <!-- Left: Industry Standard -->
-            <div class="mm-comparison-card">
-              <div class="mm-comparison-header mm-comparison-header--red">
-                THE INDUSTRY STANDARD
-              </div>
-              <div class="mm-comparison-body">
-                <p class="mm-comparison-title">Transcription + LLM pipeline</p>
-                <div class="mm-data-lost-box">
-                  <p class="mm-data-lost-title">Voice signals discarded</p>
-                  <p class="mm-data-lost-text">
-                    tone, emotion, hesitation, stress, speaker dynamics, intent,
-                    sarcasm and many more
-                  </p>
-                </div>
-                <div class="mm-signals-header">
-                  <span class="mm-signals-label"
-                    >WHAT TRANSCRIPTION CAPTURES</span
-                  >
-                  <span class="mm-signals-count mm-signals-count--red"
-                    >1 of 7 layers</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Words</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >The literal transcript — what was said</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Intent and behavior</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Misunderstands intent and vulnerability</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Tone and emotion</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Loses anger, frustration, fear, joy, sarcasm</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Prosody</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Ignores pauses or unique delivery</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Speaker dynamics</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Overlooks interruptions and side comments</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Deception and stress cues</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Misses hesitation and vocal anxiety</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-lost">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Acoustic authenticity</span
-                    ><span class="mm-signal-status mm-signal-status--red"
-                      >Lost</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Cannot catch deepfakes or spoofing</span
-                  >
-                </div>
-              </div>
-            </div>
-
-            <!-- Right: Velma -->
-            <div class="mm-comparison-card">
-              <div class="mm-comparison-header mm-comparison-header--purple">
-                VELMA BY MODULATE
-              </div>
-              <div class="mm-comparison-body">
-                <p class="mm-comparison-title">
-                  Voice-native Ensemble Listening Model (<a
-                    href="http://ensemblelisteningmodel.com"
-                    target="_blank"
-                    class="mm-elm-link"
-                    >ELM</a
-                  >)
-                </p>
-                <div class="mm-data-preserved-box">
-                  <p class="mm-data-preserved-title">Voice signals analyzed</p>
-                  <p class="mm-data-preserved-text">
-                    Tone, emotion, intent, rhythm, context, accents, deepfakes,
-                    sarcasm, vocal biomarkers and more.
-                  </p>
-                </div>
-                <div class="mm-signals-header">
-                  <span class="mm-signals-label mm-signals-label--purple"
-                    >WHAT VELMA CAPTURES</span
-                  >
-                  <span class="mm-signals-count mm-signals-count--green"
-                    >7 of 7 layers</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Words</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Best-in-class transcription accuracy</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Intent and behavior</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Any behavior detectable in real time</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Tone and emotion</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >20+ emotions from the acoustic signal</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Prosody</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Pitch, rhythm, emphasis, pacing</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Speaker dynamics</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Multi-speaker diarization and patterns</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Deception and stress cues</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >Vocal stress, lying, coercion signals</span
-                  >
-                </div>
-                <div class="mm-signal-row mm-signal-captured">
-                  <div class="mm-signal-row-inner">
-                    <span class="mm-signal-name">Acoustic authenticity</span
-                    ><span class="mm-signal-status mm-signal-status--green"
-                      >Captured</span
-                    >
-                  </div>
-                  <span class="mm-signal-desc"
-                    >#1 deepfake detection on Hugging Face</span
-                  >
-                </div>
-              </div>
-            </div>
+          <div class="mm-vcmp-plate">
+            <table class="mm-vcmp-table">
+              <thead>
+                <tr>
+                  <th class="mm-vcmp-col--lost">
+                    <h4 class="mm-vcmp-th-title">
+                      <span class="mm-vcmp-th-title__primary"
+                        >Industry standard</span
+                      >
+                      <span class="mm-vcmp-th-title__secondary"
+                        >Transcription + LLM pipeline</span
+                      >
+                    </h4>
+                    <p class="mm-vcmp-subhead-panel">
+                      Voice signals — tone, emotion, hesitation, stress, speaker
+                      dynamics, intent, sarcasm and many more — discarded
+                    </p>
+                  </th>
+                  <th class="mm-vcmp-col--captured">
+                    <h4 class="mm-vcmp-th-title">
+                      <span class="mm-vcmp-th-title__primary"
+                        >Velma by Modulate</span
+                      >
+                      <span class="mm-vcmp-th-title__secondary"
+                        >Voice-native ensemble listening model</span
+                      >
+                    </h4>
+                    <p class="mm-vcmp-subhead-panel">
+                      Voice signals — Tone, emotion, intent, rhythm, context,
+                      accents, deepfakes, sarcasm, vocal biomarkers and more —
+                      analyzed
+                    </p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Words</span>
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      The literal transcript — what was said
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Words</span>
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Best-in-class transcription accuracy
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Intent and Behavior</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Misunderstands intent and vulnerability
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Intent and Behavior</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Any behavior detectable in real time
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Tone and Emotion</span>
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Loses anger, frustration, fear, joy, sarcasm
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Tone and Emotion</span>
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      20+ emotions from the acoustic signal
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Prosody</span>
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Ignores pauses or unique delivery
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Prosody</span>
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Pitch, rhythm, emphasis, pacing
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Speaker Dynamics</span>
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Overlooks interruptions and side comments
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead">Speaker Dynamics</span>
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Multi-speaker diarization and patterns
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Deception and Stress Cues</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Misses hesitation and vocal anxiety
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Deception and Stress Cues</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Vocal stress, lying, coercion signals
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Acoustic Authenticity</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--lost">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-x" />
+                        </svg>
+                        Lost
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      Cannot catch deepfakes or spoofing
+                    </p>
+                  </td>
+                  <td>
+                    <p class="mm-signal-name">
+                      <span class="mm-signal-name__lead"
+                        >Acoustic Authenticity</span
+                      >
+                      <span class="mm-signal-tail mm-signal-tail--captured">
+                        <svg
+                          class="mm-vcmp-icon"
+                          width="28"
+                          height="28"
+                          viewBox="0 0 14 14"
+                          fill="none"
+                          aria-hidden="true">
+                          <use href="#mm-icon-vcmp-check" />
+                        </svg>
+                        Captured
+                      </span>
+                    </p>
+                    <p class="mm-signal-desc">
+                      #1 deepfake detection on Hugging Face
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div class="mm-gradient-banner">
-            Velma allows you to listen and understand like a human.
-          </div>
+          <p class="mm-subhead mm-subhead--gradient mm-vcmp-outro">
+            Velma allows you to listen and understand like a human
+          </p>
         </section>
 
         <div class="mm-space" aria-hidden="true"></div>
@@ -422,26 +566,14 @@
               <div id="mm-custom-result" class="mm-custom-result">
                 <div class="mm-custom-confirm-box">
                   <svg
-                    width="14"
-                    height="14"
+                    class="mm-custom-confirm-check"
+                    width="28"
+                    height="28"
                     viewBox="0 0 14 14"
                     fill="none"
                     aria-hidden="true"
                     style="flex-shrink: 0">
-                    <path
-                      d="M3 7.5L6 10.5L11 4"
-                      stroke="#0F6E56"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round" />
-                    <rect
-                      x="0.5"
-                      y="0.5"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      stroke="#0F6E56"
-                      stroke-width="1" />
+                    <use href="#mm-icon-vcmp-check" />
                   </svg>
                   <span
                     id="mm-custom-confirm"

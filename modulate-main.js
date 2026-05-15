@@ -8,89 +8,166 @@
   /**
    * Описание алертов для виджета #alerts-widget.
    * desc: текст с маркерами [[highlight]] для выделений.
-   * status: 'escalated' | 'monitoring'
+   * category: суффикс BEM для цвета тега (Tone из CSV / подобранная палитра).
+   * categoryLabel: текст тега как в источнике.
+   * action: текст статуса как в источнике (колонка Action).
+   * statusVariant: escalation — красный ▲ (+ счётчик escalated); monitoring — зелёная точка;
+   *   neutral — тёмно-серый текст без иконки.
    * confidence: доля в процентах для UI (без слова «Confidence» — оно только в вёрстке).
    */
   var MM_ALERTS = [
     {
-      title: 'Synthetic Voice in Auth',
+      title: 'Unresolved Billing Dispute',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '88%',
+      desc: 'Customer referenced unresolved billing dispute from prior call; fix never applied to account.',
+      action: 'Escalated',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Threat-Based Harassment',
+      category: 'agent-safety',
+      categoryLabel: 'Agent Safety',
+      confidence: '96%',
+      desc: 'Caller repeated physical threat toward support agent after refund denial; warning issued, threats continued.',
+      action: 'Call Terminated.',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Potential Customer Churn',
+      category: 'churn',
+      categoryLabel: 'Churn Risk',
+      confidence: '97%',
+      desc: 'Renewal customer cited cost as barrier and asked about lower-tier options during retention call.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Authorization Fraud Attempt',
       category: 'deepfake',
       categoryLabel: 'Deepfake',
       confidence: '94%',
-      desc: 'Caller passed voiceprint using cloned audio; [[wire transfer]] initiated for [[$47,500]].',
-      status: 'escalated',
+      desc: 'Deepfake caller pushed agent to bypass verification, with requesting a wire of [[$47,500]] on Account #8821.',
+      action: 'Call Terminated.',
+      statusVariant: 'escalation',
     },
     {
-      title: 'Impersonation Fraud',
-      category: 'fraud',
-      categoryLabel: 'Fraud',
-      confidence: '91%',
-      desc: 'Agent challenged caller; subject referenced internal ticket IDs matching a leaked dump and demanded expedited payout.',
-      status: 'escalated',
-    },
-    {
-      title: 'Account Closure Signals',
+      title: 'Potential Customer Churn',
       category: 'churn',
-      categoryLabel: 'Churn risk',
-      confidence: '96%',
-      desc: 'Repeated frustration cues and competitor mentions on line with [[Service Agent 34]].',
-      status: 'monitoring',
-    },
-    {
-      title: 'Restricted Disclosure',
-      category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '89%',
-      desc: 'Representative quoted unauthorized fee waiver script outside approved library during callback from [[Phoenix contact center]].',
-      status: 'monitoring',
-    },
-    {
-      title: 'Coaching Moment',
-      category: 'coaching',
-      categoryLabel: 'Coaching',
-      confidence: '93%',
-      desc: 'Talk-over ratio exceeded team baseline; positive resolution language dropped after minute four of hold music.',
-      status: 'monitoring',
-    },
-    {
-      title: 'Issue Not Resolved',
-      category: 'churn',
-      categoryLabel: 'Churn risk',
+      categoryLabel: 'Churn Risk',
       confidence: '97%',
-      desc: 'Customer restated the billing dispute three times; [[Tier 2 handoff]] closed without confirmation or apology language.',
-      status: 'monitoring',
+      desc: 'Renewal customer cited cost as barrier, mentioned competitors and asked about lower-tier options during call.',
+      action: 'Review',
+      statusVariant: 'monitoring',
     },
     {
-      title: 'Vishing Probe',
-      category: 'fraud',
-      categoryLabel: 'Fraud',
-      confidence: '88%',
-      desc: 'Caller requested SMS OTP read-back and [[card CVV]] while pacing pauses matched to scripted social-engineering flows.',
-      status: 'escalated',
-    },
-    {
-      title: 'Verbal Coercion',
+      title: 'Executive Impersonation Scam',
       category: 'fraud',
       categoryLabel: 'Fraud',
       confidence: '95%',
-      desc: 'Dominance-oriented tone and deadline threats tied to reversing a [[$12,400 ACH pull]] unless the agent stayed on the line.',
-      status: 'escalated',
+      desc: 'Caller claiming to be CEO solicited payment credentials using urgent payment language.',
+      action: 'Urgent Review',
+      statusVariant: 'escalation',
     },
     {
-      title: 'Return Fraud Pattern',
+      title: 'Security Protocol Bypass',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '92%',
+      desc: 'Agent skipped two verification steps and granted full account access to unverified caller.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Unauthorized Data Disclosure',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '92%',
+      desc: 'Agent confirmed billing address and payment method before identity verification was complete.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Identity Verification Fraud',
       category: 'fraud',
       categoryLabel: 'Fraud',
-      confidence: '92%',
-      desc: 'Scripted damaged-goods story with defensive cadence and mismatched serial lookup against [[SKU registry]].',
-      status: 'monitoring',
+      confidence: '91%',
+      desc: 'DOB, address, and PIN mismatched across three verification prompts.',
+      action: 'Manual Verification',
+      statusVariant: 'neutral',
     },
     {
-      title: 'Order Cancellation',
-      category: 'churn',
-      categoryLabel: 'Churn risk',
-      confidence: '98%',
-      desc: 'Finality in tone and administrative close-out phrasing; [[renewal contract]] withdrawn mid-call after pricing objection.',
-      status: 'monitoring',
+      title: 'Fraudulent Claim Risk',
+      category: 'fraud-risk',
+      categoryLabel: 'Fraud Risk',
+      confidence: '92%',
+      desc: 'Inconsistent accident details across two points in call; stress markers spiked under agent follow-up.',
+      action: 'Claims Review',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Stalled Deal Risk',
+      category: 'deal-blocker',
+      categoryLabel: 'Deal Blocker',
+      confidence: '91%',
+      desc: 'Prospect named VP of Engineering and finance lead as approvers; neither present on the call.',
+      action: 'Schedule Follow-Up',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Medication Refill Manipulation',
+      category: 'fraud-risk',
+      categoryLabel: 'Fraud Risk',
+      confidence: '87%',
+      desc: 'Early refill request for controlled substance; vocal stress patterns inconsistent with stated reason.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Patient Distress Signal',
+      category: 'urgent-care',
+      categoryLabel: 'Urgent Care',
+      confidence: '94%',
+      desc: 'Prolonged silence and vocal stress markers detected; patient expressed doubt about continuing care.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Unauthorized Rate Promise',
+      category: 'liability-risk',
+      categoryLabel: 'Liability Risk',
+      confidence: '94%',
+      desc: 'Loan officer quoted 4.2% fixed rate and waived origination fees without manager approval.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Prohibited Commitment Made',
+      category: 'liability-risk',
+      categoryLabel: 'Liability Risk',
+      confidence: '90%',
+      desc: 'Agent promised full refund and 6-month credit to caller without supervisor sign-off.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Consent Compliance Failure',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '93%',
+      desc: 'Provider moved to surgical scheduling without confirming patient understood procedure risks.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'New Customer Deal Risk',
+      category: 'coaching',
+      categoryLabel: 'Coaching',
+      confidence: '89%',
+      desc: 'Rep continued pitching features to [[James at Acme Solutions]] 4 minutes after demo was agreed.',
+      action: 'Flag for Coaching',
+      statusVariant: 'neutral',
     },
   ];
 
@@ -98,7 +175,7 @@
    * Стартовые «минуты назад» только для первичного рендера (не часть контента алерта).
    * Верхний видимый в окне алерт при старте задаётся скриптом — см. init().
    */
-  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 4, 5, 6, 8];
+  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
 
   /* ============================================================
      ALERT RENDERER
@@ -149,19 +226,48 @@
     return desc.replace(/\[\[(.+?)\]\]/g, '<span class="mm-highlight">$1</span>');
   }
 
-  function buildStatusHTML(status) {
-    if (status === 'escalated') {
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function buildStatusHTML(alert) {
+    var label =
+      alert.action != null && alert.action !== ''
+        ? alert.action
+        : alert.statusVariant === 'escalation'
+          ? 'Escalation'
+          : 'Review';
+    var text = escapeHtml(label);
+    var v = alert.statusVariant;
+    if (v === 'escalation') {
       return (
         '<span class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--escalated">' +
         '<span class="alerts-widget__pill-icon" aria-hidden="true">▲</span>' +
-        ' Escalated' +
+        '<span class="alerts-widget__pill-label">' +
+        text +
+        '</span>' +
+        '</span>'
+      );
+    }
+    if (v === 'monitoring') {
+      return (
+        '<span class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">' +
+        '<span class="alerts-widget__live-dot" aria-hidden="true"></span>' +
+        '<span class="alerts-widget__pill-label">' +
+        text +
+        '</span>' +
         '</span>'
       );
     }
     return (
-      '<span class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--monitoring">' +
-      '<span class="alerts-widget__live-dot" aria-hidden="true"></span>' +
-      ' Monitoring' +
+      '<span class="alerts-widget__pill alerts-widget__pill--status alerts-widget__pill--neutral">' +
+      '<span class="alerts-widget__pill-label">' +
+      text +
+      '</span>' +
       '</span>'
     );
   }
@@ -177,8 +283,12 @@
     );
   }
 
-  function buildAlertEl(alert, isFresh, minutesUi) {
+  function buildAlertEl(alert, isFresh, minutesUi, includeStatus) {
     var mins = minutesUi != null ? minutesUi : 0;
+    var showStatus = includeStatus !== false;
+    var statusBlock = showStatus
+      ? '<div class="alerts-widget__status">' + buildStatusHTML(alert) + '</div>'
+      : '';
     var article = document.createElement('article');
     article.className = 'alerts-widget__alert' + (isFresh ? ' alerts-widget__alert--fresh' : '');
     article.setAttribute('data-mm-minutes', String(Math.max(0, Math.floor(Number(mins) || 0))));
@@ -187,16 +297,20 @@
         '<span class="alerts-widget__time">' + formatMinutesAgo(mins) + '</span>' +
         '<div class="alerts-widget__main">' +
           '<h3 class="alert-behavior">' +
+            '<span class="alert-behavior__lead">' +
             KIKI_SVG +
-            '<span class="alert-behavior__title">' + alert.title + '</span>' +
-            '<span class="alerts-widget__category-tag alerts-widget__category-tag--' + alert.category + '">' + alert.categoryLabel + '</span>' +
+            '<span class="alert-behavior__title">' + escapeHtml(alert.title) + '</span>' +
+            '</span>' +
+            '<span class="alert-behavior__tags">' +
+            '<span class="alerts-widget__category-tag alerts-widget__category-tag--' + alert.category + '">' +
+            escapeHtml(alert.categoryLabel) +
+            '</span>' +
             buildConfidenceHTML(alert.confidence) +
+            '</span>' +
           '</h3>' +
           '<p class="alerts-widget__desc">' + parseDesc(alert.desc) + '</p>' +
         '</div>' +
-        '<div class="alerts-widget__status">' +
-          buildStatusHTML(alert.status) +
-        '</div>' +
+        statusBlock +
       '</div>';
     return article;
   }
@@ -226,7 +340,7 @@
     SELECTOR_STATUS: '.alerts-widget__status',
 
     /** Сколько строк видно в окне (совпадает с --aw-visible-rows в CSS) */
-    VISIBLE_ROW_COUNT: 5,
+    VISIBLE_ROW_COUNT: 4,
 
     UNREAD_DWELL_MS_MIN: 2500,
     UNREAD_DWELL_MS_MAX: 3500,
@@ -595,12 +709,145 @@
      CUSTOM BEHAVIOR TYPING ANIMATION (Block 3 — #prompt-widget)
      ============================================================ */
 
+  /**
+   * Сценарии для #prompt-widget: промт, строка подтверждения, три алерта (отдельно от MM_ALERTS).
+   */
   var MM_CUSTOMS = [
-    { q: 'Detect when an agent skips the identity verification step', confirm: 'Saved: Identity verification skip', alertIndices: [0, 2, 4] },
-    { q: 'Flag calls where a customer mentions a competitor by name',  confirm: 'Saved: Competitive mention',         alertIndices: [5, 8, 9] },
-    { q: "Alert me when a caller's tone shifts from calm to aggressive", confirm: 'Saved: Tone escalation alert',   alertIndices: [1, 6, 7] },
-    { q: 'Find calls where agents promise unauthorized discounts',      confirm: 'Saved: Unauthorized discount',     alertIndices: [3, 4, 8] },
-    { q: 'Detect when elderly callers are being pressured into decisions', confirm: 'Saved: Vulnerable caller pressure', alertIndices: [0, 5, 9] },
+    {
+      q: 'Detect when an agent skips required verification steps before granting account access',
+      confirm: 'Saved: Security Protocol Bypass',
+      alerts: [
+        {
+          title: 'Verification Skip',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '93%',
+          desc: 'Agent bypassed second factor after caller said they were in a hurry; full access granted.',
+        },
+        {
+          title: 'Protocol Bypass',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '91%',
+          desc: 'Two required security questions skipped during callback; agent proceeded directly to account changes.',
+        },
+        {
+          title: 'Access Granted Early',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '94%',
+          desc: 'Agent granted password reset before caller completed identity verification at [[Denver contact center]].',
+        },
+      ],
+    },
+    {
+      q: 'Alert me when a caller tries to redirect payment to an unverified account',
+      confirm: 'Saved: Payment Fraud Attempt',
+      alerts: [
+        {
+          title: 'Payment Redirect',
+          category: 'fraud',
+          categoryLabel: 'Fraud',
+          confidence: '92%',
+          desc: 'Caller claimed billing error and pushed agent to update bank details without verification.',
+        },
+        {
+          title: 'Account Takeover Attempt',
+          category: 'fraud',
+          categoryLabel: 'Fraud',
+          confidence: '94%',
+          desc: 'Urgent tone detected; caller requested ACH change on [[Account #3847]] without security challenge.',
+        },
+        {
+          title: 'Fraud Signal',
+          category: 'fraud',
+          categoryLabel: 'Fraud',
+          confidence: '90%',
+          desc: 'Caller provided new routing number mid-call and pressured agent to skip confirmation step.',
+        },
+      ],
+    },
+    {
+      q: 'Flag calls where a patient sounds like they may be in emotional distress',
+      confirm: 'Saved: Patient Distress Signal',
+      alerts: [
+        {
+          title: 'Patient Distress',
+          category: 'urgent-care',
+          categoryLabel: 'Urgent Care',
+          confidence: '93%',
+          desc: 'Prolonged silence and flat affect detected; patient said she no longer sees the point of treatment.',
+        },
+        {
+          title: 'Distress Detected',
+          category: 'urgent-care',
+          categoryLabel: 'Urgent Care',
+          confidence: '91%',
+          desc: 'Vocal stress spike after medication discussion; patient expressed uncertainty about continuing.',
+        },
+        {
+          title: 'Crisis Signal',
+          category: 'urgent-care',
+          categoryLabel: 'Urgent Care',
+          confidence: '95%',
+          desc: 'Crying detected at 4:12; patient stated she had not been eating or sleeping for several days.',
+        },
+      ],
+    },
+    {
+      q: 'Flag when a sales rep keeps selling after the customer has already agreed to move forward',
+      confirm: 'Saved: Post-Commitment Pushback Risk',
+      alerts: [
+        {
+          title: 'Over-Pitching',
+          category: 'coaching',
+          categoryLabel: 'Coaching',
+          confidence: '89%',
+          desc: 'Rep introduced two new features after prospect confirmed they were ready to sign.',
+        },
+        {
+          title: 'Commitment Ignored',
+          category: 'coaching',
+          categoryLabel: 'Coaching',
+          confidence: '90%',
+          desc: 'Customer agreed to next steps at 11:45; rep continued competitive comparison for four more minutes.',
+        },
+        {
+          title: 'Pitch Continued',
+          category: 'coaching',
+          categoryLabel: 'Coaching',
+          confidence: '88%',
+          desc: 'Rep kept presenting pricing tiers after [[Lisa at Northgate Partners]] confirmed she was moving forward.',
+        },
+      ],
+    },
+    {
+      q: 'Detect when an agent shares account details before fully verifying the caller',
+      confirm: 'Saved: Unauthorized Data Disclosure',
+      alerts: [
+        {
+          title: 'Restricted Disclosure',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '92%',
+          desc: 'Agent confirmed full billing address and card type before second verification step was completed.',
+        },
+        {
+          title: 'Data Exposure',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '91%',
+          desc: 'Account PIN and email shared with caller who only passed one of three verification prompts.',
+        },
+        {
+          title: 'Verification Skip',
+          category: 'compliance',
+          categoryLabel: 'Compliance',
+          confidence: '93%',
+          desc: 'Agent read back last four digits of payment method before caller confirmed security question.',
+        },
+      ],
+    },
   ];
 
   var CUSTOM_PHASE2_HOLD_MS  = 2000;
@@ -640,15 +887,16 @@
       cursorEl.style.display = 'none';
     }
 
-    function showAlerts(alertIndices, cb) {
+    function showAlerts(alertsSlice, cb) {
       detectEl.innerHTML = '';
       detectEl.removeAttribute('data-empty');
 
       var list = document.createElement('div');
       list.className = 'mm-custom-detections__list';
 
-      alertIndices.forEach(function (i) {
-        var el = buildAlertEl(MM_ALERTS[i], false, 0);
+      var n = alertsSlice.length;
+      alertsSlice.forEach(function (alert) {
+        var el = buildAlertEl(alert, false, 0, false);
         el.style.opacity = '0';
         el.style.transition = 'opacity 0.3s ease';
         list.appendChild(el);
@@ -657,14 +905,16 @@
       detectEl.appendChild(list);
       detectEl.setAttribute('data-visible', '');
 
-      alertIndices.forEach(function (_, pos) {
-        setTimeout(function () {
-          var cards = list.querySelectorAll('.alerts-widget__alert');
-          if (cards[pos]) cards[pos].style.opacity = '1';
-        }, pos * CUSTOM_PHASE3_STAGGER_MS);
-      });
+      for (var pos = 0; pos < n; pos++) {
+        (function (p) {
+          setTimeout(function () {
+            var cards = list.querySelectorAll('.alerts-widget__alert');
+            if (cards[p]) cards[p].style.opacity = '1';
+          }, p * CUSTOM_PHASE3_STAGGER_MS);
+        })(pos);
+      }
 
-      var totalFadeIn = alertIndices.length * CUSTOM_PHASE3_STAGGER_MS + 300;
+      var totalFadeIn = n * CUSTOM_PHASE3_STAGGER_MS + 300;
       setTimeout(cb, Math.max(totalFadeIn, CUSTOM_PHASE3_HOLD_MS));
     }
 
@@ -687,7 +937,7 @@
         showResult(entry);
         idx++;
         setTimeout(function () {
-          showAlerts(entry.alertIndices, function () {
+          showAlerts(entry.alerts, function () {
             resultEl.style.transition = 'opacity ' + (CUSTOM_FADEOUT_MS / 1000) + 's ease';
             resultEl.style.opacity = '0';
             hideAlerts(function () {
