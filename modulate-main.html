@@ -555,13 +555,33 @@
           </p>
 
           <div class="mm-custom-card">
-            <h3 class="mm-custom-card__title">
-              Detect specific business risks from acoustic signals
-            </h3>
-            <div class="mm-custom-chat">
-              <div class="mm-query-input">
-                <span id="mm-custom-text"></span
-                ><span id="mm-custom-cursor" class="mm-cursor-blink"></span>
+            <div class="mm-custom-prompt">
+              <div class="mm-custom-prompt__composer">
+                <div class="mm-query-input">
+                  <span class="mm-custom-typed">
+                    <span id="mm-custom-text"></span
+                    ><span id="mm-custom-cursor" class="mm-cursor-blink"></span>
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="mm-custom-prompt__submit"
+                  id="mm-custom-submit"
+                  aria-hidden="true"
+                  tabindex="-1">
+                  <span
+                    class="mm-custom-prompt__submit-arrow"
+                    aria-hidden="true"
+                    >↑</span
+                  >
+                  <span
+                    class="mm-custom-prompt__submit-dots"
+                    aria-hidden="true">
+                    <span class="mm-custom-prompt__submit-dot"></span>
+                    <span class="mm-custom-prompt__submit-dot"></span>
+                    <span class="mm-custom-prompt__submit-dot"></span>
+                  </span>
+                </button>
               </div>
               <div id="mm-custom-result" class="mm-custom-result">
                 <div class="mm-custom-confirm-box">
@@ -584,7 +604,40 @@
             <div
               id="mm-custom-detections"
               class="mm-custom-detections"
-              data-empty></div>
+              data-empty>
+              <div class="mm-custom-detections__skeleton" aria-hidden="true">
+                <div class="mm-custom-skeleton-card">
+                  <div class="mm-custom-skeleton-card__lines">
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--title"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--tags"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--desc"></span>
+                  </div>
+                </div>
+                <div class="mm-custom-skeleton-card">
+                  <div class="mm-custom-skeleton-card__lines">
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--title"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--tags"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--desc"></span>
+                  </div>
+                </div>
+                <div class="mm-custom-skeleton-card">
+                  <div class="mm-custom-skeleton-card__lines">
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--title"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--tags"></span>
+                    <span
+                      class="mm-custom-skeleton-line mm-custom-skeleton-line--desc"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <p class="mm-upload-note">
               You can also upload SOPs, compliance docs, or playbooks to specify
               exactly what Velma should catch.
