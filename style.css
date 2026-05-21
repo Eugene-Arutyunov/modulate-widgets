@@ -1311,6 +1311,20 @@ body {
   transform-origin: center;
 }
 
+@media (max-width: 768px) {
+  .scatterplot-axis-break {
+    bottom: calc(0.4375em * 0.35 / 0.75);
+    height: calc(0.625em * 0.35 / 0.75);
+  }
+
+  .scatterplot-axis-break-left::after,
+  .scatterplot-axis-break-right::after {
+    width: calc(1.6875em * 0.35 / 0.75);
+    bottom: calc(-0.5em * 0.35 / 0.75);
+    left: calc(-0.875em * 0.35 / 0.75);
+  }
+}
+
 /* Vendor legend */
 .vendors {
   display: flex;

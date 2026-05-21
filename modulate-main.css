@@ -194,7 +194,7 @@
   .alerts-widget {
     padding: 1rem;
     border-radius: 0.75rem;
-    --aw-row-h: calc(8.25rem * 1.08);
+    --aw-row-h: calc(8.25rem * 1.08 + 1rem);
     --aw-viewport-fade-height: clamp(3rem, 36%, 6rem);
   }
 }
@@ -670,6 +670,7 @@
 
 @media (max-width: 640px) {
   .alerts-widget__desc {
+    font-size: var(--mm-fs-s);
     -webkit-line-clamp: 3;
   }
 }
@@ -691,6 +692,8 @@
     justify-content: flex-end;
     top: 0;
     align-self: stretch;
+    margin-right: 0.4rem;
+    margin-bottom: 0.3rem;
   }
 }
 
@@ -1310,14 +1313,18 @@
 }
 
 .mm-custom-confirm-check {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .mm-custom-confirm-box {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: 0.25rem;
   width: 100%;
   height: 100%;
   padding: 1.375rem 0.875rem 0.625rem;
@@ -1332,6 +1339,24 @@
   font-size: var(--mm-fs-l);
   color: #fff;
   font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .mm-custom-confirm-box {
+    gap: 0.3rem;
+    font-size: var(--mm-fs-s);
+    padding-left: 0.4375rem;
+    padding-right: 0.4375rem;
+  }
+
+  .mm-custom-confirm-text {
+    font-size: var(--mm-fs-s);
+  }
+
+  .mm-custom-confirm-check {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
 }
 
 .mm-custom-detections {

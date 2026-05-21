@@ -6,7 +6,7 @@ Interactive scatterplot visualization system that automatically detects and init
 
 The script automatically finds all elements with class `.scatterplot-wrapper` on the page. For each scatterplot with ID `scatterplot-N`, it looks for a corresponding configuration variable `scatterPlotConfigN`. Only scatterplots with both a container and a valid configuration are initialized.
 
-**Example:** A scatterplot with `id="scatterplot-1"` will use `scatterPlotConfig1` from `config-sc1.js`.
+**Example:** A scatterplot with `id="scatterplot-1"` will use `scatterPlotConfig1` from `config-sc1.js`. At viewport width ≤768px it uses `scatterPlotConfig1Mobile` (sparser X-axis labels for `#conv-scatter`; right zone labels `$0.5`, `$1`, `$1.5` with `trimLabelZeros`).
 
 ## Configuration Structure
 
@@ -14,12 +14,18 @@ The script automatically finds all elements with class `.scatterplot-wrapper` on
 
 ```javascript
 const scatterPlotConfig1 = {
-  axisX: { /* axis config */ },
-  axisY: { /* axis config */ },
-  data: [ /* data points */ ],
+  axisX: {
+    /* axis config */
+  },
+  axisY: {
+    /* axis config */
+  },
+  data: [
+    /* data points */
+  ],
   backgroundHighlight: { text: "..." },
-  useVisualOffset: true
-}
+  useVisualOffset: true,
+};
 ```
 
 ### Axis Break
@@ -60,9 +66,9 @@ Points can be visually offset without changing their actual score value (useful 
 Different vendors can show different decimal precision on hover:
 
 ```javascript
-hoverDecimals: { 
-  default: 2, 
-  exceptions: { "Modulate": 4 } 
+hoverDecimals: {
+  default: 2,
+  exceptions: { "Modulate": 4 }
 }
 ```
 

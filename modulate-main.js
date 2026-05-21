@@ -15,33 +15,119 @@
    *   neutral — тёмно-серый текст без иконки.
    * confidence: доля в процентах для UI (без слова «Confidence» — оно только в вёрстке).
    */
+  /**
+   * Порядок в DOM (индекс 0 — верх списка).
+   * При загрузке видны последние VISIBLE_ROW_COUNT (Authorization Fraud → … → Billing).
+   * Первый проход прокрутки раскрывает [n−5]…[0]; затем сверху — MM_ALERTS_PREPEND_PRIORITY + остальные.
+   */
   var MM_ALERTS = [
     {
-      title: 'Unresolved Billing Dispute',
+      title: 'New Customer Deal Risk',
+      category: 'coaching',
+      categoryLabel: 'Coaching',
+      confidence: '89%',
+      desc: 'Rep continued pitching features to [[James at Acme Solutions]] 4 minutes after demo was agreed.',
+      action: 'Flag for Coaching',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Consent Compliance Failure',
       category: 'compliance',
       categoryLabel: 'Compliance',
-      confidence: '88%',
-      desc: 'Customer referenced unresolved billing dispute from prior call; fix never applied to account.',
-      action: 'Escalated',
-      statusVariant: 'escalation',
-    },
-    {
-      title: 'Threat-Based Harassment',
-      category: 'agent-safety',
-      categoryLabel: 'Agent Safety',
-      confidence: '96%',
-      desc: 'Caller repeated physical threat toward support agent after refund denial; warning issued, threats continued.',
-      action: 'Call Terminated.',
-      statusVariant: 'escalation',
-    },
-    {
-      title: 'Potential Customer Churn',
-      category: 'churn',
-      categoryLabel: 'Churn Risk',
-      confidence: '97%',
-      desc: 'Renewal customer cited cost as barrier and asked about lower-tier options during retention call.',
+      confidence: '93%',
+      desc: 'Provider moved to surgical scheduling without confirming patient understood procedure risks.',
       action: 'Review',
       statusVariant: 'monitoring',
+    },
+    {
+      title: 'Prohibited Commitment Made',
+      category: 'liability-risk',
+      categoryLabel: 'Liability Risk',
+      confidence: '90%',
+      desc: 'Agent promised full refund and 6-month credit to caller without supervisor sign-off.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Unauthorized Rate Promise',
+      category: 'liability-risk',
+      categoryLabel: 'Liability Risk',
+      confidence: '94%',
+      desc: 'Loan officer quoted 4.2% fixed rate and waived origination fees without manager approval.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Patient Distress Signal',
+      category: 'urgent-care',
+      categoryLabel: 'Urgent Care',
+      confidence: '94%',
+      desc: 'Prolonged silence and vocal stress markers detected; patient expressed doubt about continuing care.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Medication Refill Manipulation',
+      category: 'fraud-risk',
+      categoryLabel: 'Fraud Risk',
+      confidence: '87%',
+      desc: 'Early refill request for controlled substance; vocal stress patterns inconsistent with stated reason.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Stalled Deal Risk',
+      category: 'deal-blocker',
+      categoryLabel: 'Deal Blocker',
+      confidence: '91%',
+      desc: 'Prospect named VP of Engineering and finance lead as approvers; neither present on the call.',
+      action: 'Schedule Follow-Up',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Fraudulent Claim Risk',
+      category: 'fraud-risk',
+      categoryLabel: 'Fraud Risk',
+      confidence: '92%',
+      desc: 'Inconsistent accident details across two points in call; stress markers spiked under agent follow-up.',
+      action: 'Claims Review',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Identity Verification Fraud',
+      category: 'fraud',
+      categoryLabel: 'Fraud',
+      confidence: '91%',
+      desc: 'DOB, address, and PIN mismatched across three verification prompts.',
+      action: 'Manual Verification',
+      statusVariant: 'neutral',
+    },
+    {
+      title: 'Unauthorized Data Disclosure',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '92%',
+      desc: 'Agent confirmed billing address and payment method before identity verification was complete.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Security Protocol Bypass',
+      category: 'compliance',
+      categoryLabel: 'Compliance',
+      confidence: '92%',
+      desc: 'Agent skipped two verification steps and granted full account access to unverified caller.',
+      action: 'Escalation',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Executive Impersonation Scam',
+      category: 'fraud',
+      categoryLabel: 'Fraud',
+      confidence: '95%',
+      desc: 'Caller claiming to be CEO solicited payment credentials using urgent payment language.',
+      action: 'Urgent Review',
+      statusVariant: 'escalation',
     },
     {
       title: 'Authorization Fraud Attempt',
@@ -57,125 +143,63 @@
       category: 'churn',
       categoryLabel: 'Churn Risk',
       confidence: '97%',
-      desc: 'Renewal customer cited cost as barrier, mentioned competitors and asked about lower-tier options during call.',
+      desc: 'Renewal customer cited cost as barrier and asked about lower-tier options during retention call.',
       action: 'Review',
       statusVariant: 'monitoring',
     },
     {
-      title: 'Executive Impersonation Scam',
-      category: 'fraud',
-      categoryLabel: 'Fraud',
-      confidence: '95%',
-      desc: 'Caller claiming to be CEO solicited payment credentials using urgent payment language.',
-      action: 'Urgent Review',
+      title: 'Threat-Based Harassment',
+      category: 'agent-safety',
+      categoryLabel: 'Agent Safety',
+      confidence: '96%',
+      desc: 'Caller repeated physical threat toward support agent after refund denial; warning issued, threats continued.',
+      action: 'Call Terminated.',
       statusVariant: 'escalation',
     },
     {
-      title: 'Security Protocol Bypass',
+      title: 'Unresolved Billing Dispute',
       category: 'compliance',
       categoryLabel: 'Compliance',
-      confidence: '92%',
-      desc: 'Agent skipped two verification steps and granted full account access to unverified caller.',
-      action: 'Escalation',
+      confidence: '88%',
+      desc: 'Customer referenced unresolved billing dispute from prior call; fix never applied to account.',
+      action: 'Escalated',
       statusVariant: 'escalation',
-    },
-    {
-      title: 'Unauthorized Data Disclosure',
-      category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '92%',
-      desc: 'Agent confirmed billing address and payment method before identity verification was complete.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
-      title: 'Identity Verification Fraud',
-      category: 'fraud',
-      categoryLabel: 'Fraud',
-      confidence: '91%',
-      desc: 'DOB, address, and PIN mismatched across three verification prompts.',
-      action: 'Manual Verification',
-      statusVariant: 'neutral',
-    },
-    {
-      title: 'Fraudulent Claim Risk',
-      category: 'fraud-risk',
-      categoryLabel: 'Fraud Risk',
-      confidence: '92%',
-      desc: 'Inconsistent accident details across two points in call; stress markers spiked under agent follow-up.',
-      action: 'Claims Review',
-      statusVariant: 'neutral',
-    },
-    {
-      title: 'Stalled Deal Risk',
-      category: 'deal-blocker',
-      categoryLabel: 'Deal Blocker',
-      confidence: '91%',
-      desc: 'Prospect named VP of Engineering and finance lead as approvers; neither present on the call.',
-      action: 'Schedule Follow-Up',
-      statusVariant: 'neutral',
-    },
-    {
-      title: 'Medication Refill Manipulation',
-      category: 'fraud-risk',
-      categoryLabel: 'Fraud Risk',
-      confidence: '87%',
-      desc: 'Early refill request for controlled substance; vocal stress patterns inconsistent with stated reason.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
-      title: 'Patient Distress Signal',
-      category: 'urgent-care',
-      categoryLabel: 'Urgent Care',
-      confidence: '94%',
-      desc: 'Prolonged silence and vocal stress markers detected; patient expressed doubt about continuing care.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
-      title: 'Unauthorized Rate Promise',
-      category: 'liability-risk',
-      categoryLabel: 'Liability Risk',
-      confidence: '94%',
-      desc: 'Loan officer quoted 4.2% fixed rate and waived origination fees without manager approval.',
-      action: 'Escalation',
-      statusVariant: 'escalation',
-    },
-    {
-      title: 'Prohibited Commitment Made',
-      category: 'liability-risk',
-      categoryLabel: 'Liability Risk',
-      confidence: '90%',
-      desc: 'Agent promised full refund and 6-month credit to caller without supervisor sign-off.',
-      action: 'Escalation',
-      statusVariant: 'escalation',
-    },
-    {
-      title: 'Consent Compliance Failure',
-      category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '93%',
-      desc: 'Provider moved to surgical scheduling without confirming patient understood procedure risks.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
-      title: 'New Customer Deal Risk',
-      category: 'coaching',
-      categoryLabel: 'Coaching',
-      confidence: '89%',
-      desc: 'Rep continued pitching features to [[James at Acme Solutions]] 4 minutes after demo was agreed.',
-      action: 'Flag for Coaching',
-      statusVariant: 'neutral',
     },
   ];
+
+  /** Порядок появления новых алертов сверху после первого прохода */
+  var MM_ALERTS_PREPEND_PRIORITY = [
+    'Potential Customer Churn',
+    'Executive Impersonation Scam',
+    'Security Protocol Bypass',
+  ];
+
+  function buildAlertsPrependSequence(alerts, priorityTitles) {
+    var seq = [];
+    var seen = {};
+    priorityTitles.forEach(function (title) {
+      for (var i = 0; i < alerts.length; i++) {
+        if (alerts[i].title === title && !seen[title]) {
+          seq.push(alerts[i]);
+          seen[title] = true;
+          break;
+        }
+      }
+    });
+    alerts.forEach(function (alert) {
+      if (!seen[alert.title]) {
+        seq.push(alert);
+        seen[alert.title] = true;
+      }
+    });
+    return seq;
+  }
 
   /**
    * Стартовые «минуты назад» только для первичного рендера (не часть контента алерта).
    * Верхний видимый в окне алерт при старте задаётся скриптом — см. init().
    */
-  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   /* ============================================================
      ALERT RENDERER
@@ -633,13 +657,17 @@
      * мгновенно компенсируем сдвиг, плавно анимируем, убираем хвост.
      * Никакого сброса — цикл не имеет видимой точки перезапуска.
      */
-    var dataIdx = firstVisibleIndex; // следующий алерт из MM_ALERTS
+    var prependSequence = buildAlertsPrependSequence(
+      MM_ALERTS,
+      MM_ALERTS_PREPEND_PRIORITY
+    );
+    var prependIdx = 0;
 
     async function showNextAlert() {
       await sleep(randomUnreadDwellMs());
 
-      var alertData = MM_ALERTS[dataIdx % MM_ALERTS.length];
-      dataIdx++;
+      var alertData = prependSequence[prependIdx % prependSequence.length];
+      prependIdx++;
 
       var newEl = buildAlertEl(alertData, true, 0);
       applyStatusRevealPrep(newEl);

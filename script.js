@@ -19,7 +19,10 @@ function shouldFormatAsCurrency(config) {
 // Function to format X axis value
 function formatAxisXValue(value, config, decimals = 2, showUnit = true) {
   const isCurrency = shouldFormatAsCurrency(config);
-  const formattedValue = value.toFixed(decimals);
+  let formattedValue = value.toFixed(decimals);
+  if (config.axisX?.trimLabelZeros) {
+    formattedValue = String(parseFloat(formattedValue));
+  }
   if (isCurrency && showUnit) {
     return "$" + formattedValue;
   }
@@ -112,6 +115,15 @@ const VENDOR_CSS_CLASS_MAP = {
 function getVendorClass(vendor) {
   if (VENDOR_CSS_CLASS_MAP[vendor]) return VENDOR_CSS_CLASS_MAP[vendor];
   return `vendor-${normalizeVendorName(vendor)}`;
+}
+
+function getScatterPlotConfig(plotNumber) {
+  if (plotNumber === 1) {
+    return window.innerWidth <= 768 && window.scatterPlotConfig1Mobile
+      ? window.scatterPlotConfig1Mobile
+      : window.scatterPlotConfig1;
+  }
+  return window[`scatterPlotConfig${plotNumber}`];
 }
 
 // Class for creating scatter plot
@@ -1474,10 +1486,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const plotNumber = parseInt(match[1], 10);
-    const configName = `scatterPlotConfig${plotNumber}`;
-    const config = window[configName];
+    const config = getScatterPlotConfig(plotNumber);
 
     if (!config) {
+      const configName = `scatterPlotConfig${plotNumber}`;
       console.error(`Configuration ${configName} not found for ${id}`);
       console.error(`Make sure config-sc${plotNumber}.js is loaded before script.js`);
       console.error(`Available configs:`, Object.keys(window).filter(k => k.startsWith('scatterPlotConfig')));
@@ -1597,6 +1609,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to redraw all charts
   const redrawAllPlots = () => {
+    plotConfigs.forEach(({ plot, plotNumber }) => {
+      plot.config = getScatterPlotConfig(plotNumber);
+    });
     plots.forEach(plot => plot.createScatterPlot());
     barCharts.forEach(redraw => redraw());
   };

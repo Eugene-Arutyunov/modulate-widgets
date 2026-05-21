@@ -202,7 +202,29 @@ const scatterPlotConfig1 = {
   useVisualOffset: true,
 };
 
+// Mobile (≤768px): sparser X-axis labels only; grid step unchanged
+const scatterPlotConfig1Mobile = {
+  ...scatterPlotConfig1,
+  axisX: {
+    ...scatterPlotConfig1.axisX,
+    trimLabelZeros: true,
+    gridLines: {
+      left: {
+        step: 0.01,
+        max: 0.08,
+        labels: [0.02, 0.04, 0.06, 0.08],
+      },
+      right: {
+        step: 0.05,
+        max: 1.50,
+        labels: [0.5, 1.0, 1.5],
+      },
+    },
+  },
+};
+
 // Explicitly expose to window for compatibility
 if (typeof window !== 'undefined') {
   window.scatterPlotConfig1 = scatterPlotConfig1;
+  window.scatterPlotConfig1Mobile = scatterPlotConfig1Mobile;
 }
