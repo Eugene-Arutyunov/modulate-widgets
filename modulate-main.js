@@ -24,20 +24,11 @@
     {
       title: 'New Customer Deal Risk',
       category: 'coaching',
-      categoryLabel: 'Coaching',
+      categoryLabel: 'Coaching Opportunity',
       confidence: '89%',
       desc: 'Rep continued pitching features to [[James at Acme Solutions]] 4 minutes after demo was agreed.',
       action: 'Flag for Coaching',
       statusVariant: 'neutral',
-    },
-    {
-      title: 'Consent Compliance Failure',
-      category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '93%',
-      desc: 'Provider moved to surgical scheduling without confirming patient understood procedure risks.',
-      action: 'Review',
-      statusVariant: 'monitoring',
     },
     {
       title: 'Prohibited Commitment Made',
@@ -45,7 +36,16 @@
       categoryLabel: 'Liability Risk',
       confidence: '90%',
       desc: 'Agent promised full refund and 6-month credit to caller without supervisor sign-off.',
-      action: 'Escalation',
+      action: 'Escalated',
+      statusVariant: 'escalation',
+    },
+    {
+      title: 'Consent Compliance Failure',
+      category: 'compliance',
+      categoryLabel: 'Compliance Violation',
+      confidence: '93%',
+      desc: 'Provider moved to surgical scheduling without confirming patient understood procedure risks.',
+      action: 'Urgent Review',
       statusVariant: 'escalation',
     },
     {
@@ -54,24 +54,15 @@
       categoryLabel: 'Liability Risk',
       confidence: '94%',
       desc: 'Loan officer quoted 4.2% fixed rate and waived origination fees without manager approval.',
-      action: 'Escalation',
+      action: 'Escalated',
       statusVariant: 'escalation',
     },
     {
-      title: 'Patient Distress Signal',
-      category: 'urgent-care',
-      categoryLabel: 'Urgent Care',
+      title: 'User Distress Signal',
+      category: 'wellbeing',
+      categoryLabel: 'Wellbeing',
       confidence: '94%',
-      desc: 'Prolonged silence and vocal stress markers detected; patient expressed doubt about continuing care.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
-      title: 'Medication Refill Manipulation',
-      category: 'fraud-risk',
-      categoryLabel: 'Fraud Risk',
-      confidence: '87%',
-      desc: 'Early refill request for controlled substance; vocal stress patterns inconsistent with stated reason.',
+      desc: 'Prolonged silence and vocal stress markers detected; user expressed doubt about continuing service.',
       action: 'Review',
       statusVariant: 'monitoring',
     },
@@ -81,7 +72,7 @@
       categoryLabel: 'Deal Blocker',
       confidence: '91%',
       desc: 'Prospect named VP of Engineering and finance lead as approvers; neither present on the call.',
-      action: 'Schedule Follow-Up',
+      action: 'Schedule Followup',
       statusVariant: 'neutral',
     },
     {
@@ -94,6 +85,24 @@
       statusVariant: 'neutral',
     },
     {
+      title: 'Unauthorized Data Disclosure',
+      category: 'compliance',
+      categoryLabel: 'Compliance Violation',
+      confidence: '92%',
+      desc: 'Agent confirmed billing address and payment method before identity verification was complete.',
+      action: 'Review',
+      statusVariant: 'monitoring',
+    },
+    {
+      title: 'Executive Impersonation Scam',
+      category: 'fraud',
+      categoryLabel: 'Fraud',
+      confidence: '93%',
+      desc: 'Caller claiming to be CEO solicited payment credentials using urgent payment language.',
+      action: 'Alerted Agent',
+      statusVariant: 'escalation',
+    },
+    {
       title: 'Identity Verification Fraud',
       category: 'fraud',
       categoryLabel: 'Fraud',
@@ -103,29 +112,11 @@
       statusVariant: 'neutral',
     },
     {
-      title: 'Unauthorized Data Disclosure',
-      category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '92%',
-      desc: 'Agent confirmed billing address and payment method before identity verification was complete.',
-      action: 'Review',
-      statusVariant: 'monitoring',
-    },
-    {
       title: 'Security Protocol Bypass',
       category: 'compliance',
-      categoryLabel: 'Compliance',
-      confidence: '92%',
-      desc: 'Agent skipped two verification steps and granted full account access to unverified caller.',
-      action: 'Escalation',
-      statusVariant: 'escalation',
-    },
-    {
-      title: 'Executive Impersonation Scam',
-      category: 'fraud',
-      categoryLabel: 'Fraud',
+      categoryLabel: 'Compliance Violation',
       confidence: '95%',
-      desc: 'Caller claiming to be CEO solicited payment credentials using urgent payment language.',
+      desc: 'Agent skipped two verification steps and granted full account access to unverified caller.',
       action: 'Urgent Review',
       statusVariant: 'escalation',
     },
@@ -135,14 +126,14 @@
       categoryLabel: 'Deepfake',
       confidence: '94%',
       desc: 'Deepfake caller pushed agent to bypass verification, with requesting a wire of [[$47,500]] on Account #8821.',
-      action: 'Call Terminated.',
+      action: 'Alerted Agent',
       statusVariant: 'escalation',
     },
     {
       title: 'Potential Customer Churn',
       category: 'churn',
       categoryLabel: 'Churn Risk',
-      confidence: '97%',
+      confidence: '93%',
       desc: 'Renewal customer cited cost as barrier and asked about lower-tier options during retention call.',
       action: 'Review',
       statusVariant: 'monitoring',
@@ -153,25 +144,33 @@
       categoryLabel: 'Agent Safety',
       confidence: '96%',
       desc: 'Caller repeated physical threat toward support agent after refund denial; warning issued, threats continued.',
-      action: 'Call Terminated.',
+      action: 'Escalated',
       statusVariant: 'escalation',
     },
     {
       title: 'Unresolved Billing Dispute',
       category: 'compliance',
       categoryLabel: 'Compliance',
-      confidence: '88%',
+      confidence: '98%',
       desc: 'Customer referenced unresolved billing dispute from prior call; fix never applied to account.',
-      action: 'Escalated',
-      statusVariant: 'escalation',
+      action: 'Claims Review',
+      statusVariant: 'neutral',
     },
   ];
 
   /** Порядок появления новых алертов сверху после первого прохода */
   var MM_ALERTS_PREPEND_PRIORITY = [
-    'Potential Customer Churn',
-    'Executive Impersonation Scam',
     'Security Protocol Bypass',
+    'Identity Verification Fraud',
+    'Executive Impersonation Scam',
+    'Unauthorized Data Disclosure',
+    'Fraudulent Claim Risk',
+    'Stalled Deal Risk',
+    'User Distress Signal',
+    'Unauthorized Rate Promise',
+    'Consent Compliance Failure',
+    'Prohibited Commitment Made',
+    'New Customer Deal Risk',
   ];
 
   function buildAlertsPrependSequence(alerts, priorityTitles) {
@@ -199,7 +198,7 @@
    * Стартовые «минуты назад» только для первичного рендера (не часть контента алерта).
    * Верхний видимый в окне алерт при старте задаётся скриптом — см. init().
    */
-  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  var MM_FEED_INITIAL_MINUTES_UI = [0, 1, 1, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   /* ============================================================
      ALERT RENDERER
@@ -296,11 +295,17 @@
     );
   }
 
-  function buildConfidenceHTML(confidencePct) {
+  /** categoryLabel длиннее — на десктопе в confidence только цифра (см. CSS) */
+  var CONFIDENCE_COMPACT_LABEL_MIN_LEN = 16;
+
+  function buildConfidenceHTML(confidencePct, categoryLabel) {
     var v = String(confidencePct || '').trim();
     if (v.indexOf('%') === -1) v += '%';
+    var compact =
+      categoryLabel && String(categoryLabel).length >= CONFIDENCE_COMPACT_LABEL_MIN_LEN;
+    var compactClass = compact ? ' alerts-widget__confidence-tag--value-only' : '';
     return (
-      '<span class="alerts-widget__confidence-tag">' +
+      '<span class="alerts-widget__confidence-tag' + compactClass + '">' +
       '<span class="alerts-widget__confidence-label">Confidence </span>' +
       '<span class="alerts-widget__confidence-value">' + v + '</span>' +
       '</span>'
@@ -329,7 +334,7 @@
             '<span class="alerts-widget__category-tag alerts-widget__category-tag--' + alert.category + '">' +
             escapeHtml(alert.categoryLabel) +
             '</span>' +
-            buildConfidenceHTML(alert.confidence) +
+            buildConfidenceHTML(alert.confidence, alert.categoryLabel) +
             '</span>' +
           '</h3>' +
           '<p class="alerts-widget__desc">' + parseDesc(alert.desc) + '</p>' +
@@ -792,33 +797,6 @@
           categoryLabel: 'Fraud',
           confidence: '90%',
           desc: 'Caller provided new routing number mid-call and pressured agent to skip confirmation step.',
-        },
-      ],
-    },
-    {
-      q: 'Flag calls where a patient sounds like they may be in emotional distress',
-      confirm: 'Saved: Patient Distress Signal',
-      alerts: [
-        {
-          title: 'Patient Distress',
-          category: 'urgent-care',
-          categoryLabel: 'Urgent Care',
-          confidence: '93%',
-          desc: 'Prolonged silence and flat affect detected; patient said she no longer sees the point of treatment.',
-        },
-        {
-          title: 'Distress Detected',
-          category: 'urgent-care',
-          categoryLabel: 'Urgent Care',
-          confidence: '91%',
-          desc: 'Vocal stress spike after medication discussion; patient expressed uncertainty about continuing.',
-        },
-        {
-          title: 'Crisis Signal',
-          category: 'urgent-care',
-          categoryLabel: 'Urgent Care',
-          confidence: '95%',
-          desc: 'Crying detected at 4:12; patient stated she had not been eating or sleeping for several days.',
         },
       ],
     },

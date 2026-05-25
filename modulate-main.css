@@ -620,6 +620,12 @@
   border-color: rgb(200, 35, 75);
 }
 
+.alerts-widget__category-tag--wellbeing {
+  color: var(--mm-tag-inverted);
+  background: rgb(108, 92, 198);
+  border-color: rgb(108, 92, 198);
+}
+
 .alerts-widget__category-tag--liability-risk {
   color: var(--mm-tag-mark-fg);
   background: var(--mm-tag-mark-bg);
@@ -648,6 +654,12 @@
     color 0.22s ease,
     border-color 0.22s ease,
     opacity 0.5s ease 0.2s;
+}
+
+@media (min-width: 521px) {
+  .alerts-widget__confidence-tag--value-only .alerts-widget__confidence-label {
+    display: none;
+  }
 }
 
 @media (max-width: 520px) {
