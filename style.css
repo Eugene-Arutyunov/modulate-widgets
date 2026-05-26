@@ -607,27 +607,8 @@ body {
   background-color: var(--cost-compare-bar-low);
 }
 
-.cost-compare-block .cost-compare-bar--high {
-  background-color: var(--cost-compare-bar-other);
-}
-
 .cost-compare-block .cost-compare-bar--modulate {
   background-color: var(--cost-compare-bar-modulate);
-}
-
-.cost-compare-block .cost-compare-bar--modulate::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 1em;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--cost-compare-bar-modulate)
-  );
 }
 
 .cost-compare-bar-model {
@@ -640,6 +621,10 @@ body {
   font-size: var(--cost-compare-text-size);
   line-height: 1;
   opacity: 0.7;
+}
+
+.cost-compare-block .cost-compare-bar--modulate .cost-compare-bar-model {
+  opacity: 0;
 }
 
 .cost-compare-block .cost-compare-cost {
