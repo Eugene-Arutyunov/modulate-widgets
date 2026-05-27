@@ -751,25 +751,25 @@
       confirm: 'Saved: Security Protocol Bypass',
       alerts: [
         {
-          title: 'Verification Skip',
+          title: 'Verification Bypass',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '93%',
-          desc: 'Agent bypassed second factor after caller said they were in a hurry; full access granted.',
+          desc: 'Agent bypassed second-factor authentication after caller said they were in a hurry; full account access granted without completing required steps.',
         },
         {
-          title: 'Protocol Bypass',
+          title: 'Verification Bypass',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '91%',
-          desc: 'Two required security questions skipped during callback; agent proceeded directly to account changes.',
+          desc: 'Two required security questions were skipped during a callback; agent proceeded directly to account changes without verifying caller identity.',
         },
         {
-          title: 'Access Granted Early',
+          title: 'Verification Bypass',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '94%',
-          desc: 'Agent granted password reset before caller completed identity verification at [[Denver contact center]].',
+          desc: 'Agent granted a password reset before the caller completed identity verification at [[Denver contact center]].',
         },
       ],
     },
@@ -778,25 +778,25 @@
       confirm: 'Saved: Payment Fraud Attempt',
       alerts: [
         {
-          title: 'Payment Redirect',
+          title: 'Payment Redirect Attempt',
           category: 'fraud',
-          categoryLabel: 'Fraud',
+          categoryLabel: 'FRAUD',
           confidence: '92%',
-          desc: 'Caller claimed billing error and pushed agent to update bank details without verification.',
+          desc: 'Caller claimed a billing error and pushed the agent to update bank details to an unverified account without standard confirmation.',
         },
         {
-          title: 'Account Takeover Attempt',
+          title: 'Payment Redirect Attempt',
           category: 'fraud',
-          categoryLabel: 'Fraud',
+          categoryLabel: 'FRAUD',
           confidence: '94%',
-          desc: 'Urgent tone detected; caller requested ACH change on [[Account #3847]] without security challenge.',
+          desc: 'Urgent tone detected; caller requested an ACH routing change on [[Account #3847]] without completing a security challenge.',
         },
         {
-          title: 'Fraud Signal',
+          title: 'Payment Redirect Attempt',
           category: 'fraud',
-          categoryLabel: 'Fraud',
+          categoryLabel: 'FRAUD',
           confidence: '90%',
-          desc: 'Caller provided new routing number mid-call and pressured agent to skip confirmation step.',
+          desc: 'Caller provided a new routing number mid-call and pressured the agent to skip the payment confirmation step.',
         },
       ],
     },
@@ -805,25 +805,25 @@
       confirm: 'Saved: Post-Commitment Pushback Risk',
       alerts: [
         {
-          title: 'Over-Pitching',
+          title: 'Post-Commitment Selling',
           category: 'coaching',
-          categoryLabel: 'Coaching',
+          categoryLabel: 'COACHING',
           confidence: '89%',
-          desc: 'Rep introduced two new features after prospect confirmed they were ready to sign.',
+          desc: 'Rep introduced two additional features after the prospect confirmed they were ready to sign, risking buyer hesitation.',
         },
         {
-          title: 'Commitment Ignored',
+          title: 'Post-Commitment Selling',
           category: 'coaching',
-          categoryLabel: 'Coaching',
+          categoryLabel: 'COACHING',
           confidence: '90%',
-          desc: 'Customer agreed to next steps at 11:45; rep continued competitive comparison for four more minutes.',
+          desc: 'Customer agreed to next steps at 11:45; rep continued a competitive comparison for four more minutes instead of closing.',
         },
         {
-          title: 'Pitch Continued',
+          title: 'Post-Commitment Selling',
           category: 'coaching',
-          categoryLabel: 'Coaching',
+          categoryLabel: 'COACHING',
           confidence: '88%',
-          desc: 'Rep kept presenting pricing tiers after [[Lisa at Northgate Partners]] confirmed she was moving forward.',
+          desc: 'Rep kept presenting pricing tiers after [[Lisa at Northgate Partners]] confirmed she was moving forward with the deal.',
         },
       ],
     },
@@ -832,25 +832,25 @@
       confirm: 'Saved: Unauthorized Data Disclosure',
       alerts: [
         {
-          title: 'Restricted Disclosure',
+          title: 'Premature Data Disclosure',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '92%',
-          desc: 'Agent confirmed full billing address and card type before second verification step was completed.',
+          desc: 'Agent confirmed full billing address and card type before the second verification step was completed.',
         },
         {
-          title: 'Data Exposure',
+          title: 'Premature Data Disclosure',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '91%',
-          desc: 'Account PIN and email shared with caller who only passed one of three verification prompts.',
+          desc: 'Account PIN and email were shared with a caller who had only passed one of three required verification prompts.',
         },
         {
-          title: 'Verification Skip',
+          title: 'Premature Data Disclosure',
           category: 'compliance',
-          categoryLabel: 'Compliance',
+          categoryLabel: 'COMPLIANCE',
           confidence: '93%',
-          desc: 'Agent read back last four digits of payment method before caller confirmed security question.',
+          desc: 'Agent read back the last four digits of a payment method before the caller confirmed their security question.',
         },
       ],
     },
@@ -860,6 +860,17 @@
   var CUSTOM_PHASE3_HOLD_MS  = 4000;
   var CUSTOM_PHASE3_STAGGER_MS = 180;
   var CUSTOM_SUBMIT_PRESS_MS = 280;
+
+  /** Минуты «назад» для карточек prompt-widget — как в ленте, но без Just now. */
+  function pickCustomAlertMinutes(count) {
+    var mins = [];
+    var m = 2 + Math.floor(Math.random() * 7);
+    for (var i = 0; i < count; i++) {
+      mins.push(m);
+      m += 2 + Math.floor(Math.random() * 9);
+    }
+    return mins;
+  }
 
   function initCustomTyping() {
     var textEl      = document.getElementById('mm-custom-text');
@@ -953,8 +964,9 @@
       list.className = 'mm-custom-detections__list';
 
       var n = alertsSlice.length;
-      alertsSlice.forEach(function (alert) {
-        var el = buildAlertEl(alert, false, 0, false);
+      var minutesList = pickCustomAlertMinutes(n);
+      alertsSlice.forEach(function (alert, i) {
+        var el = buildAlertEl(alert, false, minutesList[i], false);
         el.style.opacity = '0';
         el.style.transition = 'opacity 0.3s ease';
         list.appendChild(el);
