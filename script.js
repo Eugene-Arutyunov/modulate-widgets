@@ -76,7 +76,7 @@ const GRAY_BORDER_VENDORS = [
 ];
 
 const MODULATE_GRADIENT_MODELS = [
-  "velma-2-fast",
+  "velma-2-mini",
   "velma-2",
   "velma-1",
   "velma-2-heavy",

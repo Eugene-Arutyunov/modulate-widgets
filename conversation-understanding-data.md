@@ -1,6 +1,6 @@
 | Vendor     | Model                       | Model type | Score (Y, normalized 0–10)¹ | Cost (X)  |
 | ---------- | --------------------------- | ---------- | --------------------------- | --------- |
-| Modulate   | velma-2-fast                | Fast       | 7.93333                     | $0.033000 |
+| Modulate   | velma-2-mini                | Mini       | 7.93333                     | $0.033000 |
 | Modulate   | velma-2                     | Regular    | 9.83332                     | $0.055000 |
 | xAI        | grok-4.1-fast-non-reasoning | Fast       | 0.83333                     | $0.036410 |
 | xAI        | grok-4.1-fast-reasoning     | Fast       | 4.63333                     | $0.037320 |

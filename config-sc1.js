@@ -36,8 +36,8 @@ const scatterPlotConfig1 = {
   data: [
     {
       vendor: "Modulate",
-      model: "velma-2-fast",
-      modelType: "Fast",
+      model: "velma-2-mini",
+      modelType: "Mini",
       score: 7.93333,
       cost: "$0.033000",
       
