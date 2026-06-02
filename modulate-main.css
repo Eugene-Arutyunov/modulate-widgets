@@ -171,7 +171,8 @@
   --aw-pad: 1.25rem;
   --aw-bg: rgb(245, 245, 244);
   --aw-card-bg: rgb(255, 255, 255);
-  --aw-card-bg-read: rgb(251, 251, 250);
+  /* Прочитанный алерт: чуть темнее desc/title, но не body ink */
+  --mm-text-read: rgba(55, 55, 72, 0.82);
   /* было 7.375rem (118px при 1rem=16px); высота строки 60% */
   --aw-row-h: 6rem;
   --aw-row-gap: 0.625rem;
@@ -331,15 +332,15 @@
 }
 
 .alerts-widget__alert--read .alert-behavior__kiki {
-  color: rgba(75, 75, 95, 0.52);
+  color: var(--mm-ink);
 }
 
 .alerts-widget__alert--read .alert-behavior {
-  color: var(--mm-text-muted);
+  color: var(--mm-text-read);
 }
 
 .alerts-widget__alert--read .alerts-widget__desc {
-  color: var(--mm-text-muted);
+  color: var(--mm-text-read);
 }
 
 .alerts-widget__alert--read .alerts-widget__desc .mm-highlight {
@@ -392,10 +393,6 @@
     0 0.25rem 0.875rem rgba(15, 15, 26, 0.06);
   box-sizing: border-box;
   transition: background-color 0.22s ease;
-}
-
-.alerts-widget__alert--read .alerts-widget__card {
-  background: var(--aw-card-bg-read);
 }
 
 @media (max-width: 520px) {
