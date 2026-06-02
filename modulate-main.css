@@ -171,15 +171,15 @@
   --aw-pad: 1.25rem;
   --aw-bg: rgb(245, 245, 244);
   --aw-card-bg: rgb(255, 255, 255);
-  /* Прочитанный алерт: чуть темнее desc/title, но не body ink */
-  --mm-text-read: rgba(55, 55, 72, 0.82);
+  /* Прочитанный алерт: сейчас как body-текст; переменная отдельно на случай тюнинга */
+  --mm-text-read: var(--mm-text-body);
   /* было 7.375rem (118px при 1rem=16px); высота строки 60% */
   --aw-row-h: 6rem;
   --aw-row-gap: 0.625rem;
   /* первые (TOTAL − VISIBLE) строк скрыты трансформом списка — см. alerts-feed-animation.js */
   --aw-visible-rows: 4;
   /* зона градиента «алерты уходят в фон» у нижнего края viewport */
-  --aw-viewport-fade-height: clamp(3.5rem, 38%, 7.5rem);
+  --aw-viewport-fade-height: clamp(0.6rem, 8%, 1.25rem);
 
   text-align: left;
   background: var(--aw-bg);
@@ -196,7 +196,7 @@
     padding: 1rem;
     border-radius: 0.75rem;
     --aw-row-h: calc(8.25rem * 1.08 + 1rem);
-    --aw-viewport-fade-height: clamp(3rem, 36%, 6rem);
+    --aw-viewport-fade-height: clamp(0.5rem, 7%, 1rem);
   }
 }
 
@@ -352,14 +352,14 @@
 }
 
 .alerts-widget__alert--read .alerts-widget__category-tag {
-  color: var(--mm-text-muted);
+  color: var(--mm-text-read);
   background: transparent;
-  border-color: rgba(75, 75, 95, 0.42);
+  border-color: var(--mm-text-read);
 }
 
 .alerts-widget__alert--read .alerts-widget__confidence-tag {
-  color: var(--mm-text-muted);
-  border-color: rgba(75, 75, 95, 0.42);
+  color: var(--mm-text-read);
+  border-color: rgba(58, 58, 72, 0.52);
 }
 
 .alerts-widget__alert--read .alerts-widget__pill--monitoring {
