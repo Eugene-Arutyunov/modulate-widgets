@@ -1369,8 +1369,6 @@
 }
 
 .mm-custom-detections {
-  position: relative;
-  overflow: hidden;
   min-height: calc(3 * var(--aw-row-h) + 2 * var(--aw-row-gap));
   margin-top: 0.75rem;
   margin-bottom: 0.5rem;
@@ -1432,29 +1430,6 @@
 .mm-custom-detections .alerts-widget__alert {
   background: var(--aw-card-bg, #fff);
   border-radius: 0.625rem;
-}
-
-.mm-custom-detections::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 45%;
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--aw-bg, rgb(245, 245, 244)) 88%,
-    var(--aw-bg, rgb(245, 245, 244)) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.mm-custom-detections[data-visible]::after {
-  opacity: 1;
 }
 
 .mm-upload-note {
